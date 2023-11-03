@@ -25,6 +25,9 @@ public class Question {
     // The type of the question.
     private QuestionType type;
 
+    @ManyToOne
+    private Survey survey;
+
     /**
      * The constructor for the question class.
      * @param prompt the prompt for the question.

@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class User for defining a User entity that uses the Survey website.
@@ -28,17 +29,15 @@ public class User {
     public String password;
 
     // Define a list of surveys that a User has created
-    @OneToMany(mappedBy = "survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    public ArrayList<Survey> listSurveys;
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    public List<Survey> listSurveys;
 
     /**
      * Default constructor for User.
-     * @param id A long ID.
      * @param username A string username.
      * @param password A string password.
      */
-    public User(Long id, String username, String password) {
-        this.id = id;
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
         this.listSurveys = new ArrayList<>();
