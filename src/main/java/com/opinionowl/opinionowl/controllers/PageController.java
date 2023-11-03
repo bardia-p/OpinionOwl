@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,7 +28,8 @@ public class PageController {
     }
 
     @GetMapping("/answerSurvey")
-    public String getAnswerSurveyPage(Model model) {
+    public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
+        model.addAttribute("surveyId", surveyId);
         return "answerSurvey";
     }
 

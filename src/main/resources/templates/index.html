@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
+  <head>
     <title>Created AddressBook</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
-</head>
-<body>
-<h1>Welcome To OpinionOwl</h1>
-<p></p>
-<a href="/createSurvey"></a>
-<div>
-    <h2>Surveys Available</h2>
-    <ul>
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+  </head>
+  <body>
+    <div th:replace="fragments/header :: header"></div>
+    <h1>Welcome To OpinionOwl</h1>
+    <p>
+      The ultimate platform for both survey creators and respondents. If you're
+      a survey creator - a fellow owl companion, our user-friendly interface
+      will allow you to craft surveys with any topic your choosing. If you are a
+      survey respondents - either an owl companion or an unknown owl, you are
+      free to share your thoughts and opinions on the topics created by other
+      owl companions.
+    </p>
+    <a href="/createSurvey" th:href="@{/createSurvey}">Create a survey</a>
+    <div>
+      <h2>Surveys Available</h2>
+      <ul>
         <li>
-            <a  href="/answerSurvey">
-                <h3>Name: Survey 1</h3>
-                <p>Questions: 10</p>
-            </a>
+          <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${1})}">
+            <h3>Name: Survey 1</h3>
+            <p>Questions: 10</p>
+          </a>
         </li>
         <li>
-            <a href="/answerSurvey">
-                <h3>Name: Survey 2</h3>
-                <p>Questions: 15</p>
-            </a>
+          <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${2})}">
+            <h3>Name: Survey 2</h3>
+            <p>Questions: 15</p>
+          </a>
         </li>
-    </ul>
-</div>
-</body>
+      </ul>
+    </div>
+    <div th:replace="fragments/footer :: footer"></div>
+  </body>
 </html>
