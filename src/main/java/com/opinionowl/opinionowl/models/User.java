@@ -46,7 +46,7 @@ public class User {
 
     /**
      * Void method for adding a survey to the list of surveys.
-     * @param survey
+     * @param survey A Survey survey.
      */
     public void addSurvey (Survey survey){
         this.listSurveys.add(survey);
