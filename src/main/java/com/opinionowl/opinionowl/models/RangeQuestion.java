@@ -12,13 +12,13 @@ import lombok.Setter;
 @Setter
 public class RangeQuestion extends Question {
     // The lower value for the range.
-    float lower;
+    int lower;
 
     // the upper value for the range.
-    float upper;
+    int upper;
 
     // the increment the range.
-    float increment;
+    int increment;
 
     /**
      * The default constructor for the class.
@@ -33,7 +33,7 @@ public class RangeQuestion extends Question {
      * @param lower the lower value for the range.
      * @param upper the upper value for the range.
      */
-    public RangeQuestion(String prompt, float lower, float upper){
+    public RangeQuestion(String prompt, int lower, int upper){
         this(prompt, lower, upper, 1);
     }
 
@@ -44,7 +44,7 @@ public class RangeQuestion extends Question {
      * @param upper the upper value for the range.
      * @param increment the increment value for the range.
      */
-    public RangeQuestion(String prompt, float lower, float upper, float increment){
+    public RangeQuestion(String prompt, int lower, int upper, int increment){
         super(prompt, QuestionType.RANGE);
         this.lower = lower;
         this.upper = upper;

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class Question {
     // The id of the question.
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     // The prompt for the question.

@@ -10,14 +10,14 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class MultiChoiceQuestion extends Question {
+public class RadioChoiceQuestion extends Question {
     // The choices for the question.
     private String[] choices;
 
     /**
      * The default constructor for the class.
      */
-    public MultiChoiceQuestion() {
+    public RadioChoiceQuestion() {
         this("", new String[0]);
     }
 
@@ -26,8 +26,8 @@ public class MultiChoiceQuestion extends Question {
      * @param prompt the prompt for the question.
      * @param choices the choices for the question.
      */
-    public MultiChoiceQuestion(String prompt, String[] choices){
-        super(prompt, QuestionType.MULTIPLE_CHOICE);
+    public RadioChoiceQuestion(String prompt, String[] choices){
+        super(prompt, QuestionType.RADIO_CHOICE);
         this.choices = choices;
     }
 

@@ -5,6 +5,6 @@ package com.opinionowl.opinionowl.models;
  */
 public enum QuestionType {
     LONG_ANSWER,
-    MULTIPLE_CHOICE,
+    RADIO_CHOICE,
     RANGE
 }

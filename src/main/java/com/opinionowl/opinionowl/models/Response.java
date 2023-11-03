@@ -2,11 +2,11 @@ package com.opinionowl.opinionowl.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Response class in charge holding the survey response.
@@ -18,22 +18,32 @@ import java.util.Map;
 public class Response {
     // The id of the response.
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    // The hashmap for the answers of the response.
-    @ElementCollection(fetch = FetchType.EAGER)
-    @MapKeyColumn(name="question")
-    @Column(name="answer")
-    @CollectionTable(name="response_answers", joinColumns=@JoinColumn(name="response_id"))
-    private Map<Long, String> answers;
+    // The survey object used for the response.
+    @ManyToOne
+    private Survey survey;
+
+    // The list of the questions for the response.
+    @OneToMany(mappedBy = "response", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Answer> answers;
 
     /**
      * The constructor for the Response class.
-     * @param answers the answers in the Response.
      */
-    public Response(HashMap<Long, String> answers){
-        this.answers = answers;
+    public Response(Survey survey) {
+        this.survey = survey;
+        this.answers = new ArrayList<>();
+    }
+
+    /**
+     * Adds an answer to the survey.
+     * @param question the question id.
+     * @param content the content of the reply.
+     */
+    public void addAnswer(Long question, String content){
+        this.answers.add(new Answer(this, question, content));
     }
 
     /**

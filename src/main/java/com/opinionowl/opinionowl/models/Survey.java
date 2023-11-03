@@ -2,6 +2,7 @@ package com.opinionowl.opinionowl.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -13,10 +14,11 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Survey {
     // Keeps track of the Id of the survey.
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     // Keeps track of the questions of the survey.
@@ -24,16 +26,20 @@ public class Survey {
     private List<Question> questions;
 
     // Keeps track of the survey responses.
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Response> responses;
 
     // Keeps track of whether the survey is open or closed.
     private boolean closed;
 
+    // The title for the survey.
+    private String title;
+
     /**
      * The default constructor for the survey.
      */
-    public Survey(){
+    public Survey(String title){
+        this.title = title;
         this.questions = new ArrayList<>();
         this.responses = new ArrayList<>();
         this.closed = false;
@@ -91,11 +97,15 @@ public class Survey {
      * @return a list of the responses for that question.
      */
     public List<String> getResponsesForQuestion(Long questionId){
-        List<String> answers = new ArrayList<>();
+        List<String> result = new ArrayList<>();
         for (Response r: responses){
-            answers.add(r.getAnswers().get(questionId));
+            for (Answer a: r.getAnswers()){
+                if (a.getQuestion() == questionId){
+                    result.add(a.getContent());
+                }
+            }
         }
-        return answers;
+        return result;
     }
 
     /**
@@ -103,7 +113,7 @@ public class Survey {
      */
     @Override
     public String toString(){
-        String res = "Survey #" + id + " Closed? " + closed;
+        String res = "Survey#" + id + " Title:" + title + " Closed?" + closed;
         res += "\n-----Questions-----";
         for (Question q: questions){
             res += "\n" + q.toString();
