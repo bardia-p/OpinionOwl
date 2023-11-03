@@ -6,6 +6,13 @@
     <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
 </head>
 <body>
-<h1>Responding to Survey: <span th:text="${surveyId}"></span></h1>
+<div th:replace="~{fragments/header :: header}"></div>
+<h1>Survey#<span th:text="${survey.id}"></span>: <span th:text="${survey.getTitle()}"></span></h1>
+<form>
+    <div th:each="question : ${survey.questions}">
+        
+    </div>
+</form>
+<div th:replace="~{fragments/footer :: footer}"></div>
 </body>
 </html>

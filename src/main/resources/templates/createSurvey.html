@@ -6,7 +6,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   </head>
   <body>
-    <div th:replace="fragments/header :: header"></div>
+    <div th:replace="~{fragments/header :: header}"></div>
     <h1>Create a Survey</h1>
     <div class="form-builder-options">
       <button id="add-text">Add Text Question</button>
@@ -15,7 +15,7 @@
     </div>
 
     <div class="form-container">
-      <h2 contenteditable="true" id="form-title">Form Title</h2>
+      <h2 contenteditable="true" class="form-title">Form Title</h2>
       <form th:action="@{/api/v1/createSurvey}" method="post" id="survey-container">
         <table id="survey">
 
@@ -23,11 +23,12 @@
         <button type="submit" id="create-survey">Create Form</button>
       </form>
     </div>
-    <div th:replace="fragments/footer :: footer"></div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
     <script>
       let counter = 0;
       let numOfQuestions = 0;
 
+      const formTitle = $(".form-title");
       const survey = $("#survey");
       const addTextQuestion = $("#add-text");
       const addRadioChoice = $("#add-radio-choice");
@@ -77,16 +78,15 @@
       addTextQuestion.click((e) => {
         e.preventDefault();
         const rowId = generateUniqueID();
-        const uniqueId = generateUniqueID();
         const question = `
           <tr id=${rowId} class="text-questions">
               <td>
                  <button type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
-                  <label for=${uniqueId} contenteditable="true">Question title</label>
+                  <label contenteditable="true">Question title</label>
                   <br />
-                  <input id=${uniqueId} type="text" />
+                  <input type="text" />
               </td>
           </tr>
         `;
@@ -98,7 +98,6 @@
         e.preventDefault();
         const rowId = generateUniqueID();
         const radioQuestionContainer = generateUniqueID();
-        const uniqueId = generateUniqueID();
         const uniqueName = generateUniqueID();
         const question = `
           <tr id='${rowId}' class="radio-questions">
@@ -109,8 +108,8 @@
               <div id=${radioQuestionContainer}>
                 <label contenteditable="true" class="title">Question title</label>
                 <br />
-                <input id=${uniqueId} type="radio" name=${uniqueName}>
-                <label for=${uniqueId} contenteditable="true">sample</label>
+                <input type="radio" name=${uniqueName}>
+                <label contenteditable="true">sample</label>
               </div>
               <button type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}','${uniqueName}')">+</button>
             </td>
@@ -123,17 +122,16 @@
       addNumericRange.click((e) => {
         e.preventDefault();
         const rowId = generateUniqueID();
-        const uniqueId = generateUniqueID();
         const question = `
           <tr id='${rowId}' class="numeric-questions">
                <td>
                  <button type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
-                <label for=${uniqueId} contenteditable="true" class="title">Question title</label>
+                <label contenteditable="true" class="title">Question title</label>
                 <br />
                 <span contenteditable="false">0</span>
-                <input type="range" id=${uniqueId} min="0" max="11" />
+                <input type="range" min="0" max="11" />
                 <span contenteditable="false">11</span>
               </td>
           </tr>
@@ -147,7 +145,7 @@
         const dataDictionary = {};
         dataDictionary["radioQuestions"] = {};
         dataDictionary["numericRanges"] = {};
-
+        dataDictionary["title"] = formTitle.text();
         // Iterate over table rows with the class 'text-questions'
         const textQuestions = []
         $('.text-questions label').each(function () {
@@ -159,7 +157,7 @@
           const title = $(this).find('.title').text();
           const radioQuestions = [];
           const radioQuestionContainer = $(this).find('div');
-          $(radioQuestionContainer).find('label').each(function () {
+          $(radioQuestionContainer).find('label:not(.title)').each(function () {
             radioQuestions.push($(this).text());
           });
           dataDictionary["radioQuestions"][title] = radioQuestions;
@@ -169,7 +167,7 @@
           const title = $(this).find(".title").text();
           const ranges = [];
           $(this).find("span").each(function() {
-            ranges.push($(this).text());
+            ranges.push(parseInt($(this).text()));
           })
           dataDictionary["numericRanges"][title] = ranges;
         });
@@ -183,9 +181,10 @@
           url: '/api/v1/createSurvey',
           data: dataJson,
           contentType: 'application/json',
-          success: function() {
+          success: function(res) {
             // Handle the success response (optional)
             console.log('Survey created successfully');
+            if (res === 200) window.location.href = "/";
             // You can add code to redirect to the home page if needed
           },
           error: function(xhr, status, error) {
