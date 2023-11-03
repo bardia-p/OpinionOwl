@@ -36,6 +36,15 @@ public class SurveyTest {
 
         surveyRepository.save(survey);
 
+        survey.setClosed(true);
+
+        Response r2 = new Response(new HashMap<Long, String>(){{
+            put(Long.valueOf(1), "yo");
+            put(Long.valueOf(2), "b");
+        }});
+
+        survey.addResponse(r2);
+
         List<Survey> results = surveyRepository.findAll();
         for (Survey r : results){
             System.out.println(r.toString());

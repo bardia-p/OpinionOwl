@@ -61,8 +61,12 @@ public class Survey {
      * Adds a response to the survey.
      * @param response the response to add to the survey.
      */
-    public void addResponse(Response response){
-        this.responses.add(response);
+    public boolean addResponse(Response response){
+        if (!closed){
+            this.responses.add(response);
+            return true;
+        }
+        return false;
     }
 
     /**
