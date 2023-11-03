@@ -44,8 +44,12 @@ public class Survey {
      *
      * @param question the question to add to the survey.
      */
-    public void addQuestion(Question question){
-        this.questions.add(question);
+    public boolean addQuestion(Question question){
+        if (!closed) {
+            this.questions.add(question);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -54,7 +58,10 @@ public class Survey {
      * @return true if successfully removed the question, false otherwise.
      */
     public boolean removeQuestion(Long questionId){
-        return this.questions.removeIf(q -> q.getId() == questionId);
+        if (!closed) {
+            return this.questions.removeIf(q -> q.getId() == questionId);
+        }
+        return false;
     }
 
     /**
