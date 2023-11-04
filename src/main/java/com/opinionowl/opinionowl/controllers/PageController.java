@@ -1,6 +1,6 @@
 package com.opinionowl.opinionowl.controllers;
 
-import com.opinionowl.opinionowl.models.Survey;
+import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,9 +36,31 @@ public class PageController {
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
             Survey survey = surveyO.get();
-            System.out.println("Survey found:\n");
+            System.out.println("Survey found:");
             System.out.println(survey);
-            model.addAttribute("survey", survey);
+            List<Question> q = survey.getQuestions();
+            HashMap<Integer, LongAnswerQuestion> longAnswerQuestions = new HashMap<>();
+            HashMap<Integer, RadioChoiceQuestion> radioChoiceQuestions = new HashMap<>();
+            HashMap<Integer, RangeQuestion> rangeQuestionQuestions = new HashMap<>();
+            int numQuestions = q.size();
+            String title = survey.getTitle();
+            for (int i = 0; i<numQuestions; i++) {
+                Question question = q.get(i);
+                int questionNumber = i + 1;
+                if (question instanceof LongAnswerQuestion) {
+                    longAnswerQuestions.put(questionNumber, (LongAnswerQuestion) question);
+                } else if (question instanceof RadioChoiceQuestion) {
+                    radioChoiceQuestions.put(questionNumber, (RadioChoiceQuestion) question);
+                } else if (question instanceof RangeQuestion) {
+                    rangeQuestionQuestions.put(questionNumber, (RangeQuestion) question);
+                }
+            }
+            model.addAttribute("surveyId", survey.getId());
+            model.addAttribute("surveyTitle", title);
+            model.addAttribute("numberOfQuestions", numQuestions);
+            model.addAttribute("longAnswerQuestions", longAnswerQuestions);
+            model.addAttribute("radioChoiceQuestions", radioChoiceQuestions);
+            model.addAttribute("rangeQuestionQuestions", rangeQuestionQuestions);
         } else {
             System.out.println("ERROR: Survey could not be found");
             System.exit(1);

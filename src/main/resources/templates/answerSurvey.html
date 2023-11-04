@@ -1,18 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Created AddressBook</title>
+    <title>OpinionOwl | Answer Survey</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
 </head>
-<body>
-<div th:replace="~{fragments/header :: header}"></div>
-<h1>Survey#<span th:text="${survey.id}"></span>: <span th:text="${survey.getTitle()}"></span></h1>
-<form>
-    <div th:each="question : ${survey.questions}">
-        
-    </div>
-</form>
-<div th:replace="~{fragments/footer :: footer}"></div>
-</body>
+    <body>
+        <div th:replace="~{fragments/header :: header}"></div>
+        <h1>Survey#<span th:text="${surveyId}"></span>: <span th:text="${surveyTitle}"></span></h1>
+        <form>
+            <div th:each="i : ${#numbers.sequence(1, numberOfQuestions)}">
+                <div th:if="${longAnswerQuestions.get(i) != null}" class="text-questions">
+                    <label th:text="${longAnswerQuestions.get(i).getPrompt()}"></label>
+                    <br />
+                    <input type="text" />
+                </div>
+                <div th:if="${radioChoiceQuestions.get(i) != null}">
+                    <label th:text="${radioChoiceQuestions.get(i).getPrompt()}"></label>
+                    <div th:each="choice : ${radioChoiceQuestions.get(i).getChoices()}">
+                        <input type="radio">
+                        <label th:text="${choice}"></label>
+                    </div>
+                </div>
+                <div th:if="${rangeQuestionQuestions.get(i) != null}">
+                    <label th:text="${rangeQuestionQuestions.get(i).getPrompt()}"></label>
+                    <br />
+                    <span th:text="${rangeQuestionQuestions.get(i).getLower()}"></span>
+                    <input type="range" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" />
+                    <span th:text="${rangeQuestionQuestions.get(i).getUpper()}"></span>
+                </div>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+        <div th:replace="~{fragments/footer :: footer}"></div>
+    </body>
 </html>
