@@ -22,7 +22,7 @@ public class Survey {
     private Long id;
 
     // Keeps track of the questions of the survey.
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Question> questions;
 
     // Keeps track of the survey responses.
@@ -35,10 +35,15 @@ public class Survey {
     // The title for the survey.
     private String title;
 
+    // The user for the survey.
+    @ManyToOne
+    private AppUser user;
+
     /**
      * The default constructor for the survey.
      */
-    public Survey(String title){
+    public Survey(AppUser user, String title){
+        this.user = user;
         this.title = title;
         this.questions = new ArrayList<>();
         this.responses = new ArrayList<>();
