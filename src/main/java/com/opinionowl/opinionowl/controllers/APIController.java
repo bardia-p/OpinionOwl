@@ -1,11 +1,9 @@
 package com.opinionowl.opinionowl.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper; // You might need to import this class
 
-import com.opinionowl.opinionowl.models.LongAnswerQuestion;
-import com.opinionowl.opinionowl.models.RadioChoiceQuestion;
-import com.opinionowl.opinionowl.models.RangeQuestion;
-import com.opinionowl.opinionowl.models.Survey;
+import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
+import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
@@ -27,6 +25,11 @@ public class APIController {
 
     @Autowired
     SurveyRepository surveyRepo;
+
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     /**
      * <p>Api call to handle the survey answers by a user.</p>
@@ -88,20 +91,23 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        Survey survey = new Survey(title);
+        AppUser user = new AppUser("username", "password");
+        userRepository.save(user);
+        Survey survey = new Survey(user, title);
+        user.addSurvey(survey);
         // add all the question types to the survey
         for (String questionTitle : textQuestions) {
-            survey.addQuestion(new LongAnswerQuestion(questionTitle, 50));
+            survey.addQuestion(new LongAnswerQuestion(survey, questionTitle, 50));
         }
 
         for (String questionTitle : radioQuestions.keySet()) {
             String[] radioQuestionsArr = new String[radioQuestions.get(questionTitle).size()];
-            survey.addQuestion(new RadioChoiceQuestion(questionTitle, radioQuestions.get(questionTitle).toArray(radioQuestionsArr)));
+            survey.addQuestion(new RadioChoiceQuestion(survey, questionTitle, radioQuestions.get(questionTitle).toArray(radioQuestionsArr)));
         }
 
         for (String questionTitle : numericRanges.keySet()) {
             List<Integer> ranges = numericRanges.get(questionTitle);
-            survey.addQuestion(new RangeQuestion(questionTitle, ranges.get(0), ranges.get(1), 1));
+            survey.addQuestion(new RangeQuestion(survey, questionTitle, ranges.get(0), ranges.get(1), 1));
         }
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
