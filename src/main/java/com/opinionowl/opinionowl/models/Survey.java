@@ -37,12 +37,13 @@ public class Survey {
 
     // The user for the survey.
     @ManyToOne
-    private User user;
+    private AppUser user;
 
     /**
      * The default constructor for the survey.
      */
-    public Survey(String title){
+    public Survey(AppUser user, String title){
+        this.user = user;
         this.title = title;
         this.questions = new ArrayList<>();
         this.responses = new ArrayList<>();

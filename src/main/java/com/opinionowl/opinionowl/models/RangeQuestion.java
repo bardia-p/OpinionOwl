@@ -34,7 +34,7 @@ public class RangeQuestion extends Question {
      * @param upper the upper value for the range.
      */
     public RangeQuestion(String prompt, int lower, int upper){
-        this(prompt, lower, upper, 1);
+        this(null, prompt, lower, upper, 1);
     }
 
     /**
@@ -44,8 +44,8 @@ public class RangeQuestion extends Question {
      * @param upper the upper value for the range.
      * @param increment the increment value for the range.
      */
-    public RangeQuestion(String prompt, int lower, int upper, int increment){
-        super(prompt, QuestionType.RANGE);
+    public RangeQuestion(Survey survey, String prompt, int lower, int upper, int increment){
+        super(survey, prompt, QuestionType.RANGE);
         this.lower = lower;
         this.upper = upper;
         this.increment = increment;

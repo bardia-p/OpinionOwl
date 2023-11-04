@@ -33,7 +33,8 @@ public class Question {
      * @param prompt the prompt for the question.
      * @param type the type of the question
      */
-    public Question(String prompt, QuestionType type){
+    public Question(Survey survey, String prompt, QuestionType type){
+        this.survey = survey;
         this.prompt = prompt;
         this.type = type;
     }

@@ -4,6 +4,9 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Array;
+import java.util.ArrayList;
+
 /**
  * The class used to describe the multiple choice questions.
  */
@@ -17,8 +20,8 @@ public class RadioChoiceQuestion extends Question {
     /**
      * The default constructor for the class.
      */
-    public RadioChoiceQuestion() {
-        this("", new String[0]);
+    public RadioChoiceQuestion(){
+        this(null, "", new String[0]);
     }
 
     /**
@@ -26,8 +29,8 @@ public class RadioChoiceQuestion extends Question {
      * @param prompt the prompt for the question.
      * @param choices the choices for the question.
      */
-    public RadioChoiceQuestion(String prompt, String[] choices){
-        super(prompt, QuestionType.RADIO_CHOICE);
+    public RadioChoiceQuestion(Survey survey, String prompt, String[] choices){
+        super(survey, prompt, QuestionType.RADIO_CHOICE);
         this.choices = choices;
     }
 
