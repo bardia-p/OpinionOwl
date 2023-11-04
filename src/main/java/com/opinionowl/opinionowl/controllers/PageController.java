@@ -7,18 +7,24 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Route controller for Opinion Owl pages
+ */
 @Controller
 public class PageController {
 
     @Autowired
     SurveyRepository surveyRepo;
 
+    /**
+     * <p>Home route that gets all the surveys in the database, sends it to the model and directs the user to the home page</p>
+     * @param model Model, the client Model
+     * @return String, the html template
+     */
     @GetMapping("/")
     public String getHomePage(Model model) {
         List<Survey> surveys = surveyRepo.findAll();
@@ -26,18 +32,35 @@ public class PageController {
         return "index";
     }
 
+    /**
+     * <p>Route for the create survey page</p>
+     * @param model Model, the client Model
+     * @return String ,the html template
+     */
     @GetMapping("/createSurvey")
     public String getCreateSurveyPage(Model model) {
         return "createSurvey";
     }
 
+    /**
+     * <p>Route to direct the client to the answer survey page, given a survey id to pass the Survey object to the Model</p>
+     * <br />
+     * <strong>Example call: /answerSurvey?surveyId=1</strong>
+     * @param surveyId Long, the ID associated with a survey
+     * @param model Model, the client Model
+     * @return String, the html template
+     */
     @GetMapping("/answerSurvey")
     public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
+        // find the survey by id
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
+            // was able to obtain a survey from the database by id, and grab it from the Optional Object
             Survey survey = surveyO.get();
             System.out.println("Survey found:");
             System.out.println(survey);
+            // cast the order of the questions to the associtate subclass they belong to
+            // Cast in hashmaps as <question#, Question>
             List<Question> q = survey.getQuestions();
             HashMap<Integer, LongAnswerQuestion> longAnswerQuestions = new HashMap<>();
             HashMap<Integer, RadioChoiceQuestion> radioChoiceQuestions = new HashMap<>();
@@ -55,6 +78,7 @@ public class PageController {
                     rangeQuestionQuestions.put(questionNumber, (RangeQuestion) question);
                 }
             }
+            // send the Model the data necessary for the page
             model.addAttribute("surveyId", survey.getId());
             model.addAttribute("surveyTitle", title);
             model.addAttribute("numberOfQuestions", numQuestions);
@@ -62,6 +86,8 @@ public class PageController {
             model.addAttribute("radioChoiceQuestions", radioChoiceQuestions);
             model.addAttribute("rangeQuestionQuestions", rangeQuestionQuestions);
         } else {
+            // could not find survey, Error
+            // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
             System.out.println("ERROR: Survey could not be found");
             System.exit(1);
         }

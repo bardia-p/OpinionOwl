@@ -8,50 +8,62 @@ import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * Version 1 of the API layer for Opinion Owl
+ */
 @RestController
 @RequestMapping("/api/v1")
 public class APIController {
 
-    //    @Autowired
-    //    SurveyRepository sRepo;
     @Autowired
     SurveyRepository surveyRepo;
 
+    /**
+     * <p>Api call to handle the survey answers by a user.</p>
+     * <br />
+     * <strong>Api route: api/v1/postSurveyResponses</strong>
+     * @param response HttpServletResponse server side response
+     * @throws IOException
+     */
     @PostMapping("/postSurveyResponses")
     public void postSurveyResponses(HttpServletResponse response) throws IOException {
-        // change Integer to a list of Survey Entities
-        // handle save of data
+        // handle save of survey data
         // redirect to home
         response.sendRedirect("/");
     }
 
-    @GetMapping("/getSurveyData")
-    public Survey getSurveyData(@RequestParam(value = "surveyId") Long surveyId) throws IOException {
-        Optional<Survey> surveyO = surveyRepo.findById(surveyId);
-        if (surveyO.isPresent()) {
-            Survey survey = surveyO.get();
-            System.out.println("Survey found:\n");
-            System.out.println(survey);
-            return survey;
-        } else {
-            System.out.println("ERROR: Survey could not be found");
-            System.exit(1);
-        }
-        return null;
-    }
-
+    /**
+     * <p>API Call to post a generated survey by the user. A survey generated JSON is required from the client</p>
+     * <br />
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     title: "title",
+     *     textQuestions: ["question 1", "question 2"],
+     *     radioQuestions: {
+     *         "question 1": ["radio 1", "radio 2"],
+     *         "question 2": ["radio 1", "radio 2", "radio 3"]
+     *     },
+     *     numericRanges: {
+     *         "question 1": [1, 11],
+     *         "question 2": [1, 5]
+     *     }
+     * }
+     * </pre>
+     * @param request HttpServletRequest request from the client
+     * @return 200 if api was a success
+     * @throws IOException
+     */
     @PostMapping("/createSurvey")
-    public int createSurvey(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
         // read the json sent by the client
         BufferedReader reader = request.getReader();
