@@ -18,7 +18,7 @@ public class LongAnswerQuestion extends Question{
      * The default constructor for the class.
      */
     public LongAnswerQuestion(){
-        this("", 0);
+        this(null, "", 0);
     }
 
     /**
@@ -26,8 +26,8 @@ public class LongAnswerQuestion extends Question{
      * @param prompt the prompt for the question
      * @param charLimit the character limit for the response.
      */
-    public LongAnswerQuestion(String prompt, int charLimit){
-        super(prompt, QuestionType.LONG_ANSWER);
+    public LongAnswerQuestion(Survey survey, String prompt, int charLimit){
+        super(survey, prompt, QuestionType.LONG_ANSWER);
         this.charLimit = charLimit;
     }
 
