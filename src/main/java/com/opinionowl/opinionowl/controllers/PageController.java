@@ -2,6 +2,7 @@ package com.opinionowl.opinionowl.controllers;
 
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Route controller for Opinion Owl pages
  */
 @Controller
+@NoArgsConstructor
 public class PageController {
 
     @Autowired

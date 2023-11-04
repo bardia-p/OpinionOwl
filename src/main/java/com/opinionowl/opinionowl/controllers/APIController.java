@@ -8,6 +8,7 @@ import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -21,6 +22,7 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/v1")
+@NoArgsConstructor
 public class APIController {
 
     @Autowired
