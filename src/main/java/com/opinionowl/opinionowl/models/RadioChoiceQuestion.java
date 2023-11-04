@@ -4,9 +4,6 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Array;
-import java.util.ArrayList;
-
 /**
  * The class used to describe the multiple choice questions.
  */

@@ -3,7 +3,6 @@ package com.opinionowl.opinionowl;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
-import org.h2.engine.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 
 @SpringBootTest
-public class SurveyTest {
+public class IntegrationTest {
     @Autowired
     private SurveyRepository surveyRepository;
 
@@ -22,7 +21,7 @@ public class SurveyTest {
      * Test method for the Survey class.
      */
     @Test
-    public void testPersist() {
+    public void testDatabaseIntegration() {
         AppUser u1 = new AppUser("Test", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);

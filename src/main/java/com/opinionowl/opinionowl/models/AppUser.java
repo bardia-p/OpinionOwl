@@ -67,9 +67,10 @@ public class AppUser {
     @Override
     public String toString(){
         String user = "User ID: " + id + "Username: " + username + "Password: " + password;
-        user += "\n List of Surveys: ";
+        user += "\n-----Surveys -----";
         for (Survey s: listSurveys) {
             user += "\n" + s.toString();
+
         }
         return user;
     }
