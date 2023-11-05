@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>OpinionOwl | Create Survey</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  </head>
+  <body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    <h1>Create a Survey</h1>
+    <div class="form-builder-options">
+      <button id="add-text">Add Text Question</button>
+      <button id="add-radio-choice">Add Multiple Choice Question</button>
+      <button id="add-numeric-range">Add Numeric Range Select Question</button>
+    </div>
+
+    <div class="form-container">
+      <h2 contenteditable="true" class="form-title">Form Title</h2>
+      <form th:action="@{/api/v1/createSurvey}" method="post" id="survey-container">
+        <table id="survey">
+
+        </table>
+        <button type="submit" id="create-survey">Create Form</button>
+      </form>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    <script src="/scripts/createSurvey.js" type="application/javascript"></script>
+  </body>
+</html>
