@@ -72,11 +72,11 @@ public class PageController {
             for (int i = 0; i<numQuestions; i++) {
                 Question question = q.get(i);
                 int questionNumber = i + 1;
-                if (question instanceof LongAnswerQuestion) {
+                if (question.getType() == QuestionType.LONG_ANSWER) {
                     longAnswerQuestions.put(questionNumber, (LongAnswerQuestion) question);
-                } else if (question instanceof RadioChoiceQuestion) {
+                } else if (question.getType() == QuestionType.RADIO_CHOICE) {
                     radioChoiceQuestions.put(questionNumber, (RadioChoiceQuestion) question);
-                } else if (question instanceof RangeQuestion) {
+                } else if (question.getType() == QuestionType.RANGE) {
                     rangeQuestionQuestions.put(questionNumber, (RangeQuestion) question);
                 }
             }

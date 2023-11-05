@@ -155,13 +155,12 @@ submitButton.click((e) => {
         data: dataJson,
         contentType: 'application/json',
         success: function(res) {
-            // Handle the success response (optional)
+            // success handling
             console.log('Survey created successfully');
             if (res === 200) window.location.href = "/";
-            // You can add code to redirect to the home page if needed
         },
         error: function(xhr, status, error) {
-            // Handle the error response (optional)
+            // error handling
             console.error('Error creating survey:', error);
         }
     });
