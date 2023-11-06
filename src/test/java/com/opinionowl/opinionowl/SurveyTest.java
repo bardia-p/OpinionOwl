@@ -8,7 +8,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test Class for the Survey Class
+ * Test Class for the Survey Class.
  */
 @SpringBootTest
 public class SurveyTest {
@@ -19,7 +19,7 @@ public class SurveyTest {
     private UserRepository userRepository;
 
     /**
-     * Test if a survey has been closed and if responses can be added after closing
+     * Method to test if a survey has been closed and if responses can be added after closing.
      */
     @Test
     public void testClosedSurvey() {
@@ -53,7 +53,7 @@ public class SurveyTest {
     }
 
     /**
-     * Test whether the questions have been added to the survey
+     * Method to test if questions have been added to the survey.
      */
     @Test
     public void testAddedQuestions() {
@@ -89,7 +89,7 @@ public class SurveyTest {
     }
 
     /**
-     * Test whether the questions have been added to the survey
+     * Test whether the questions have been added to the survey.
      */
     @Test
     public void testAddedResponses() {
@@ -109,6 +109,90 @@ public class SurveyTest {
         assertTrue(survey.getResponsesForQuestion(q1.getId()).containsAll(expectedR));
     }
 
+    /**
+     * Method that tests if answers to a question are added to a survey.
+     */
+    @Test
+    public void testAddedAnswer() {
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 2);
+        survey.addQuestion(laq);
+
+        Response r1 = new Response(survey);
+        r1.addAnswer(laq.getId(), "test1");
+        r1.addAnswer(laq.getId(), "test2");
+        survey.addResponse(r1);
+
+        // Check that responses have been added
+        assertEquals(2, survey.getResponsesForQuestion(laq.getId()).size());
+    }
+
+    /**
+     * Method to test responses to long answer questions in the survey.
+     */
+    @Test
+    public void testLongAnswerResponse() {
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 20);
+        survey.addQuestion(laq);
+
+        Response r1 = new Response(survey);
+        r1.addAnswer(laq.getId(), "test response");
+        r1.addAnswer(laq.getId(), "SYSC 4806 project");
+        survey.addResponse(r1);
+
+        List<String> responses = survey.getResponsesForQuestion(laq.getId());
+        for(String res : responses) {
+            assertTrue(res.length() <= laq.getCharLimit());
+        }
+    }
+
+    /**
+     * Method to test responses to radio choice questions in the survey.
+     */
+    @Test
+    public void testRadioChoiceResponse() {
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        RadioChoiceQuestion rcq = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
+        survey.addQuestion(rcq);
+
+        Response r1 = new Response(survey);
+        r1.addAnswer(rcq.getId(), "a");
+        r1.addAnswer(rcq.getId(), "d");
+        survey.addResponse(r1);
+
+        List<String> expected = Arrays.asList("a", "d");
+        assertTrue(survey.getResponsesForQuestion(rcq.getId()).containsAll(expected));
+    }
+
+    /**
+     * Method to test responses to range questions in the survey.
+     */
+    @Test
+    public void testRangeResponse() {
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        RangeQuestion rq = new RangeQuestion(survey, "test3", 1, 10, 1);
+        survey.addQuestion(rq);
+
+        Response r1 = new Response(survey);
+        r1.addAnswer(rq.getId(), "2");
+        r1.addAnswer(rq.getId(), "3");
+        r1.addAnswer(rq.getId(), "10");
+        survey.addResponse(r1);
+
+        List<String> responses = survey.getResponsesForQuestion(rq.getId());
+        for(String res : responses) {
+            assertTrue(Integer.parseInt(res) >= rq.getLower() && Integer.parseInt(res) <= rq.getUpper());
+        }
+    }
+
+    /**
+     * Persistence test for the survey.
+     */
     @Test
     public void testPersist() {
         AppUser u1 = new AppUser("Test", "123");
@@ -147,7 +231,6 @@ public class SurveyTest {
         List<Survey> results = surveyRepository.findAll();
         for (Survey r : results){
             System.out.println(r.toString());
-
             for (Question q : r.getQuestions()){
                 if (q.getType() == QuestionType.LONG_ANSWER){
                     LongAnswerQuestion laq = (LongAnswerQuestion) q;

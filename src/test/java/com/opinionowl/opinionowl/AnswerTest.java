@@ -7,55 +7,44 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test Class for the Answer Class.
+ */
 @SpringBootTest
 public class AnswerTest {
     @Autowired
-    private ResponseRepository answerRepository;
-
-    @Autowired
-    private SurveyRepository surveyRepository;
+    private AnswerRepository answerRepository;
 
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SurveyRepository surveyRepository;
+
     /**
-     * Method that tests if answers to a question are added to a survey
+     * Method to test that the correct answers are returned.
      */
-    @Test
-    public void testAddedAnswer() {
-        AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
-        LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 2);
-        survey.addQuestion(laq);
-
-        Response r1 = new Response(survey);
-        r1.addAnswer(laq.getId(), "test1");
-        r1.addAnswer(laq.getId(), "test2");
-        survey.addResponse(r1);
-
-        // Check that responses have been added
-        assertEquals(2, survey.getResponsesForQuestion(laq.getId()).size());
-    }
-
     @Test
     public void testAnswer() {
         AppUser u1 = new AppUser("Test", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
 
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
-        RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(q1);
-        survey.addQuestion(q2);
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "answer1");
-        survey.addResponse(r1);
-        assertEquals("answer1", survey.getResponsesForQuestion(q1.getId()).get(0));
+        r1.addAnswer(q1.getId(), "answer2");
+
+        List<Answer> expectedAnswers = new ArrayList<>();
+        expectedAnswers.add(new Answer(r1, q1.getId(), "answer1"));
+        expectedAnswers.add(new Answer(r1, q1.getId(), "answer2"));
+        assertEquals(expectedAnswers.toString(), r1.getAnswers().toString());
     }
 
 
     /**
-     * Persistence test for the survey responses.
+     * Persistence test for the answers in the survey.
      */
     @Test
     public void testPersist() {
@@ -68,27 +57,28 @@ public class AnswerTest {
         RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(q1);
 
-        surveyRepository.save(survey);
-
         Response r1 = new Response(survey);
-
         r1.addAnswer(q1.getId(), "hi");
         r1.addAnswer(q2.getId(), "b");
         survey.addResponse(r1);
-
-        surveyRepository.save(survey);
         survey.setClosed(true);
+        surveyRepository.save(survey);
 
-        Response r2 = new Response(survey);
+        Answer a1 = new Answer(r1, q1.getId(), "hi");
+        Answer a2 = new Answer(r1, q1.getId(), "b");
+        answerRepository.save(a1);
+        answerRepository.save(a2);
 
-        r2.addAnswer(q1.getId(), "yo");
-        r2.addAnswer(q2.getId(), "a");
+        List<Answer> expectedR = new ArrayList<>();
+        expectedR.add(new Answer(r1, q1.getId(), "hi"));
+        expectedR.add(new Answer(r1, q1.getId(), "b"));
 
-        answerRepository.save(r2);
-
-        List<Response> results = answerRepository.findAll();
-        for (Response a : results){
+        List<Answer> results = answerRepository.findAll();
+        for (Answer a : results){
             System.out.println(a.toString());
+            if(a.getResponse().getAnswers().containsAll(expectedR)) {
+                System.out.println(a.getResponse().getAnswers());
+            }
         }
     }
 }

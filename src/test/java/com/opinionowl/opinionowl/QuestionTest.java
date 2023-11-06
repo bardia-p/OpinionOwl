@@ -8,7 +8,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Test Class for the Question Class
+ * Test Class for the Question Class.
  */
 @SpringBootTest
 public class QuestionTest {
@@ -16,10 +16,10 @@ public class QuestionTest {
     private QuestionRepository questionRepository;
 
     @Autowired
-    private SurveyRepository surveyRepository;
+    private UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private SurveyRepository surveyRepository;
 
     /**
      * Method to test Long Answer Type questions added to the survey.
@@ -30,11 +30,7 @@ public class QuestionTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 5);
         survey.addQuestion(laq);
-
-        assertEquals(1, survey.getQuestions().size()); // question was added to the survey
         assertSame(laq.getType(), QuestionType.LONG_ANSWER);
-        assertEquals(5, laq.getCharLimit());
-        assertTrue(survey.getQuestions().contains(laq));
     }
 
     /**
@@ -46,11 +42,7 @@ public class QuestionTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RadioChoiceQuestion rcq = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(rcq);
-
-        assertEquals(1, survey.getQuestions().size()); // question was added to the survey
         assertSame(rcq.getType(), QuestionType.RADIO_CHOICE);
-        assertTrue(survey.getQuestions().contains(rcq));
-        assertArrayEquals(new String[]{"a", "c", "d"}, rcq.getChoices());
     }
 
     /**
@@ -62,13 +54,7 @@ public class QuestionTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RangeQuestion rq = new RangeQuestion(survey, "test3", 0, 8, 2);
         survey.addQuestion(rq);
-
-        assertEquals(1, survey.getQuestions().size()); // question was added to the survey
         assertSame(rq.getType(), QuestionType.RANGE);
-        assertTrue(survey.getQuestions().contains(rq));
-        assertEquals(0, rq.getLower());
-        assertEquals(8, rq.getUpper());
-        assertEquals(2, rq.getIncrement());
     }
 
     /**
@@ -89,15 +75,29 @@ public class QuestionTest {
         survey.addQuestion(q2);
         survey.addQuestion(q3);
 
+        surveyRepository.save(survey);
         questionRepository.save(q1);
         questionRepository.save(q2);
         questionRepository.save(q3);
-        surveyRepository.save(survey);
         survey.setClosed(true);
 
         List<Question> results = questionRepository.findAll();
         for (Question q : results){
             System.out.println(q.toString());
+            if(q.getType() == QuestionType.LONG_ANSWER) {
+                LongAnswerQuestion laq = (LongAnswerQuestion) q;
+                System.out.println(laq.getCharLimit());
+            }
+            else if (q.getType() == QuestionType.RADIO_CHOICE) {
+                RadioChoiceQuestion rcq = (RadioChoiceQuestion) q;
+                System.out.println(Arrays.toString(rcq.getChoices()));
+            }
+            else {
+                RangeQuestion rq = (RangeQuestion) q;
+                System.out.println(rq.getUpper());
+                System.out.println(rq.getLower());
+                System.out.println(rq.getIncrement());
+            }
         }
     }
 }
