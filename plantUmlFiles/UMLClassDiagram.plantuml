@@ -1,0 +1,170 @@
+@startuml Milestone1_UML_class_diagram
+skinparam classFontSize 11
+skinparam classBackgroundColor beige
+skinparam ClassBorderColor red
+skinparam ArrowColor red
+
+interface "CrudRepository"
+
+package "controllers" <<frame>> {
+    class "APIController" { 
+        - surveyRepo: SurveyRepository
+        - userRepository: UserRepository
+        + postSurveyResponses(response: HttpServletResponse): void
+        + createSurvey(request: HttpServletRequest): Integer
+    }
+
+    class "PageController" {
+        - surveyRepo: SurveyRepository
+        + getHomePage(model: Model): String
+        + getCreateSurveyPage(model: Model): String
+        + getAnswerSurveyPage(surveyId: Long, model: Model): String
+        + getViewResponsePage(model: Model): String
+    }
+}
+
+package "models" <<frame>> {
+    class "Answer" {
+        - id: Long
+        - response: Response
+        - question: Long
+        - content: String
+        + Answer(response: Response, Long question, content: String)
+        + toString(): String
+    }
+
+    class "AppUser" {
+        - id: Long
+        - username: String
+        - password: String
+        - listSurveys: List<Survey>
+        + AppUser(username: String, password: String)
+        + addSurvey(survey: Survey): void
+        + removeSurvey(surveyId: Long): boolean
+        + toString(): String
+    }
+
+    enum "QuestionType" {
+        LONG_ANSWER("Long Answer")
+        RADIO_CHOICE("Radio Choice")
+        RANGE("Range")
+        - types: String {readonly}
+        + QuestionType(type: String)
+    }
+
+    class "Question" {
+        - id: Long
+        - prompt: String 
+        - type: QuestionType
+        - survey: Survey
+        + Question(survey: Survey, prompt: String, type: QuestionType)
+        + toString(): String
+    }
+
+    class "LongAnswerQuestion" {
+        - charLimit: Integer
+        + LongAnswerQuestion()
+        + LongAnswerQuestion(survey: Survey, prompt: String, charLimit: Integer)
+        + toString(): String
+    }
+
+    class "RadioChoiceQuestion" {
+        - choices: String[]
+        + RadioChoiceQuestion()
+        + RadioChoiceQuestion(survey: Survey, prompt: String, choices: String[])
+        + toString(): String
+    }
+
+    class "RangeQuestion" {
+        - lower: Integer
+        - upper: Integer
+        - incremental: Integer
+        + RangeQuestion()
+        + RangeQuestion(prompt: String, lower: Integer, upper: Integer)
+        + RangeQuestion(survey: Survey, prompt: String, lower: Integer, upper: Integer, increment: Integer)
+        + toString(): String
+    }
+
+    class "Response" {
+        - id: Long
+        - survey: Survey
+        - answers: List<Answer>
+        + Response(survey: Survey)
+        + addAnswer(question: Long, content: String): void
+        + toString(): String
+    }
+
+    class "Survey" {
+        - id: Long
+        - questions: List<Question>
+        - responses: List<Response>
+        - closed: boolean
+        - title: String 
+        - user: AppUser
+        + Survey(user: AppUser, title: String)
+        + addQuestion(question: Question): boolean
+        + removeQuestion(questionId: long): boolean
+        + addResponse(response: Response): boolean
+        + removeResponse(responseId: Long): boolean
+        + getResponsesForQuestion(questionId: Long): List<String>
+        + toString(): String
+    }
+}
+
+package "repos" <<frame>> {
+    interface "AnswerRepository" {
+        + findAll(): List<Answer>
+    }
+
+    interface "QuestionRepository" {
+        + finalAll(): List<Question>
+    }
+
+    interface "ResponseRepository" {
+        + findAll(): List<Response>
+    }
+
+    interface "SurveyRepository" {
+        + finalAll(): List<Survey>
+        + findById(id: Long): Survey
+    }
+
+    interface "UserRepository" {
+        + findAll(): List<AppUser>
+    }
+}
+
+class "OpinionOwlApplication" {
+    + {static} main(args: String[]): void
+}
+
+
+' note right of "APIController"::createSurvey
+'     // returns 200 if survey created successfully 
+'     // otherwise look at integer responses to handle errors
+' end note
+
+' Relationship arrows
+"RangeQuestion" -up-|> "Question"
+"LongAnswerQuestion" -up-|> "Question"
+"RadioChoiceQuestion" -up-|> "Question"
+"Question" --* "1" "QuestionType"
+
+"Response" "1  " --* "0..*      " "Answer"
+
+"Survey" "1  " --* "0..*  " "Question"
+"Survey" "1  " --* "0..*     " "Response"
+"AppUser" "1  " --* "0..*  " "Survey"
+
+"AnswerRepository" .up.> "CrudRepository"
+"QuestionRepository" .up.> "CrudRepository"
+"ResponseRepository" .up.> "CrudRepository"
+"SurveyRepository" .up.> "CrudRepository"
+"UserRepository" .up.> "CrudRepository"
+
+"PageController" "1 " -up-* "SurveyRepository"
+"APIController" "1   " -up-* "SurveyRepository"
+"APIController" "1 " -up-* "UserRepository"
+
+
+@enduml
