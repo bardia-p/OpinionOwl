@@ -23,10 +23,10 @@ public class AppUser {
     private Long id;
 
     // Define a username for the user
-    public String username;
+    private String username;
 
     // Define a password for the associated username
-    public String password;
+    private String password;
 
     // Define a list of surveys that a User has created
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
