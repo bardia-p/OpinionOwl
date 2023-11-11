@@ -1,4 +1,4 @@
-package com.opinionowl.opinionowl;
+package com.opinionowl.opinionowl.controllerTests;
 import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.*;
 import org.junit.jupiter.api.Test;
@@ -7,6 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +21,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class APIControllerTest {
     @Autowired
     private MockMvc testController;
-
 
     @Autowired
     private SurveyRepository surveyRepository;
@@ -36,7 +38,8 @@ public class APIControllerTest {
                 .andExpect(status().isOk());
 
         for (Survey survey : surveyRepository.findAll()) {
-            System.out.println(survey.toString());
+            assertNotNull(survey);
+            assertEquals(survey.getTitle(), "This is a test");
         }
     }
 }
