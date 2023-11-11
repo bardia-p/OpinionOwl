@@ -1,4 +1,4 @@
-package com.opinionowl.opinionowl;
+package com.opinionowl.opinionowl.controllerTests;
 
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
