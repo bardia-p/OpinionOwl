@@ -2,8 +2,10 @@ name: Generate Diagrams
 
 on:
   push:
+    paths: [ '**.plantuml' ]
     branches: [ "main" ]
   pull_request:
+    paths: [ '**.plantuml' ]
     branches: [ "main" ]
 
 jobs:
