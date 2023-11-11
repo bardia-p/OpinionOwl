@@ -71,7 +71,7 @@ public class RangeQuestion extends Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RangeQuestion that = (RangeQuestion) o;
-        return this.getId() == that.getId();
+        return Objects.equals(this.getId(), that.getId());
     }
 
 }

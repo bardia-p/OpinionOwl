@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 /**
  * The Question class which keeps track of the survey questions.
  */
@@ -58,5 +60,17 @@ public class Question {
             return false;
         }
         return true;
+    }
+
+    /**
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Question question = (Question) o;
+        return Objects.equals(id, question.id) && Objects.equals(prompt, question.prompt) && type == question.type && Objects.equals(survey, question.survey);
     }
 }

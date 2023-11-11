@@ -1,4 +1,4 @@
-package com.opinionowl.opinionowl;
+package com.opinionowl.opinionowl.ModelTests;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.*;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,6 @@ public class QuestionTest {
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    private SurveyRepository surveyRepository;
 
     /**
      * Method to test Long Answer Type questions added to the survey.
@@ -75,28 +72,28 @@ public class QuestionTest {
         survey.addQuestion(q2);
         survey.addQuestion(q3);
 
-        surveyRepository.save(survey);
         questionRepository.save(q1);
         questionRepository.save(q2);
         questionRepository.save(q3);
-        survey.setClosed(true);
 
         List<Question> results = questionRepository.findAll();
         for (Question q : results){
-            System.out.println(q.toString());
+            if (!q.getSurvey().getTitle().equals(survey.getTitle())){
+                continue;
+            }
             if(q.getType() == QuestionType.LONG_ANSWER) {
                 LongAnswerQuestion laq = (LongAnswerQuestion) q;
-                System.out.println(laq.getCharLimit());
+                assertEquals(laq.getCharLimit(), q1.getCharLimit());
             }
             else if (q.getType() == QuestionType.RADIO_CHOICE) {
                 RadioChoiceQuestion rcq = (RadioChoiceQuestion) q;
-                System.out.println(Arrays.toString(rcq.getChoices()));
+                assertArrayEquals(rcq.getChoices(), q2.getChoices());
             }
             else {
                 RangeQuestion rq = (RangeQuestion) q;
-                System.out.println(rq.getUpper());
-                System.out.println(rq.getLower());
-                System.out.println(rq.getIncrement());
+                assertEquals(rq.getUpper(), q3.getUpper());
+                assertEquals(rq.getLower(), q3.getLower());
+                assertEquals(rq.getIncrement(), q3.getIncrement());
             }
         }
     }

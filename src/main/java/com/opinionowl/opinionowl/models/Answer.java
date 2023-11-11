@@ -32,7 +32,7 @@ public class Answer {
 
     /**
      * The constructor for answer.
-     * @param response the response for which the answe belongs to.
+     * @param response the response for which the answer belongs to.
      * @param question the question id.
      * @param content the content of the reply.
      */

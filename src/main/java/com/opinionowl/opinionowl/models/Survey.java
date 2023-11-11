@@ -71,7 +71,7 @@ public class Survey {
      */
     public boolean removeQuestion(Long questionId){
         if (!closed) {
-            return this.questions.removeIf(q -> q.getId() == questionId);
+            return this.questions.removeIf(q -> Objects.equals(q.getId(), questionId));
         }
         return false;
     }
@@ -94,7 +94,7 @@ public class Survey {
      * @return true if successfully remove, false otherwise.
      */
     public boolean removeResponse(Long responseId){
-        return this.responses.removeIf(r -> r.getId() == responseId);
+        return this.responses.removeIf(r -> Objects.equals(r.getId(), responseId));
     }
 
     /**
@@ -106,7 +106,7 @@ public class Survey {
         List<String> result = new ArrayList<>();
         for (Response r: responses){
             for (Answer a: r.getAnswers()){
-                if (a.getQuestion() == questionId){
+                if (Objects.equals(a.getQuestion(), questionId)){
                     result.add(a.getContent());
                 }
             }
