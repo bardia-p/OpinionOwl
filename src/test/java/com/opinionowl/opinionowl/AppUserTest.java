@@ -29,7 +29,7 @@ public class AppUserTest {
         u1.addSurvey(survey);
 
         assertEquals(1, u1.getListSurveys().size());
-        List<Survey> expected = Arrays.asList(survey);
+        List<Survey> expected = List.of(survey);
 
         assertEquals(expected, u1.getListSurveys());
     }

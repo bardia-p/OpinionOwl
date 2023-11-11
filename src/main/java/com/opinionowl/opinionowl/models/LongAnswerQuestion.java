@@ -51,7 +51,7 @@ public class LongAnswerQuestion extends Question{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LongAnswerQuestion that = (LongAnswerQuestion) o;
-        return this.getId() == that.getId();
+        return Objects.equals(this.getId(), that.getId());
     }
 
 }

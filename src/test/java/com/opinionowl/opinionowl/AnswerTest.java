@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -49,7 +50,7 @@ public class AnswerTest {
     @Test
     public void testPersist() {
         AppUser u1 = new AppUser("AnswerTest", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
+        Survey survey = new Survey(u1, "ANSWER_TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
 
@@ -58,27 +59,17 @@ public class AnswerTest {
         survey.addQuestion(q1);
 
         Response r1 = new Response(survey);
-        r1.addAnswer(q1.getId(), "hi");
-        r1.addAnswer(q2.getId(), "b");
+        r1.addAnswer(q1.getId(), "ANSWER1");
+        r1.addAnswer(q2.getId(), "ANSWER2");
         survey.addResponse(r1);
-        survey.setClosed(true);
+
+        Answer a1 = r1.getAnswers().get(0);
+        Answer a2 = r1.getAnswers().get(1);
+
         surveyRepository.save(survey);
 
-        Answer a1 = new Answer(r1, q1.getId(), "hi");
-        Answer a2 = new Answer(r1, q1.getId(), "b");
-        answerRepository.save(a1);
-        answerRepository.save(a2);
-
-        List<Answer> expectedR = new ArrayList<>();
-        expectedR.add(new Answer(r1, q1.getId(), "hi"));
-        expectedR.add(new Answer(r1, q1.getId(), "b"));
-
         List<Answer> results = answerRepository.findAll();
-        for (Answer a : results){
-            System.out.println(a.toString());
-            if(a.getResponse().getAnswers().containsAll(expectedR)) {
-                System.out.println(a.getResponse().getAnswers());
-            }
-        }
+        assertTrue(results.stream().anyMatch(answer -> answer.getContent().equals(a1.getContent())));
+        assertTrue(results.stream().anyMatch(answer -> answer.getContent().equals(a2.getContent())));
     }
 }

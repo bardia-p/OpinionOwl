@@ -19,9 +19,6 @@ public class ResponseTest {
     @Autowired
     private UserRepository userRepository;
 
-    @Autowired
-    private SurveyRepository surveyRepository;
-
     /**
      * Method to test that the correct response is returned.
      */
@@ -49,7 +46,7 @@ public class ResponseTest {
     @Test
     public void testPersist() {
         AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
+        Survey survey = new Survey(u1, "RESPONSE_TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
 
@@ -63,25 +60,16 @@ public class ResponseTest {
         survey.addResponse(r1);
 
         responseRepository.save(r1);
-        survey.setClosed(true);
-
-        Response r2 = new Response(survey);
-
-        r2.addAnswer(q1.getId(), "yo");
-        r2.addAnswer(q2.getId(), "a");
-
-        surveyRepository.save(survey);
-        responseRepository.save(r2);
 
         List<Response> results = responseRepository.findAll();
-        List<Answer> expectedR = new ArrayList<>();
-        expectedR.add(new Answer(r1, q1.getId(), "hi"));
-        expectedR.add(new Answer(r1, q1.getId(), "b"));
+
+        Response retrievedResponse = null;
         for (Response r : results){
-            System.out.println(r.toString());
-            if(r.getAnswers().containsAll(expectedR)) {
-                System.out.println(r.getAnswers());
+            if (r.getSurvey().getTitle().equals(survey.getTitle())){
+                retrievedResponse = r;
             }
         }
+        assertNotNull(retrievedResponse);
+        assertEquals(retrievedResponse.getAnswers().size(), r1.getAnswers().size());
     }
 }

@@ -196,7 +196,7 @@ public class SurveyTest {
     @Test
     public void testPersist() {
         AppUser u1 = new AppUser("SurveyTest", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
+        Survey survey = new Survey(u1, "SURVEY_TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
 
@@ -229,14 +229,15 @@ public class SurveyTest {
         surveyRepository.save(survey);
 
         List<Survey> results = surveyRepository.findAll();
-        for (Survey r : results){
-            System.out.println(r.toString());
-            for (Question q : r.getQuestions()){
-                if (q.getType() == QuestionType.LONG_ANSWER){
-                    LongAnswerQuestion laq = (LongAnswerQuestion) q;
-                    System.out.println(laq.getCharLimit());
-                }
+        Survey retrievedSurvey = null;
+        for (Survey r : results) {
+            if (r.getTitle().equals(survey.getTitle())) {
+                retrievedSurvey = r;
+                break;
             }
         }
+        assertNotNull(retrievedSurvey);
+        assertEquals(retrievedSurvey.getQuestions().size(), survey.getQuestions().size());
+        assertEquals(retrievedSurvey.getResponses().size(), survey.getResponses().size());
     }
 }
