@@ -46,4 +46,19 @@ public class RadioChoiceQuestion extends Question {
         res += "]";
         return res;
     }
+
+    @Override
+    public boolean equals(Object object){
+        RadioChoiceQuestion comparedQuestion = (RadioChoiceQuestion) object;
+        if(!(this.getId().equals(comparedQuestion.getId()))){
+            return false;
+        }
+        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
+            return false;
+        }
+        if(!(this.getType().equals(comparedQuestion.getType()))){
+            return false;
+        }
+        return true;
+    }
 }

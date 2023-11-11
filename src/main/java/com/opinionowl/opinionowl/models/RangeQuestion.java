@@ -58,4 +58,19 @@ public class RangeQuestion extends Question {
     public String toString(){
         return super.toString() + " lower:" + lower + " upper:" + upper + " increment:" + increment;
     }
+
+    @Override
+    public boolean equals(Object object){
+        RangeQuestion comparedQuestion = (RangeQuestion) object;
+        if(!(this.getId().equals(comparedQuestion.getId()))){
+            return false;
+        }
+        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
+            return false;
+        }
+        if(!(this.getType().equals(comparedQuestion.getType()))){
+            return false;
+        }
+        return true;
+    }
 }

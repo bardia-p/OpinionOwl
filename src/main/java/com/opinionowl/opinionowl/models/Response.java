@@ -53,4 +53,22 @@ public class Response {
     public String toString(){
         return "Response #" + id + " answers:" + answers;
     }
+
+    public boolean equals(Response comparedResponse){
+        if(!(this.id.equals(comparedResponse.getId()))){
+            return false;
+        }
+        return this.answers.equals(comparedResponse.getAnswers());
+    }
+    @Override
+    public boolean equals(Object object){
+        Response comparedResponse = (Response) object;
+        if(!(this.getId().equals(comparedResponse.getId()))){
+            return false;
+        }
+        if(!(this.getAnswers().equals(comparedResponse.getAnswers()))){
+            return false;
+        }
+        return true;
+    }
 }

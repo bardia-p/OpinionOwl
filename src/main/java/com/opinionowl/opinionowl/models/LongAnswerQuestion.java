@@ -39,4 +39,19 @@ public class LongAnswerQuestion extends Question{
         return super.toString() + " charLimit:" + charLimit;
     }
 
+    @Override
+    public boolean equals(Object object){
+        LongAnswerQuestion comparedQuestion = (LongAnswerQuestion) object;
+        if(!(this.getId().equals(comparedQuestion.getId()))){
+            return false;
+        }
+        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
+            return false;
+        }
+        if(!(this.getType().equals(comparedQuestion.getType()))){
+            return false;
+        }
+        return true;
+    }
+
 }

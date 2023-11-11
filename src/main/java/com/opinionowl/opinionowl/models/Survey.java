@@ -129,4 +129,27 @@ public class Survey {
         }
         return res;
     }
+
+
+    @Override
+    public boolean equals(Object object){
+        Survey comparedSurvey = (Survey) object;
+        if(!(this.id.equals(comparedSurvey.getId()))){
+            return false;
+        }
+
+        if(!(this.title.equals(comparedSurvey.getTitle()))){
+            return false;
+        }
+
+        if(!(this.questions.equals(comparedSurvey.getQuestions()))){
+            return false;
+        }
+
+        if(!(this.responses.equals(comparedSurvey.getResponses()))){
+            return false;
+        }
+
+        return this.closed == comparedSurvey.isClosed();
+    }
 }

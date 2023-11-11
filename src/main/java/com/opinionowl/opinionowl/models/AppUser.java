@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Class User for defining a User entity that uses the Survey website.
@@ -30,7 +31,7 @@ public class AppUser {
 
     // Define a list of surveys that a User has created
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    public List<Survey> listSurveys;
+    private List<Survey> listSurveys;
 
     /**
      * Default constructor for User.
@@ -74,4 +75,18 @@ public class AppUser {
         }
         return user;
     }
+
+    public boolean equals(AppUser comparedUser){
+        if(!(this.username.equals(comparedUser.getUsername()))){
+            return false;
+        }
+        if(!(this.id.equals(comparedUser.getId()))){
+            return false;
+        }
+        if(!(this.password.equals(comparedUser.getPassword()))){
+            return false;
+        }
+        return this.listSurveys.equals(comparedUser.getListSurveys());
+    }
 }
+

@@ -39,4 +39,32 @@ public class AppUserTest {
         assertEquals(0, u1.getListSurveys().size());
     }
 
+    @Test
+    public void testPersist(){
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        u1.addSurvey(survey);
+        userRepository.save(u1);
+        LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
+        RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
+        RangeQuestion q3 = new RangeQuestion(survey, "test3", 1, 10, 1);
+
+        survey.addQuestion(q1);
+        survey.addQuestion(q2);
+        survey.addQuestion(q3);
+        surveyRepository.save(survey);
+
+        List<AppUser> users = userRepository.findAll();
+        assertEquals(1, users.size());
+
+        AppUser user = users.get(0);
+
+        assertEquals(1,user.getListSurveys().size());
+
+        assertEquals(u1.getListSurveys().get(0), user.getListSurveys().get(0));
+
+
+
+    }
+
 }

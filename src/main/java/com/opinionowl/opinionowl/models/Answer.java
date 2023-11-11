@@ -48,4 +48,20 @@ public class Answer {
         return "Answer#" + id + " value:" + content;
     }
 
+    @Override
+    public boolean equals(Object object){
+        Answer comparedAnswer = (Answer) object;
+        if(!(this.getId().equals(comparedAnswer.getId()))){
+            return false;
+        }
+        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
+            return false;
+        }
+        if(!(this.getType().equals(comparedQuestion.getType()))){
+            return false;
+        }
+        return true;
+    }
+
 }
+
