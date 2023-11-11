@@ -1,14 +1,11 @@
 package com.opinionowl.opinionowl;
 import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.*;
-//import org.junit.Test;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -16,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Test class for the post mappings in API Controller.
  */
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class APIControllerTest {
     @Autowired
@@ -38,8 +35,9 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        Survey survey = surveyRepository.findById(1L);
-        System.out.println(survey);
+        for (Survey survey : surveyRepository.findAll()) {
+            System.out.println(survey.toString());
+        }
     }
 }
 
