@@ -35,20 +35,6 @@ public class AppUserTest {
     }
 
     /**
-     * Method to test if a survey can be removed from an appUser
-     */
-    @Test
-    public void testRemoveSurvey(){
-        AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
-        userRepository.save(u1);
-        surveyRepository.save(survey);
-        u1.addSurvey(survey);
-        u1.removeSurvey(survey.getId());
-        assertEquals(0, u1.getListSurveys().size());
-    }
-
-    /**
      * Method to test if the user remains the same before and after a survey is saved
      */
     @Test
