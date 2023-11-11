@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * The class used to describe the multiple choice questions.
@@ -50,7 +50,6 @@ public class RadioChoiceQuestion extends Question {
     }
 
     /**
-     *
      * @param o object that is being compared with
      * @return boolean value saying whether objects are equal
      */
@@ -59,7 +58,7 @@ public class RadioChoiceQuestion extends Question {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RadioChoiceQuestion that = (RadioChoiceQuestion) o;
-        return this.getId() == that.getId();
+        return Objects.equals(this.getId(), that.getId());
     }
 
 }
