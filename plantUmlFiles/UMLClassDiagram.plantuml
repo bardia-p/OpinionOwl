@@ -13,6 +13,7 @@ package "models" <<frame>> {
         - content: String
         + Answer(response: Response, Long question, content: String)
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "AppUser" {
@@ -24,6 +25,7 @@ package "models" <<frame>> {
         + addSurvey(survey: Survey): void
         + removeSurvey(surveyId: Long): boolean
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     enum "QuestionType" {
@@ -41,6 +43,7 @@ package "models" <<frame>> {
         - survey: Survey
         + Question(survey: Survey, prompt: String, type: QuestionType)
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "LongAnswerQuestion" {
@@ -48,6 +51,7 @@ package "models" <<frame>> {
         + LongAnswerQuestion()
         + LongAnswerQuestion(survey: Survey, prompt: String, charLimit: Integer)
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "RadioChoiceQuestion" {
@@ -55,6 +59,7 @@ package "models" <<frame>> {
         + RadioChoiceQuestion()
         + RadioChoiceQuestion(survey: Survey, prompt: String, choices: String[])
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "RangeQuestion" {
@@ -65,6 +70,7 @@ package "models" <<frame>> {
         + RangeQuestion(prompt: String, lower: Integer, upper: Integer)
         + RangeQuestion(survey: Survey, prompt: String, lower: Integer, upper: Integer, increment: Integer)
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "Response" {
@@ -74,6 +80,7 @@ package "models" <<frame>> {
         + Response(survey: Survey)
         + addAnswer(question: Long, content: String): void
         + toString(): String
+        + equals(o: Object): boolean
     }
 
     class "Survey" {
@@ -90,6 +97,7 @@ package "models" <<frame>> {
         + removeResponse(responseId: Long): boolean
         + getResponsesForQuestion(questionId: Long): List<String>
         + toString(): String
+        + equals(o: Object): boolean
     }
 }
 
