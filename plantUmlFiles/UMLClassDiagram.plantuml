@@ -1,0 +1,124 @@
+@startuml Milestone1_UML_class_diagram
+skinparam classFontSize 11
+skinparam classBackgroundColor beige
+skinparam ClassBorderColor red
+skinparam ArrowColor red
+
+
+package "models" <<frame>> {
+    class "Answer" {
+        - id: Long
+        - response: Response
+        - question: Long
+        - content: String
+        + Answer(response: Response, Long question, content: String)
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "AppUser" {
+        - id: Long
+        - username: String
+        - password: String
+        - listSurveys: List<Survey>
+        + AppUser(username: String, password: String)
+        + addSurvey(survey: Survey): void
+        + removeSurvey(surveyId: Long): boolean
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    enum "QuestionType" {
+        LONG_ANSWER("Long Answer")
+        RADIO_CHOICE("Radio Choice")
+        RANGE("Range")
+        - types: String {readonly}
+        + QuestionType(type: String)
+    }
+
+    class "Question" {
+        - id: Long
+        - prompt: String 
+        - type: QuestionType
+        - survey: Survey
+        + Question(survey: Survey, prompt: String, type: QuestionType)
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "LongAnswerQuestion" {
+        - charLimit: Integer
+        + LongAnswerQuestion()
+        + LongAnswerQuestion(survey: Survey, prompt: String, charLimit: Integer)
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "RadioChoiceQuestion" {
+        - choices: String[]
+        + RadioChoiceQuestion()
+        + RadioChoiceQuestion(survey: Survey, prompt: String, choices: String[])
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "RangeQuestion" {
+        - lower: Integer
+        - upper: Integer
+        - incremental: Integer
+        + RangeQuestion()
+        + RangeQuestion(prompt: String, lower: Integer, upper: Integer)
+        + RangeQuestion(survey: Survey, prompt: String, lower: Integer, upper: Integer, increment: Integer)
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "Response" {
+        - id: Long
+        - survey: Survey
+        - answers: List<Answer>
+        + Response(survey: Survey)
+        + addAnswer(question: Long, content: String): void
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+
+    class "Survey" {
+        - id: Long
+        - questions: List<Question>
+        - responses: List<Response>
+        - closed: boolean
+        - title: String 
+        - user: AppUser
+        + Survey(user: AppUser, title: String)
+        + addQuestion(question: Question): boolean
+        + removeQuestion(questionId: long): boolean
+        + addResponse(response: Response): boolean
+        + removeResponse(responseId: Long): boolean
+        + getResponsesForQuestion(questionId: Long): List<String>
+        + toString(): String
+        + equals(o: Object): boolean
+    }
+}
+
+
+
+' note right of "APIController"::createSurvey
+'     // returns 200 if survey created successfully 
+'     // otherwise look at integer responses to handle errors
+' end note
+
+' Relationship arrows
+"RangeQuestion" -up-|> "Question"
+"LongAnswerQuestion" -up-|> "Question"
+"RadioChoiceQuestion" -up-|> "Question"
+"Question" --* "1" "QuestionType"
+
+"Response" "1  " --* "0..*      " "Answer"
+
+"Survey" "1  " --* "0..*  " "Question"
+"Survey" "1  " --* "0..*     " "Response"
+"AppUser" "1  " --* "0..*  " "Survey"
+
+
+@enduml
