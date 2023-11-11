@@ -48,7 +48,7 @@ public class AnswerTest {
      */
     @Test
     public void testPersist() {
-        AppUser u1 = new AppUser("Test", "123");
+        AppUser u1 = new AppUser("AnswerTest", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);

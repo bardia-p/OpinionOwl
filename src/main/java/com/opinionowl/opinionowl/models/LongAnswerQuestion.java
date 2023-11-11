@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * The class used to describe the long answer questions.
  */
@@ -37,6 +39,19 @@ public class LongAnswerQuestion extends Question{
     @Override
     public String toString(){
         return super.toString() + " charLimit:" + charLimit;
+    }
+
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LongAnswerQuestion that = (LongAnswerQuestion) o;
+        return this.getId() == that.getId();
     }
 
 }

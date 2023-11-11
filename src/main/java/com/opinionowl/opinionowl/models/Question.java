@@ -46,4 +46,17 @@ public class Question {
     public String toString(){
         return "Question id:" + id + " prompt:" + prompt;
     }
+
+    public boolean equals(Question comparedQuestion){
+        if(!(this.id.equals(comparedQuestion.getId()))){
+            return false;
+        }
+        if(!(this.prompt.equals(comparedQuestion.getPrompt()))){
+            return false;
+        }
+        if(!(this.type.equals(comparedQuestion.getType()))){
+            return false;
+        }
+        return true;
+    }
 }
