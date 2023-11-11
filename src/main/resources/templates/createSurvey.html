@@ -23,7 +23,10 @@
         <button type="submit" id="create-survey">Create Form</button>
       </form>
     </div>
-    <div th:replace="~{fragments/footer :: footer}"></div>
+    <footer>
+      <a href="/" th:href="@{/}">Go Back</a>
+      <div th:replace="~{fragments/footer :: footer}"></div>
+    </footer>
     <script src="/scripts/createSurvey.js" type="application/javascript"></script>
   </body>
 </html>

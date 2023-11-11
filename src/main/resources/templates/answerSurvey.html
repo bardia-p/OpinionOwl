@@ -32,6 +32,9 @@
             </div>
             <button type="submit">Submit</button>
         </form>
-        <div th:replace="~{fragments/footer :: footer}"></div>
+        <footer>
+            <a href="/" th:href="@{/}">Go Back</a>
+            <div th:replace="~{fragments/footer :: footer}"></div>
+        </footer>
     </body>
 </html>
