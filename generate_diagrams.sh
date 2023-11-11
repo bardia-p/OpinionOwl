@@ -13,6 +13,11 @@ fi
 
 for file in "$input_directory"/*.plantuml; do
     if [ -f "$file" ]; then
-        java -jar "$plantuml" "$file" -o "../"
+      java -jar "$plantuml" "$file" -o "../"
+      if [ $? != 0 ]; then
+          raise error "Failed to generate the diagram"
+      fi
     fi
 done
+
+echo "Successfully Generated the Diagrams"
