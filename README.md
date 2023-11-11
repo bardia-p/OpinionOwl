@@ -1,5 +1,9 @@
 # SYSC 4806 Project - Opinion Owl
 
+Build Status: ![Build Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml/badge.svg)
+
+Deployment Status: ![Deployment Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/main_opinionowl.yml/badge.svg)
+
 ### Group Members:
 - [Bardia Parmoun](https://github.com/bardia-p)
 - [Max Curkovic](https://github.com/maxcurkovic)
@@ -50,4 +54,4 @@ All open issues and planned work can be found on our [kanban board](https://gith
 
 ## Diagrams
 - [UML diagram](diagrams/Milestone1_UML_class_diagram.png)
-- [Schema] 
+- [Schema](diagrams/Milestone1_ER_Diagram.png)
