@@ -1,4 +1,4 @@
-package com.opinionowl.opinionowl;
+package com.opinionowl.opinionowl.ModelTests;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.*;
 import org.junit.jupiter.api.Test;
