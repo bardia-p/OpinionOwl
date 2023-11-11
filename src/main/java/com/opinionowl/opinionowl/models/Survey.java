@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The survey class which contains all the information needed to create survey.
@@ -130,26 +131,17 @@ public class Survey {
         return res;
     }
 
-
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
     @Override
-    public boolean equals(Object object){
-        Survey comparedSurvey = (Survey) object;
-        if(!(this.id.equals(comparedSurvey.getId()))){
-            return false;
-        }
-
-        if(!(this.title.equals(comparedSurvey.getTitle()))){
-            return false;
-        }
-
-        if(!(this.questions.equals(comparedSurvey.getQuestions()))){
-            return false;
-        }
-
-        if(!(this.responses.equals(comparedSurvey.getResponses()))){
-            return false;
-        }
-
-        return this.closed == comparedSurvey.isClosed();
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Survey survey = (Survey) o;
+        return closed == survey.closed && Objects.equals(id, survey.id) && Objects.equals(questions, survey.questions) && Objects.equals(responses, survey.responses) && Objects.equals(title, survey.title);
     }
+
 }

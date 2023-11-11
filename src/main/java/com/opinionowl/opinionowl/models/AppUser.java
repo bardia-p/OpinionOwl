@@ -76,17 +76,17 @@ public class AppUser {
         return user;
     }
 
-    public boolean equals(AppUser comparedUser){
-        if(!(this.username.equals(comparedUser.getUsername()))){
-            return false;
-        }
-        if(!(this.id.equals(comparedUser.getId()))){
-            return false;
-        }
-        if(!(this.password.equals(comparedUser.getPassword()))){
-            return false;
-        }
-        return this.listSurveys.equals(comparedUser.getListSurveys());
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AppUser appUser = (AppUser) o;
+        return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(password, appUser.password) && Objects.equals(listSurveys, appUser.listSurveys);
     }
 }
 

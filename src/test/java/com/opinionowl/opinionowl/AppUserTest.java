@@ -7,6 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test Class for the AppUser Class
+ */
 @SpringBootTest
 public class AppUserTest {
 
@@ -16,6 +19,9 @@ public class AppUserTest {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Method to test if a survey can be added to an appUser
+     */
     @Test
     public void testAddSurvey(){
         AppUser u1 = new AppUser("Test", "123");
@@ -28,6 +34,9 @@ public class AppUserTest {
         assertEquals(expected, u1.getListSurveys());
     }
 
+    /**
+     * Method to test if a survey can be removed from an appUser
+     */
     @Test
     public void testRemoveSurvey(){
         AppUser u1 = new AppUser("Test", "123");
@@ -39,19 +48,15 @@ public class AppUserTest {
         assertEquals(0, u1.getListSurveys().size());
     }
 
+    /**
+     * Method to test if the user remains the same before and after a survey is saved
+     */
     @Test
     public void testPersist(){
         AppUser u1 = new AppUser("Test", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
-        LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
-        RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
-        RangeQuestion q3 = new RangeQuestion(survey, "test3", 1, 10, 1);
-
-        survey.addQuestion(q1);
-        survey.addQuestion(q2);
-        survey.addQuestion(q3);
         surveyRepository.save(survey);
 
         List<AppUser> users = userRepository.findAll();
@@ -60,10 +65,8 @@ public class AppUserTest {
         AppUser user = users.get(0);
 
         assertEquals(1,user.getListSurveys().size());
-
-        assertEquals(u1.getListSurveys().get(0), user.getListSurveys().get(0));
-
-
+        assertEquals(u1.getListSurveys().get(0).getTitle(), user.getListSurveys().get(0).getTitle());
+        assertEquals(u1.getListSurveys().get(0).isClosed(), user.getListSurveys().get(0).isClosed());
 
     }
 

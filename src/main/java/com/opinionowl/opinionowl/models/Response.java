@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The Response class in charge holding the survey response.
@@ -60,15 +61,18 @@ public class Response {
         }
         return this.answers.equals(comparedResponse.getAnswers());
     }
+
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
     @Override
-    public boolean equals(Object object){
-        Response comparedResponse = (Response) object;
-        if(!(this.getId().equals(comparedResponse.getId()))){
-            return false;
-        }
-        if(!(this.getAnswers().equals(comparedResponse.getAnswers()))){
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Response response = (Response) o;
+        return Objects.equals(id, response.id) && Objects.equals(answers, response.answers);
     }
+
 }

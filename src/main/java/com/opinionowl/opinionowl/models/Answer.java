@@ -5,8 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
- * The class in charge of holding the indivdual answers for each response.
+ * The class in charge of holding the individual answers for each response.
  */
 @Entity
 @Getter
@@ -48,19 +50,17 @@ public class Answer {
         return "Answer#" + id + " value:" + content;
     }
 
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
     @Override
-    public boolean equals(Object object){
-        Answer comparedAnswer = (Answer) object;
-        if(!(this.getId().equals(comparedAnswer.getId()))){
-            return false;
-        }
-        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
-            return false;
-        }
-        if(!(this.getType().equals(comparedQuestion.getType()))){
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Answer answer = (Answer) o;
+        return Objects.equals(id, answer.id) && Objects.equals(question, answer.question) && Objects.equals(content, answer.content);
     }
 
 }

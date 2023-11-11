@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
+
 /**
  * The class used to describe the range questions.
  */
@@ -12,13 +14,13 @@ import lombok.Setter;
 @Setter
 public class RangeQuestion extends Question {
     // The lower value for the range.
-    int lower;
+    private int lower;
 
     // the upper value for the range.
-    int upper;
+    private int upper;
 
     // the increment the range.
-    int increment;
+    private int increment;
 
     /**
      * The default constructor for the class.
@@ -59,18 +61,17 @@ public class RangeQuestion extends Question {
         return super.toString() + " lower:" + lower + " upper:" + upper + " increment:" + increment;
     }
 
+    /**
+     *
+     * @param o object that is being compared with
+     * @return boolean value saying whether objects are equal
+     */
     @Override
-    public boolean equals(Object object){
-        RangeQuestion comparedQuestion = (RangeQuestion) object;
-        if(!(this.getId().equals(comparedQuestion.getId()))){
-            return false;
-        }
-        if(!(this.getPrompt().equals(comparedQuestion.getPrompt()))){
-            return false;
-        }
-        if(!(this.getType().equals(comparedQuestion.getType()))){
-            return false;
-        }
-        return true;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RangeQuestion that = (RangeQuestion) o;
+        return this.getId() == that.getId();
     }
+
 }
