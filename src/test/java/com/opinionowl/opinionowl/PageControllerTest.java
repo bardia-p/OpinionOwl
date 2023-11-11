@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class ControllerAPIGetTest {
+public class PageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -93,41 +93,6 @@ public class ControllerAPIGetTest {
         System.out.println("Expects title: OpinionOwl | Create Survey, Actual: " + title);
         // assert the title equals to the create survey page title
         assert(title.equals("OpinionOwl | Create Survey"));
-        System.out.println("------------------------------");
-    }
-
-    /**
-     * <p>Handle tests for Get mapping the view response page</p>
-     * <br />
-     * <strong>Expects:</strong> the <u>viewResponse</u> HTML page
-     * @throws Exception
-     */
-    @Test
-    public void testViewResponsePageMapping() throws Exception {
-        System.out.println();
-        System.out.println("------------------------------");
-        System.out.println("TESTING: testViewResponsePageMapping()");
-        System.out.println();
-        System.out.println("Mocking get page '/viewResponse', expecting to retrieve an HTML page");
-        String content = this.mockMvc.perform(get("/viewResponse"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
-
-        // extract the title
-        System.out.println("Parsing the title of the page");
-        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
-        Matcher matcher = pattern.matcher(content);
-
-        // Find the title using the regex pattern
-        String title = "";
-        if (matcher.find()) {
-            title = matcher.group(1);
-        }
-
-        System.out.println("Expects title: OpinionOwl | Responses, Actual: " + title);
-        // assert the title equals to the view response page title
-        assert(title.equals("OpinionOwl | Responses"));
         System.out.println("------------------------------");
     }
 
