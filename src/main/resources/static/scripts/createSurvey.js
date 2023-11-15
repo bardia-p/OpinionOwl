@@ -119,16 +119,35 @@ submitButton.click((e) => {
     dataDictionary["radioQuestions"] = {};
     dataDictionary["numericRanges"] = {};
     dataDictionary["title"] = formTitle.text();
+    let duplicateFound = false;
     // Iterate over table rows with the class 'text-questions'
     const textQuestions = []
     $('.text-questions label').each(function () {
-        textQuestions.push($(this).text())
+        if (!textQuestions.includes($(this).text())) {
+            textQuestions.push($(this).text());
+        } else {
+            // question is a duplicate
+            duplicateFound = true;
+        }
     }).get();
+
+    if (duplicateFound) {
+        alert("duplicate questions for Text questions. Please make them unique before submitting");
+        return;
+    }
+
     dataDictionary["textQuestions"] = textQuestions;
 
     $('.radio-questions').each(function() {
         const title = $(this).find('.title').text();
         const radioQuestions = [];
+
+        if (dataDictionary["radioQuestions"][title]) {
+            // duplicate question
+            duplicateFound = true;
+            return;
+        }
+
         const radioQuestionContainer = $(this).find('div');
         $(radioQuestionContainer).find('label:not(.title)').each(function () {
             radioQuestions.push($(this).text());
@@ -136,14 +155,31 @@ submitButton.click((e) => {
         dataDictionary["radioQuestions"][title] = radioQuestions;
     });
 
+    if (duplicateFound) {
+        alert("duplicate questions for Radio questions. Please make them unique before submitting");
+        return;
+    }
+
     $('.numeric-questions').each(function() {
         const title = $(this).find(".title").text();
         const ranges = [];
+
+        if (dataDictionary["numericRanges"][title]) {
+            // duplicate question
+            duplicateFound = true;
+            return;
+        }
+
         $(this).find("span").each(function() {
             ranges.push(parseInt($(this).text()));
-        })
+        });
         dataDictionary["numericRanges"][title] = ranges;
     });
+
+    if (duplicateFound) {
+        alert("duplicate questions for numeric range questions. Please make them unique before submitting");
+        return;
+    }
 
     console.log(dataDictionary);
 
