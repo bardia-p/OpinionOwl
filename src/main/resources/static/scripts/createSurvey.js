@@ -20,19 +20,41 @@ const generateUniqueID = () => {
  */
 const addMoreRadioOptions = (radioQuestionContainer, uniqueName) => {
     const uniqueId = generateUniqueID();
+    const divId = generateUniqueID();
     $(radioQuestionContainer).append(`
-                <br />
-                <input id=${uniqueId} type="radio" name=${uniqueName}>
-                <label for=${uniqueId} contenteditable="true">sample</label>
+                <div id=${divId} class="radio-container">
+                    <input id=${uniqueId} type="radio" name=${uniqueName}>
+                    <label for=${uniqueId} contenteditable="true">sample</label>
+                    <button onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">-</button>
+                </div>
         `);
+    $(`${radioQuestionContainer} .radio-container`).find('button').prop("disabled", $(`${radioQuestionContainer}`).find('.radio-container').length === 1);
 };
+
+/**
+ * remove an element by id
+ * @param {string} id the id
+ */
+const removeElement = (id) => {
+    $(id).remove();
+}
+
+/**
+ *
+ * @param {string} radioQuestionContainer
+ * @param {string} divId
+ */
+const removingRadioChoice = (radioQuestionContainer, divId) => {
+    removeElement(divId);
+    $(`${radioQuestionContainer} .radio-container`).find('button').prop("disabled", $(`${radioQuestionContainer}`).find('.radio-container').length === 1);
+}
 
 /**
  *
  * @param {string} tableRowId
  */
 const removeTableRow = (tableRowId) => {
-    $(tableRowId).remove();
+    removeElement(tableRowId);
     decrementNumOfQuestion();
 };
 
@@ -72,6 +94,7 @@ addRadioChoice.click((e) => {
     const rowId = generateUniqueID();
     const radioQuestionContainer = generateUniqueID();
     const uniqueName = generateUniqueID();
+
     const question = `
           <tr id='${rowId}' class="radio-questions">
             <td>
@@ -80,15 +103,13 @@ addRadioChoice.click((e) => {
             <td>
               <div id=${radioQuestionContainer}>
                 <label contenteditable="true" class="title">Question title</label>
-                <br />
-                <input type="radio" name=${uniqueName}>
-                <label contenteditable="true">sample</label>
               </div>
               <button type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}','${uniqueName}')">+</button>
             </td>
           </tr>
         `;
     survey.append(question);
+    addMoreRadioOptions(`#${radioQuestionContainer}`, `#${uniqueName}`)
     incrementNumOfQuestions();
 });
 
@@ -103,9 +124,9 @@ addNumericRange.click((e) => {
               <td>
                 <label contenteditable="true" class="title">Question title</label>
                 <br />
-                <span contenteditable="false">0</span>
+                <span contenteditable="true">0</span>
                 <input type="range" min="0" max="11" />
-                <span contenteditable="false">11</span>
+                <span contenteditable="true">11</span>
               </td>
           </tr>
         `;
