@@ -8,9 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 /**
  * Route controller for Opinion Owl pages
@@ -98,7 +97,47 @@ public class PageController {
     }
 
     @GetMapping("/viewResponse")
-    public String getViewResponsePage(Model model) {
+    public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
+        // find the survey by id
+        Optional<Survey> surveyO = surveyRepo.findById(surveyId);
+        if (surveyO.isPresent()) {
+            // was able to obtain a survey from the database by id, and grab it from the Optional Object
+            Survey survey = surveyO.get();
+            System.out.println("Survey found:");
+            System.out.println(survey);
+
+            List<Question> questions = survey.getQuestions();
+            List<Map<String, Integer>> longAnswerResponses = new ArrayList<>();
+            List<Map<String, Integer>> radioChoiceResponses = new ArrayList<>();
+            List<Map<String, Integer>> rangeResponses = new ArrayList<>();
+
+            // Populate the answers
+            int numQuestions = questions.size();
+            String title = survey.getTitle();
+            for (Question q: questions) {
+                if (q.getType() == QuestionType.LONG_ANSWER) {
+                    longAnswerResponses.add(survey.getResponsesForQuestion(q.getId()));
+                } else if (q.getType() == QuestionType.RADIO_CHOICE) {
+                    radioChoiceResponses.add(survey.getResponsesForQuestion(q.getId()));
+                } else if (q.getType() == QuestionType.RANGE) {
+                    rangeResponses.add(survey.getResponsesForQuestion(q.getId()));
+                }
+            }
+            // send the Model the data necessary for the page
+            model.addAttribute("surveyId", survey.getId());
+            model.addAttribute("surveyTitle", title);
+            model.addAttribute("questions", questions);
+            model.addAttribute("numberOfQuestions", numQuestions);
+            model.addAttribute("longAnswerResponses", longAnswerResponses);
+            model.addAttribute("radioChoiceResponses", radioChoiceResponses);
+            model.addAttribute("rangeResponses", rangeResponses);
+        } else {
+            // could not find survey, Error
+            // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
+            // for now redirect to home page
+            System.out.println("ERROR: Survey could not be found. Redirecting to Index");
+            return "index";
+        }
         return "viewResponse";
     }
 }

@@ -34,9 +34,8 @@ public class ResponseTest {
         r1.addAnswer(q1.getId(), "response1");
         r1.addAnswer(q1.getId(), "response2");
         survey.addResponse(r1);
-
-        List<String> expectedR = Arrays.asList("response1", "response2");
-        assertTrue(survey.getResponsesForQuestion(q1.getId()).containsAll(expectedR));
+        Map<String, Integer> expectedR = Map.of("response1", 1, "response2", 1);
+        assertTrue(survey.getResponsesForQuestion(q1.getId()).equals(expectedR));
     }
 
 
