@@ -101,4 +101,12 @@ public class PageController {
     public String getViewResponsePage(Model model) {
         return "viewResponse";
     }
+
+
+    @GetMapping("/addUser")
+    public String addUser(Model model){
+        AppUser buddyDTO = new AppUser();
+        model.addAttribute("UserDTO", buddyDTO);
+        return "registerUser";
+    }
 }

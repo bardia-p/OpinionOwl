@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OpinionOwl</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+</head>
+<body>
+<div th:replace="~{fragments/header :: header}"></div>
+<h1>Welcome To OpinionOwl</h1>
+
+<h1>Register a User</h1>
+<form action="#" th:action="@{/createUser}" th:object="${UserDTO}" method="post">
+    <p>Id: <input type="text" th:field="*{id}" value="${UserId}" readonly/></p>
+    <p>Username: <input type="text" th:field="*{username}" /></p>
+    <p>Password: <input type="text" th:field="*{password}" /></p>
+    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+</form>
+<footer>
+    <a href="/" th:href="@{/}">Go Back</a>
+</footer>
+
+</body>
+</html>
