@@ -8,8 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -112,5 +114,17 @@ public class APIController {
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
         return 200;
+    }
+
+    @PostMapping("/createUser")
+    public String createUser(@ModelAttribute("UserDTO") AppUser userDTO, Model model) {
+        Optional<AppUser> user = userRepository.findById(userDTO.getId());
+        if (!user.isPresent()){
+            return "index";
+        }
+        AppUser appUser = user.get();
+        userRepository.save(appUser);
+        model.addAttribute("AppUser", appUser);
+        return "index";
     }
 }

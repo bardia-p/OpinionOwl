@@ -18,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public class AppUser {
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     // Create an auto generated unique Id
@@ -88,5 +89,6 @@ public class AppUser {
         AppUser appUser = (AppUser) o;
         return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(password, appUser.password) && Objects.equals(listSurveys, appUser.listSurveys);
     }
+
 }
 
