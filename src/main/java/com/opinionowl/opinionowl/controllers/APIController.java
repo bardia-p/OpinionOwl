@@ -125,6 +125,6 @@ public class APIController {
         AppUser appUser = user.get();
         userRepository.save(appUser);
         model.addAttribute("AppUser", appUser);
-        return "index";
+        return "/";
     }
 }

@@ -103,7 +103,7 @@ public class PageController {
     }
 
 
-    @GetMapping("/addUser")
+    @GetMapping("/registerUser")
     public String addUser(Model model){
         AppUser buddyDTO = new AppUser();
         model.addAttribute("UserDTO", buddyDTO);
