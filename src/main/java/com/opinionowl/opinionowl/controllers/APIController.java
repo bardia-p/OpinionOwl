@@ -6,7 +6,6 @@ import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.websocket.server.PathParam;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -43,8 +42,8 @@ public class APIController {
      * </pre>
      * @throws IOException
      */
-    @PostMapping("/postSurveyResponses")
-    public int postSurveyResponses(@PathParam("surveyId") Long surveyId, HttpServletRequest request) throws IOException {
+    @PostMapping("/postSurveyResponses/{surveyId}")
+    public int postSurveyResponses(@PathVariable("surveyId") Long surveyId, HttpServletRequest request) throws IOException {
         // handle save of survey data
         // redirect to home
         System.out.println("Post survey response api API");

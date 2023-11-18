@@ -13,7 +13,7 @@ submitButton.click((e) => {
     const dataJson = JSON.stringify(data);
     $.ajax({
         type: $("#answer-survey-form").attr("method"),
-        url: `/api/v1/postSurveyResponses?surveyId=${surveyId}`,
+        url: `/api/v1/postSurveyResponses/${surveyId}`,
         data: dataJson,
         contentType: 'application/json',
         success: function(res) {
