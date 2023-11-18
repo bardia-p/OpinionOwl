@@ -3,21 +3,47 @@
 <head>
     <title>OpinionOwl</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <h1>Register a User</h1>
 
-<form action="#" th:action="@{/createUser}" th:object="${UserDTO}" method="post">
-    <p>Username: <input type="text" th:field="*{username}" /></p>
-    <p>Password: <input type="password" th:field="*{password}" /></p>
-    <p>Confirm Password: <input type="password" th:field="*{password}" /></p>
-    <p><input type="submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+<form id="registerUser-form" th:action="@{/api/v1/createUser}" method="post">
+    <p>Username: <input type="text" id="username"/></p>
+    <p>Password: <input type="password" id="password"/></p>
+    <p><input type="submit" id="registerUser-submit" value="Submit" /> <input type="reset" value="Reset" /></p>
 </form>
 <footer>
     <a href="/" th:href="@{/}">Go Back</a>
 </footer>
+<script src="/scripts/registerUser.js" type="application/javascript"></script>
+<!--<script>const submitButton = $("#registerUser-submit");-->
 
+<!--submitButton.click((e) => {-->
+<!--    e.preventDefault();-->
+<!--    console.log("sadasd");-->
+<!--    var formData = JSON.stringify($("#registerUser-form").serializeArray());-->
+
+<!--    console.log(formData);-->
+<!--    console.log("Got here");-->
+
+<!--    $.ajax({-->
+<!--        type: "POST",-->
+<!--        url: "/api/v1/createUser",-->
+<!--        data: formData,-->
+<!--        dataType: "json",-->
+<!--        contentType: "application/json",-->
+<!--        success: function (res) {-->
+<!--            console.log('User registered successfully');-->
+<!--            if (res === 200) window.location.href = "/";-->
+<!--        },-->
+<!--        error: function (xhr, status, error) {-->
+<!--            // error handling-->
+<!--            console.error('Error creating survey:', error);-->
+<!--        }-->
+<!--    })-->
+
+<!--});</script>-->
 </body>
 </html>

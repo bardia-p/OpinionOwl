@@ -117,14 +117,29 @@ public class APIController {
     }
 
     @PostMapping("/createUser")
-    public String createUser(@ModelAttribute("UserDTO") AppUser userDTO, Model model) {
-        Optional<AppUser> user = userRepository.findById(userDTO.getId());
-        if (!user.isPresent()){
-            return "index";
+    public int createUser(HttpServletRequest request) throws IOException {
+        System.out.println("createUser API");
+        // read the json sent by the client
+        BufferedReader reader = request.getReader();
+        // create a string format of the json from the reader
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
         }
-        AppUser appUser = user.get();
+        String jsonData = jsonBuilder.toString();
+        System.out.println("JSONDATA: " + jsonData);
+        // Parse the JSON data using Jackson ObjectMapper
+        //create the objects as java objects
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        //create the objects as java objects
+        HashMap<String, Object> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+        String username = (String) userData.get("username");
+        String password = (String) userData.get("password");
+        AppUser appUser = new AppUser(username, password);
         userRepository.save(appUser);
-        model.addAttribute("AppUser", appUser);
-        return "/";
+        System.out.println(appUser);
+        return 200;
     }
 }
