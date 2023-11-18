@@ -2,6 +2,7 @@ package com.opinionowl.opinionowl.controllers;
 
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
+import com.opinionowl.opinionowl.repos.UserRepository;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,9 @@ import java.util.*;
 @Controller
 @NoArgsConstructor
 public class PageController {
+
+    @Autowired
+    UserRepository userRepo;
 
     @Autowired
     SurveyRepository surveyRepo;
@@ -96,6 +100,14 @@ public class PageController {
         return "answerSurvey";
     }
 
+    /**
+     * <p>Route to direct the client to view the survey responses.</p>
+     * <br />
+     * <strong>Example call: /viewResponse?surveyId=1</strong>
+     * @param surveyId Long, the ID associated with a survey
+     * @param model Model, the client Model
+     * @return String, the html template
+     */
     @GetMapping("/viewResponse")
     public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
         // find the survey by id
@@ -107,30 +119,24 @@ public class PageController {
             System.out.println(survey);
 
             List<Question> questions = survey.getQuestions();
-            List<Map<String, Integer>> longAnswerResponses = new ArrayList<>();
-            List<Map<String, Integer>> radioChoiceResponses = new ArrayList<>();
-            List<Map<String, Integer>> rangeResponses = new ArrayList<>();
+            Map<Long, Map<String, Integer>> longAnswerResponses = new HashMap<>();
+            Map<Long, Question> questionMap = new HashMap<>();
 
             // Populate the answers
-            int numQuestions = questions.size();
             String title = survey.getTitle();
             for (Question q: questions) {
+                questionMap.put(q.getId(), q);
                 if (q.getType() == QuestionType.LONG_ANSWER) {
-                    longAnswerResponses.add(survey.getResponsesForQuestion(q.getId()));
-                } else if (q.getType() == QuestionType.RADIO_CHOICE) {
-                    radioChoiceResponses.add(survey.getResponsesForQuestion(q.getId()));
-                } else if (q.getType() == QuestionType.RANGE) {
-                    rangeResponses.add(survey.getResponsesForQuestion(q.getId()));
+                    longAnswerResponses.put(q.getId(), survey.getResponsesForQuestion(q.getId()));
                 }
             }
+
+            System.out.println(longAnswerResponses);
             // send the Model the data necessary for the page
             model.addAttribute("surveyId", survey.getId());
             model.addAttribute("surveyTitle", title);
-            model.addAttribute("questions", questions);
-            model.addAttribute("numberOfQuestions", numQuestions);
+            model.addAttribute("questionMap", questionMap);
             model.addAttribute("longAnswerResponses", longAnswerResponses);
-            model.addAttribute("radioChoiceResponses", radioChoiceResponses);
-            model.addAttribute("rangeResponses", rangeResponses);
         } else {
             // could not find survey, Error
             // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message

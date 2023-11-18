@@ -102,14 +102,29 @@ public class Survey {
      */
     public Map<String, Integer> getResponsesForQuestion(Long questionId){
         Map<String, Integer> result = new HashMap<>();
-        for (Response r: responses){
-            for (Answer a: r.getAnswers()){
-                if (Objects.equals(a.getQuestion(), questionId)){
-                    String content = a.getContent();
-                    if (result.containsKey(content)){
-                        result.put(content, result.get(content) + 1);
-                    } else {
-                        result.put(content, 1);
+        Optional<Question> question = this.questions.stream().filter(q -> q.getId().equals(questionId)).findAny();
+        if (question.isPresent()) {
+            Question q = question.get();
+            // Adds default values for radio choice questions.
+            if (q.getType() == QuestionType.RADIO_CHOICE){
+                for (String c: ((RadioChoiceQuestion)q).getChoices()){
+                    result.put(c, 0);
+                }
+            } else if (q.getType() == QuestionType.RANGE) { // Adds default values for range questions.
+                RangeQuestion rq = (RangeQuestion) q;
+                for (int i = rq.getLower(); i <= rq.getUpper(); i += rq.getIncrement()){
+                    result.put(Integer.toString(i), 0);
+                }
+            }
+            for (Response r : responses) {
+                for (Answer a : r.getAnswers()) {
+                    if (Objects.equals(a.getQuestion(), questionId)) {
+                        String content = a.getContent();
+                        if (result.containsKey(content)) {
+                            result.put(content, result.get(content) + 1);
+                        } else {
+                            result.put(content, 1);
+                        }
                     }
                 }
             }

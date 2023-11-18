@@ -7,6 +7,7 @@ import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
+import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -112,5 +113,74 @@ public class APIController {
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
         return 200;
+    }
+
+    /**
+     * <p>API Call to get the results for a specific survey. </p>
+     * <br />
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     "questions": {
+     *         "1": {
+     *             "type": "Long Answer",
+     *             "prompt": "test1"
+     *         },
+     *         "2": {
+     *             "type": "Radio Choice",
+     *             "prompt": "test2"
+     *         },
+     *         "3": {
+     *             "type": "Range",
+     *             "prompt": "test3"
+     *         }
+     *     },
+     *     "responses": {
+     *         "1": {
+     *             "hi": 1,
+     *             "bye": 1
+     *         },
+     *         "2": {
+     *             "a": 1,
+     *             "c": 1,
+     *             "d": 0
+     *         },
+     *         "3": {"1": 1, "2": 0, "3": 0, "4": 0, "5": 1}
+     *     }
+     * }
+     * </pre>
+     * @param id String the id of the survey.
+     * @return resObject, the results of the survey in JSON format.
+     * @throws JSONException
+     */
+    @GetMapping("/getSurveyResults/{id}")
+    public String getSurveyResults(@PathVariable("id") String id) throws JSONException {
+        System.out.println("getSurveyResults() API");
+        Long surveyId = Long.parseLong(id);
+        Optional<Survey> s = surveyRepo.findById(surveyId);
+        JSONObject resObject = new JSONObject();
+        if (s.isPresent()){
+            Survey survey = s.get();
+            HashMap<Long, String> questions = new HashMap<>();
+            JSONObject qObject = new JSONObject();
+            JSONObject rObject = new JSONObject();
+            for (Question q: survey.getQuestions()){
+                JSONObject indQObject = new JSONObject();
+                indQObject.put("type", q.getType().getType());
+                indQObject.put("prompt", q.getPrompt());
+                qObject.put(Long.toString(q.getId()), indQObject);
+
+                Map<String, Integer> qRes = survey.getResponsesForQuestion(q.getId());
+                JSONObject indRObject = new JSONObject();
+                for (String val: qRes.keySet()){
+                    indRObject.put(val, qRes.get(val));
+                }
+                rObject.put(Long.toString(q.getId()), indRObject);
+            }
+            resObject.put("questions", qObject);
+            resObject.put("responses", rObject);
+        }
+        System.out.println(resObject);
+        return resObject.toString();
     }
 }

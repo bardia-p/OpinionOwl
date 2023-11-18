@@ -29,6 +29,7 @@ public class ResponseTest {
 
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 10);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2000));
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "response1");

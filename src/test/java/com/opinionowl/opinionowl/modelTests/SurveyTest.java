@@ -27,6 +27,8 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 10);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2001));
+
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "response1");
@@ -97,6 +99,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 3);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2002));
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "hai");
@@ -118,6 +121,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 2);
         survey.addQuestion(laq);
+        laq.setId(Long.valueOf(2003));
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test1");
@@ -137,6 +141,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 20);
         survey.addQuestion(laq);
+        laq.setId(Long.valueOf(2004));
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test response");
@@ -158,13 +163,14 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RadioChoiceQuestion rcq = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(rcq);
+        rcq.setId(Long.valueOf(2005));
 
         Response r1 = new Response(survey);
         r1.addAnswer(rcq.getId(), "a");
         r1.addAnswer(rcq.getId(), "d");
         survey.addResponse(r1);
 
-        Map<String, Integer> expectedR = Map.of("a", 1, "d", 1);
+        Map<String, Integer> expectedR = Map.of("a", 1, "d", 1, "c", 0);
         assertTrue(survey.getResponsesForQuestion(rcq.getId()).equals(expectedR));
     }
 
@@ -177,6 +183,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RangeQuestion rq = new RangeQuestion(survey, "test3", 1, 10, 1);
         survey.addQuestion(rq);
+        rq.setId(Long.valueOf(2006));
 
         Response r1 = new Response(survey);
         r1.addAnswer(rq.getId(), "2");
@@ -225,6 +232,8 @@ public class SurveyTest {
 
         r2.addAnswer(q1.getId(), "yo");
         r2.addAnswer(q2.getId(), "a");
+
+        survey.addResponse(r2);
 
         surveyRepository.save(survey);
 
