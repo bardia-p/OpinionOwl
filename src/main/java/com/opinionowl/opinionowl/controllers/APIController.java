@@ -6,10 +6,12 @@ import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -28,9 +30,28 @@ public class APIController {
     @Autowired
     private ResponseRepository responseRepo;
 
-
     @Autowired
     private UserRepository userRepository;
+
+    /**
+     * Method for building a JSON format from a request.
+     * @param request An HttpServletRequest request.
+     * @return An ObjectMapper that maps a request's parameter to a particular value in JSON format.
+     * @throws IOException
+     */
+    private String JSONBuilder(HttpServletRequest request) throws IOException {
+        // read the json sent by the client
+        BufferedReader reader = request.getReader();
+        // create a string format of the json from the reader
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        String jsonData = jsonBuilder.toString();
+        System.out.println("JSONDATA: " + jsonData);
+        return jsonData;
+    }
 
     /**
      * <p>Api call to handle the survey response by a user.</p>
@@ -47,15 +68,7 @@ public class APIController {
         // handle save of survey data
         // redirect to home
         System.out.println("Post survey response api API");
-        // read the json sent by the client
-        BufferedReader reader = request.getReader();
-        // create a string format of the json from the reader
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        String jsonData = jsonBuilder.toString();
+        String jsonData = JSONBuilder(request);
         System.out.println("JSONDATA: " + jsonData);
         ObjectMapper objectMapper = new ObjectMapper();
         Optional<Survey> surveyO =  surveyRepo.findById(surveyId);
@@ -79,6 +92,20 @@ public class APIController {
         System.out.println(responseToSurvey);
 
         return 200;
+    }
+
+    /**
+     * <p>Api call to handle the survey answers by a user.</p>
+     * <br />
+     * <strong>Api route: api/v1/postSurveyResponses</strong>
+     * @param response HttpServletResponse server side response
+     * @throws IOException
+     */
+    @PostMapping("/postSurveyResponses")
+    public void postSurveyResponses(HttpServletResponse response) throws IOException {
+        // handle save of survey data
+        // redirect to home
+        response.sendRedirect("/");
     }
 
     /**
@@ -106,21 +133,10 @@ public class APIController {
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
-        // read the json sent by the client
-        BufferedReader reader = request.getReader();
-        // create a string format of the json from the reader
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        String jsonData = jsonBuilder.toString();
-        System.out.println("JSONDATA: " + jsonData);
-        // Parse the JSON data using Jackson ObjectMapper
-
-        //create the objects as java objects
+        String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+
         // Extract specific data from the parsed JSON
         String title = (String) surveyData.get("title");
         List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
@@ -147,6 +163,34 @@ public class APIController {
         }
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
+        return 200;
+    }
+
+    /**
+     * <p>API Call to post a new user. A user generated JSON is required from the client</p>
+     * <br />
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     username: "username",
+     *     password: "password"
+     * }
+     * </pre>
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @PostMapping("/createUser")
+    public int createUser(HttpServletRequest request) throws IOException {
+        System.out.println("createUser() API");
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {});
+        String username = userData.get("username");
+        String password = userData.get("password");
+        AppUser appUser = new AppUser(username, password);
+        userRepository.save(appUser);
+        System.out.println(appUser);
         return 200;
     }
 }
