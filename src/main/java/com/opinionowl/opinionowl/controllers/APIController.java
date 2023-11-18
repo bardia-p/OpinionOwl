@@ -32,6 +32,12 @@ public class APIController {
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Method for building a JSON format from a request.
+     * @param request An HttpServletRequest request.
+     * @return An ObjectMapper that maps a request's parameter to a particular value in JSON format.
+     * @throws IOException
+     */
     public HashMap<String, Object> JSONBuilder(HttpServletRequest request) throws IOException {
         // read the json sent by the client
         BufferedReader reader = request.getReader();
