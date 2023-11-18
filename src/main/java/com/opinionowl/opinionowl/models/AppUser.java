@@ -18,7 +18,6 @@ import java.util.Objects;
 @NoArgsConstructor
 public class AppUser {
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     // Create an auto generated unique Id

@@ -1,5 +1,8 @@
 const submitButton = $("#registerUser-submit");
 
+/**
+ * The JavaScript AJAX call for when a new user is registered (i.e. the submit button is clicked).
+ */
 submitButton.click((e) => {
     e.preventDefault();
     const dataDictionary = {};

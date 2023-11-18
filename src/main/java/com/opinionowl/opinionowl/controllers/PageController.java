@@ -98,15 +98,17 @@ public class PageController {
     }
 
     @GetMapping("/viewResponse")
-    public String getViewResponsePage(Model model) {
+    public String getViewResponsePage() {
         return "viewResponse";
     }
 
 
+    /**
+     * GET mapping for register user.
+     * @return A String HTML template for registerUser.
+     */
     @GetMapping("/registerUser")
-    public String addUser(Model model){
-        AppUser buddyDTO = new AppUser();
-        model.addAttribute("UserDTO", buddyDTO);
+    public String addUser(){
         return "registerUser";
     }
 }

@@ -32,6 +32,21 @@ public class APIController {
     @Autowired
     private UserRepository userRepository;
 
+    public HashMap<String, Object> JSONBuilder(HttpServletRequest request) throws IOException {
+        // read the json sent by the client
+        BufferedReader reader = request.getReader();
+        // create a string format of the json from the reader
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        String jsonData = jsonBuilder.toString();
+        System.out.println("JSONDATA: " + jsonData);
+        //create the objects as java objects
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+    }
 
     /**
      * <p>Api call to handle the survey answers by a user.</p>
@@ -72,21 +87,8 @@ public class APIController {
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
-        // read the json sent by the client
-        BufferedReader reader = request.getReader();
-        // create a string format of the json from the reader
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        String jsonData = jsonBuilder.toString();
-        System.out.println("JSONDATA: " + jsonData);
-        // Parse the JSON data using Jackson ObjectMapper
+        HashMap<String, Object> surveyData = JSONBuilder(request);
 
-        //create the objects as java objects
-        ObjectMapper objectMapper = new ObjectMapper();
-        HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
         // Extract specific data from the parsed JSON
         String title = (String) surveyData.get("title");
         List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
@@ -116,25 +118,24 @@ public class APIController {
         return 200;
     }
 
+    /**
+     * <p>API Call to post a new user. A user generated JSON is required from the client</p>
+     * <br />
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     username: "username",
+     *     password: "password"
+     * }
+     * </pre>
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
     @PostMapping("/createUser")
     public int createUser(HttpServletRequest request) throws IOException {
-        System.out.println("createUser API");
-        // read the json sent by the client
-        BufferedReader reader = request.getReader();
-        // create a string format of the json from the reader
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        String jsonData = jsonBuilder.toString();
-        System.out.println("JSONDATA: " + jsonData);
-        // Parse the JSON data using Jackson ObjectMapper
-        //create the objects as java objects
-        ObjectMapper objectMapper = new ObjectMapper();
-
-        //create the objects as java objects
-        HashMap<String, Object> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+        System.out.println("createUser() API");
+        HashMap<String, Object> userData = JSONBuilder(request);
         String username = (String) userData.get("username");
         String password = (String) userData.get("password");
         AppUser appUser = new AppUser(username, password);
