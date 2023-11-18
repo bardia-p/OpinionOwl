@@ -36,37 +36,6 @@
             <a href="/" th:href="@{/}">Go Back</a>
             <div th:replace="~{fragments/footer :: footer}"></div>
         </footer>
-    <script>
-        const submitButton = $("#submit-button");
-
-        submitButton.click((e) => {
-            e.preventDefault();
-            const data = {}
-            $(".text-questions input").each(function() {
-                const id = $(this).attr("id");
-                const value = $(this).attr;
-                console.log(id, value);
-            });
-
-            const dataJson = JSON.stringify(data);
-
-            // $.ajax({
-            //     type: $("#answer-survey-form").attr("method"),
-            //     url: '/api/v1/postSurveyResponses',
-            //     data: dataJson,
-            //     contentType: 'application/json',
-            //     success: function(res) {
-            //         // success handling
-            //         console.log('Survey created answered');
-            //         if (res === 200) window.location.href = "/";
-            //     },
-            //     error: function(xhr, status, error) {
-            //         // error handling
-            //         console.error('Error creating survey:', error);
-            //     }
-            // });
-        });
-
-    </script>
+        <script src="/scripts/saveSurveyResponse.js" type="application/javascript"></script>
     </body>
 </html>

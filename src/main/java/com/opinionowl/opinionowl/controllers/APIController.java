@@ -2,15 +2,15 @@ package com.opinionowl.opinionowl.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper; // You might need to import this class
 
 import com.opinionowl.opinionowl.models.*;
+import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.websocket.server.PathParam;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.core.type.TypeReference;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -24,25 +24,62 @@ import java.util.*;
 public class APIController {
 
     @Autowired
-    SurveyRepository surveyRepo;
+    private SurveyRepository surveyRepo;
+
+    @Autowired
+    private ResponseRepository responseRepo;
 
 
     @Autowired
     private UserRepository userRepository;
 
-
     /**
-     * <p>Api call to handle the survey answers by a user.</p>
+     * <p>Api call to handle the survey response by a user.</p>
      * <br />
-     * <strong>Api route: api/v1/postSurveyResponses</strong>
-     * @param response HttpServletResponse server side response
+     * <strong>Api route: api/v1/postSurveyResponses?surveyId=${your id}</strong>
+     * <strong>Example of a json</strong>
+     * <pre>
+     *     JSON DATA: {"1":"tony","2":"on","3":"11"...etc}
+     * </pre>
      * @throws IOException
      */
     @PostMapping("/postSurveyResponses")
-    public void postSurveyResponses(HttpServletResponse response) throws IOException {
+    public int postSurveyResponses(@PathParam("surveyId") Long surveyId, HttpServletRequest request) throws IOException {
         // handle save of survey data
         // redirect to home
-        response.sendRedirect("/");
+        System.out.println("Post survey response api API");
+        // read the json sent by the client
+        BufferedReader reader = request.getReader();
+        // create a string format of the json from the reader
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        String jsonData = jsonBuilder.toString();
+        System.out.println("JSONDATA: " + jsonData);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Optional<Survey> surveyO =  surveyRepo.findById(surveyId);
+
+        Survey s = surveyO.orElse(null);
+
+        if (s == null) {
+            System.out.println("Could not find survey with ID: " + surveyId);
+            return 400;
+        }
+
+        Response responseToSurvey = new Response(s);
+        HashMap<Long, String> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<Long, String>>() {});
+        for (Long questionId : surveyData.keySet()) {
+            String content = surveyData.get(questionId);
+            responseToSurvey.addAnswer(questionId, content);
+        }
+
+        responseRepo.save(responseToSurvey);
+        // TODO: maybe consider toast messages? for now printing is fine for proof
+        System.out.println(responseToSurvey);
+
+        return 200;
     }
 
     /**
