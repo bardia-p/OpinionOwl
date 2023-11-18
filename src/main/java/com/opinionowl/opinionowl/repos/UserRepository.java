@@ -10,4 +10,6 @@ import java.util.List;
  */
 public interface UserRepository extends CrudRepository<AppUser, Long>{
     List<AppUser> findAll();
+
+    AppUser findById(long id);
 }

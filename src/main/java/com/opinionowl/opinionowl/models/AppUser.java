@@ -88,5 +88,6 @@ public class AppUser {
         AppUser appUser = (AppUser) o;
         return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(password, appUser.password) && Objects.equals(listSurveys, appUser.listSurveys);
     }
+
 }
 
