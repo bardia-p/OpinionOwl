@@ -1,7 +1,8 @@
 package com.opinionowl.opinionowl.controllers;
-import com.fasterxml.jackson.databind.ObjectMapper; // You might need to import this class
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.opinionowl.opinionowl.models.*;
+import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,12 +26,74 @@ import java.util.*;
 public class APIController {
 
     @Autowired
-    SurveyRepository surveyRepo;
+    private SurveyRepository surveyRepo;
 
+    @Autowired
+    private ResponseRepository responseRepo;
 
     @Autowired
     private UserRepository userRepository;
 
+    /**
+     * Method for building a JSON format from a request.
+     * @param request An HttpServletRequest request.
+     * @return An ObjectMapper that maps a request's parameter to a particular value in JSON format.
+     * @throws IOException
+     */
+    private String JSONBuilder(HttpServletRequest request) throws IOException {
+        // read the json sent by the client
+        BufferedReader reader = request.getReader();
+        // create a string format of the json from the reader
+        StringBuilder jsonBuilder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            jsonBuilder.append(line);
+        }
+        String jsonData = jsonBuilder.toString();
+        System.out.println("JSONDATA: " + jsonData);
+        return jsonData;
+    }
+
+    /**
+     * <p>Api call to handle the survey response by a user.</p>
+     * <br />
+     * <strong>Api route: api/v1/postSurveyResponses?surveyId=${your id}</strong>
+     * <strong>Example of a json</strong>
+     * <pre>
+     *     JSON DATA: {"1":"tony","2":"on","3":"11"...etc}
+     * </pre>
+     * @throws IOException
+     */
+    @PostMapping("/postSurveyResponses/{surveyId}")
+    public int postSurveyResponses(@PathVariable("surveyId") Long surveyId, HttpServletRequest request) throws IOException {
+        // handle save of survey data
+        // redirect to home
+        System.out.println("Post survey response api API");
+        String jsonData = JSONBuilder(request);
+        System.out.println("JSONDATA: " + jsonData);
+        ObjectMapper objectMapper = new ObjectMapper();
+        Optional<Survey> surveyO =  surveyRepo.findById(surveyId);
+
+        Survey s = surveyO.orElse(null);
+
+        if (s == null) {
+            System.out.println("Could not find survey with ID: " + surveyId);
+            return 400;
+        }
+
+        Response responseToSurvey = new Response(s);
+        HashMap<Long, String> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<Long, String>>() {});
+        for (Long questionId : surveyData.keySet()) {
+            String content = surveyData.get(questionId);
+            responseToSurvey.addAnswer(questionId, content);
+        }
+
+        responseRepo.save(responseToSurvey);
+        // TODO: maybe consider toast messages? for now printing is fine for proof
+        System.out.println(responseToSurvey);
+
+        return 200;
+    }
 
     /**
      * <p>Api call to handle the survey answers by a user.</p>
@@ -71,21 +134,10 @@ public class APIController {
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
-        // read the json sent by the client
-        BufferedReader reader = request.getReader();
-        // create a string format of the json from the reader
-        StringBuilder jsonBuilder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            jsonBuilder.append(line);
-        }
-        String jsonData = jsonBuilder.toString();
-        System.out.println("JSONDATA: " + jsonData);
-        // Parse the JSON data using Jackson ObjectMapper
-
-        //create the objects as java objects
+        String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+
         // Extract specific data from the parsed JSON
         String title = (String) surveyData.get("title");
         List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
@@ -159,12 +211,12 @@ public class APIController {
         Long surveyId = Long.parseLong(id);
         Optional<Survey> s = surveyRepo.findById(surveyId);
         JSONObject resObject = new JSONObject();
-        if (s.isPresent()){
+        if (s.isPresent()) {
             Survey survey = s.get();
             HashMap<Long, String> questions = new HashMap<>();
             JSONObject qObject = new JSONObject();
             JSONObject rObject = new JSONObject();
-            for (Question q: survey.getQuestions()){
+            for (Question q : survey.getQuestions()) {
                 JSONObject indQObject = new JSONObject();
                 indQObject.put("type", q.getType().getType());
                 indQObject.put("prompt", q.getPrompt());
@@ -172,7 +224,7 @@ public class APIController {
 
                 Map<String, Integer> qRes = survey.getResponsesForQuestion(q.getId());
                 JSONObject indRObject = new JSONObject();
-                for (String val: qRes.keySet()){
+                for (String val : qRes.keySet()) {
                     indRObject.put(val, qRes.get(val));
                 }
                 rObject.put(Long.toString(q.getId()), indRObject);
@@ -182,5 +234,33 @@ public class APIController {
         }
         System.out.println(resObject);
         return resObject.toString();
+    }
+
+    /**
+     * <p>API Call to post a new user. A user generated JSON is required from the client</p>
+     * <br />
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     username: "username",
+     *     password: "password"
+     * }
+     * </pre>
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @PostMapping("/createUser")
+    public int createUser(HttpServletRequest request) throws IOException {
+        System.out.println("createUser() API");
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {});
+        String username = userData.get("username");
+        String password = userData.get("password");
+        AppUser appUser = new AppUser(username, password);
+        userRepository.save(appUser);
+        System.out.println(appUser);
+        return 200;
     }
 }

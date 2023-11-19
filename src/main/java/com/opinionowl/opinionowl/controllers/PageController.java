@@ -146,4 +146,14 @@ public class PageController {
         }
         return "viewResponse";
     }
+
+
+    /**
+     * GET mapping for register user.
+     * @return A String HTML template for registerUser.
+     */
+    @GetMapping("/registerUser")
+    public String addUser(){
+        return "registerUser";
+    }
 }
