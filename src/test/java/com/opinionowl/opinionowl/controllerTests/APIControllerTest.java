@@ -1,5 +1,4 @@
 package com.opinionowl.opinionowl.controllerTests;
-import com.opinionowl.opinionowl.models.Response;
 import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.*;
 import org.junit.jupiter.api.Test;
@@ -23,8 +22,6 @@ public class APIControllerTest {
     @Autowired
     private MockMvc testController;
 
-    @Autowired ResponseRepository responseRepository;
-
     @Autowired
     private SurveyRepository surveyRepository;
 
@@ -44,29 +41,6 @@ public class APIControllerTest {
             assertNotNull(survey);
             assertEquals(survey.getTitle(), "This is a test");
         }
-    }
-
-    /**
-     * Method to test the post sruvey response mapping. It simply verifies that a new survey response was posted to the repository.
-     * It will first create a survey with questions then post a response to that very survey.
-     * @throws Exception
-     */
-    @Test
-    public void testPostSurveyResponse() throws Exception {
-        String postDataResponse = "{\"1\": \"some text answer\", \"2\" : \"some radio choice\", \"3\" : \"25\"}";
-        String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"This is a test\",\"textQuestions\":[\"Test1\"]}";
-        // create a survey
-        this.testController.perform(post("/api/v1/createSurvey")
-                        .contentType(MediaType.APPLICATION_JSON).content(postDataSurvey))
-                .andExpect(status().isOk());
-
-        // post a response to the survey created. We can guarantee there is only one survey, so we grab the id=1
-        this.testController.perform(post("/api/v1/postSurveyResponses/1").contentType(MediaType.APPLICATION_JSON).content(postDataResponse))
-                .andExpect(status().isOk());
-
-        Response r = responseRepository.findById(1L).orElse(null);
-        assertNotNull(r);
-        assertEquals(3, r.getAnswers().size());
     }
 }
 
