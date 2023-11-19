@@ -5,9 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * The survey class which contains all the information needed to create survey.
@@ -23,7 +21,7 @@ public class Survey {
     private Long id;
 
     // Keeps track of the questions of the survey.
-    @OneToMany(mappedBy = "survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "survey", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
     // Keeps track of the survey responses.
@@ -102,12 +100,32 @@ public class Survey {
      * @param questionId the id of the question.
      * @return a list of the responses for that question.
      */
-    public List<String> getResponsesForQuestion(Long questionId){
-        List<String> result = new ArrayList<>();
-        for (Response r: responses){
-            for (Answer a: r.getAnswers()){
-                if (Objects.equals(a.getQuestion(), questionId)){
-                    result.add(a.getContent());
+    public Map<String, Integer> getResponsesForQuestion(Long questionId){
+        Map<String, Integer> result = new HashMap<>();
+        Optional<Question> question = this.questions.stream().filter(q -> q.getId().equals(questionId)).findAny();
+        if (question.isPresent()) {
+            Question q = question.get();
+            // Adds default values for radio choice questions.
+            if (q.getType() == QuestionType.RADIO_CHOICE){
+                for (String c: ((RadioChoiceQuestion)q).getChoices()){
+                    result.put(c, 0);
+                }
+            } else if (q.getType() == QuestionType.RANGE) { // Adds default values for range questions.
+                RangeQuestion rq = (RangeQuestion) q;
+                for (int i = rq.getLower(); i <= rq.getUpper(); i += rq.getIncrement()){
+                    result.put(Integer.toString(i), 0);
+                }
+            }
+            for (Response r : responses) {
+                for (Answer a : r.getAnswers()) {
+                    if (Objects.equals(a.getQuestion(), questionId)) {
+                        String content = a.getContent();
+                        if (result.containsKey(content)) {
+                            result.put(content, result.get(content) + 1);
+                        } else {
+                            result.put(content, 1);
+                        }
+                    }
                 }
             }
         }

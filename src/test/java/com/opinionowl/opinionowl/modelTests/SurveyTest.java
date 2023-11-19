@@ -27,6 +27,8 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 10);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2001));
+
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "response1");
@@ -36,8 +38,8 @@ public class SurveyTest {
         survey.setClosed(true); // close the survey
         assertTrue(survey.isClosed());
 
-        List<String> expectedR = Arrays.asList("response1", "response2");
-        List<String> actualR = survey.getResponsesForQuestion(q1.getId());
+        Map<String, Integer> expectedR = Map.of("response1", 1, "response2", 1);
+        Map<String, Integer> actualR = survey.getResponsesForQuestion(q1.getId());
 
         survey.removeResponse(r1.getId()); // removing a response from a closed survey
         assertEquals(expectedR, actualR);
@@ -49,7 +51,7 @@ public class SurveyTest {
         survey.addResponse(r2);
 
         List<String> res2 = Arrays.asList("hello", "okay");
-        assertFalse(actualR.containsAll(res2));
+        assertFalse(actualR.equals(res2));
     }
 
     /**
@@ -97,6 +99,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 3);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2002));
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "hai");
@@ -105,8 +108,8 @@ public class SurveyTest {
         survey.setClosed(true);
         assertEquals(1, survey.getResponses().size());
 
-        List<String> expectedR = Arrays.asList("hai", "a");
-        assertTrue(survey.getResponsesForQuestion(q1.getId()).containsAll(expectedR));
+        Map<String, Integer> expectedR = Map.of("hai", 1, "a", 1);
+        assertTrue(survey.getResponsesForQuestion(q1.getId()).equals(expectedR));
     }
 
     /**
@@ -118,6 +121,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 2);
         survey.addQuestion(laq);
+        laq.setId(Long.valueOf(2003));
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test1");
@@ -137,14 +141,15 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 20);
         survey.addQuestion(laq);
+        laq.setId(Long.valueOf(2004));
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test response");
         r1.addAnswer(laq.getId(), "SYSC 4806 project");
         survey.addResponse(r1);
 
-        List<String> responses = survey.getResponsesForQuestion(laq.getId());
-        for(String res : responses) {
+        Map<String, Integer> responses = survey.getResponsesForQuestion(laq.getId());
+        for(String res : responses.keySet()) {
             assertTrue(res.length() <= laq.getCharLimit());
         }
     }
@@ -158,14 +163,15 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RadioChoiceQuestion rcq = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(rcq);
+        rcq.setId(Long.valueOf(2005));
 
         Response r1 = new Response(survey);
         r1.addAnswer(rcq.getId(), "a");
         r1.addAnswer(rcq.getId(), "d");
         survey.addResponse(r1);
 
-        List<String> expected = Arrays.asList("a", "d");
-        assertTrue(survey.getResponsesForQuestion(rcq.getId()).containsAll(expected));
+        Map<String, Integer> expectedR = Map.of("a", 1, "d", 1, "c", 0);
+        assertTrue(survey.getResponsesForQuestion(rcq.getId()).equals(expectedR));
     }
 
     /**
@@ -177,6 +183,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RangeQuestion rq = new RangeQuestion(survey, "test3", 1, 10, 1);
         survey.addQuestion(rq);
+        rq.setId(Long.valueOf(2006));
 
         Response r1 = new Response(survey);
         r1.addAnswer(rq.getId(), "2");
@@ -184,8 +191,8 @@ public class SurveyTest {
         r1.addAnswer(rq.getId(), "10");
         survey.addResponse(r1);
 
-        List<String> responses = survey.getResponsesForQuestion(rq.getId());
-        for(String res : responses) {
+        Map<String, Integer> responses = survey.getResponsesForQuestion(rq.getId());
+        for(String res : responses.keySet()) {
             assertTrue(Integer.parseInt(res) >= rq.getLower() && Integer.parseInt(res) <= rq.getUpper());
         }
     }
@@ -225,6 +232,8 @@ public class SurveyTest {
 
         r2.addAnswer(q1.getId(), "yo");
         r2.addAnswer(q2.getId(), "a");
+
+        survey.addResponse(r2);
 
         surveyRepository.save(survey);
 

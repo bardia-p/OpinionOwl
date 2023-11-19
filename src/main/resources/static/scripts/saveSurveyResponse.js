@@ -8,7 +8,11 @@ submitButton.click((e) => {
     const data = {}
     $("#answer-survey-form input").each(function() {
         const id = $(this).attr("id");
-        data[id] = $(this).val();
+        if ($(this).attr("type") === "radio" && $(this).is(':checked')){
+            data[id] = $(this).next().text();
+        } else if ($(this).attr("type") !== "radio") {
+            data[id] = $(this).val();
+        }
     });
     const dataJson = JSON.stringify(data);
     $.ajax({

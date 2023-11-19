@@ -18,13 +18,16 @@
       owl companions.
     </p>
     <a href="/createSurvey" th:href="@{/createSurvey}">Create a survey</a>
-    <div>
+  <div>
       <h2>Surveys Available</h2>
       <ul>
         <li th:each="survey : ${surveys}">
           <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}">
             <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
             <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
+          </a>
+          <a href="/viewResponse" th:href="@{/viewResponse(surveyId=${survey.getId()})}">
+            View Response
           </a>
         </li>
       </ul>

@@ -17,7 +17,7 @@ import java.util.Objects;
 public class Answer {
     // The id of the answer.
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     // The response which the answer belongs to.
@@ -47,7 +47,7 @@ public class Answer {
      */
     @Override
     public String toString(){
-        return "Answer#" + id + " value:" + content;
+        return "Answer#" + id + " question:" + question + " value:" + content;
     }
 
     /**

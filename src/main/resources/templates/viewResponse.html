@@ -1,12 +1,36 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>OpinionOwl | View Response</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-</head>
-<body>
-<div th:replace="~{fragments/header :: header}"></div>
-<h1>View Response</h1>
-</body>
+    <head>
+        <title>OpinionOwl | Responses</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    </head>
+    <body>
+        <div th:replace="~{fragments/header :: header}"></div>
+        <h1>Survey#<span id="surveyId" th:text="${surveyId}"></span>: <span th:text="${surveyTitle}"></span></h1>
+        <h2>Long Answer Questions</h2>
+        <ul id="text-container">
+            <li th:each="qid : ${longAnswerResponses.keySet()}">
+                <span th:text = "${questionMap.get(qid).getPrompt()}"></span>
+                <ul>
+                    <li th:each="res : ${longAnswerResponses.get(qid).keySet()}">
+                        <span th:text="${res}"></span>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>Radio Choice Questions</h2>
+        <ul id="radio-choice-container">
+
+        </ul>
+
+
+        <h2>Range Questions</h2>
+        <ul id="range-container">
+
+        </ul>
+    </body>
+    <script src="/scripts/generateGraphs.js" type="application/javascript"></script>
 </html>

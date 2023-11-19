@@ -29,14 +29,14 @@ public class ResponseTest {
 
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 10);
         survey.addQuestion(q1);
+        q1.setId(Long.valueOf(2000));
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "response1");
         r1.addAnswer(q1.getId(), "response2");
         survey.addResponse(r1);
-
-        List<String> expectedR = Arrays.asList("response1", "response2");
-        assertTrue(survey.getResponsesForQuestion(q1.getId()).containsAll(expectedR));
+        Map<String, Integer> expectedR = Map.of("response1", 1, "response2", 1);
+        assertTrue(survey.getResponsesForQuestion(q1.getId()).equals(expectedR));
     }
 
 
