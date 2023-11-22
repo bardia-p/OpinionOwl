@@ -43,7 +43,7 @@ public class APIControllerTest {
 
         for (Survey survey : surveyRepository.findAll()) {
             assertNotNull(survey);
-            assertEquals(survey.getTitle(), "This is a test");
+            assertEquals("This is a test", survey.getTitle());
         }
     }
 
@@ -58,10 +58,9 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        for (AppUser user: userRepository.findAll()) {
-            assertNotNull(user);
-            assertEquals(user.getUsername(), "maxcurkovic");
-        }
+        AppUser user = userRepository.findById(2);
+        assertNotNull(user);
+        assertEquals("maxcurkovic", user.getUsername());
     }
 }
 
