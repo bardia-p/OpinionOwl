@@ -1,5 +1,6 @@
 package com.opinionowl.opinionowl.controllerTests;
 import com.opinionowl.opinionowl.models.Survey;
+import com.opinionowl.opinionowl.models.AppUser;
 import com.opinionowl.opinionowl.repos.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,9 @@ public class APIControllerTest {
     @Autowired
     private SurveyRepository surveyRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     /**
      * Method to test the Create Survey post mapping. It simply verifies that a new survey was posted to the repository.
      * @throws Exception
@@ -40,6 +44,23 @@ public class APIControllerTest {
         for (Survey survey : surveyRepository.findAll()) {
             assertNotNull(survey);
             assertEquals(survey.getTitle(), "This is a test");
+        }
+    }
+
+    /**
+     * Method to test the Register User post mapping. It simply verifies that a new survey was posted to the repository.
+     * @throws Exception
+     */
+    @Test
+    public void testRegisterUser() throws Exception{
+        String postData = "{\"username\":\"maxcurkovic\",\"password\":\"sysc4806\"}";
+        this.testController.perform(post("/api/v1/createUser")
+                        .contentType(MediaType.APPLICATION_JSON).content(postData))
+                .andExpect(status().isOk());
+
+        for (AppUser user: userRepository.findAll()) {
+            assertNotNull(user);
+            assertEquals(user.getUsername(), "maxcurkovic");
         }
     }
 }
