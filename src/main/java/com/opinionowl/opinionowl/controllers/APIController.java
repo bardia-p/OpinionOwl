@@ -166,6 +166,7 @@ public class APIController {
         }
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
+        System.out.println(request.getCookies().length);
         return 200;
     }
 
@@ -299,14 +300,12 @@ public class APIController {
         response.addCookie(cookie);
         return 200;
     }
-
+    /**
     @GetMapping("/getCookie")
-    public int getCookie(@CookieValue (value = "username", defaultValue = "") String signedIn){
-        if(signedIn.equals("")){
-            return 401;
-        }
-        return 200;
+    public String getCookie(@CookieValue (value = "username", defaultValue = "") String signedIn){
+        return signedIn;
     }
+    **/
 
 
 

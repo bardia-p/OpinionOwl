@@ -2,13 +2,34 @@
   <div class="logo">
     <img src="/images/owl.png" alt="owl" width="50px" height="50px" />
     <p>Opinion Owl</p>
-    <nav><div class="tab">
+    <div id="header-right-contents">
+    </div>
+  </div>
+  <script>
+    const headerContents = $("#header-right-contents");
+    $.ajax({
+      type: "GET",
+      url: "/api/v1/getCookie",
+      success: function (res) {
+        console.log('cookie created successfully');
+        if (res === "") {
+          headerContents.html(`    <nav><div class="tab">
       <a href="/loginUser">
         <button class="tablinks">Login</button>
       </a>
       <a href="/registerUser">
         <button class="tablinks">Register User</button>
       </a>
-    </div></nav>
-  </div>
+    </div></nav>`)
+        }
+        else{
+          headerContents.html(`username: ${res}`)
+        }
+      },
+      error: function (xhr, status, error) {
+        // error handling
+        console.error('Error creating cookie:', error);
+      }
+    })
+  </script>
 </header>
