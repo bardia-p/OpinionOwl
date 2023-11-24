@@ -156,4 +156,9 @@ public class PageController {
     public String addUser(){
         return "registerUser";
     }
+
+    @GetMapping("/loginUser")
+    public String loginUser(){
+        return "loginUsers";
+    }
 }

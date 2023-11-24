@@ -263,4 +263,25 @@ public class APIController {
         System.out.println(appUser);
         return 200;
     }
+
+    @PostMapping("/loginUser")
+    public int loginUser(HttpServletRequest request) throws IOException{
+        AppUser loggedInUser = null;
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
+        });
+        String username = userData.get("username");
+        String password = userData.get("password");
+        for(AppUser user : userRepository.findAll()){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                loggedInUser = user;
+                break;
+            }
+        }
+        if(loggedInUser == null){
+            return 401; //indicates unauthorized
+        }
+        return 200;
+    }
 }
