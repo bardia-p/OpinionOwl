@@ -21,8 +21,7 @@
                                 <p><a th:href="@{/viewResponse(surveyId=${survey.getId()})}"><button type="button" th:disabled="${!survey.getClosed()}">View Results</button></a></p>
                                 <p><button class="manage-button" type="submit" disabled>Edit Survey <span th:text="${survey.getId()}"></span></button></p>
                                 <p>
-                                    <button type="button" th:onclick="'closeSurvey('${survey.getId()}')'" th:text="${'Close Survey ' + survey.getId()}">Close Survey</button>
-                                </p>
+                                    <button type="button" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey ' + survey.getId()}">Close Survey</button>                                </p>
                             </div>
                         </td>
                     </tr>
