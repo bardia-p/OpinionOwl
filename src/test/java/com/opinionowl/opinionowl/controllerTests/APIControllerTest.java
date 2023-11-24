@@ -58,9 +58,15 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser user = userRepository.findById(2);
-        assertNotNull(user);
-        assertEquals("maxcurkovic", user.getUsername());
+        AppUser retrievedUser = null;
+        for (AppUser u: userRepository.findAll()){
+            if (u.getUsername().equals("maxcurkovic")){
+                retrievedUser = u;
+                break;
+            }
+        }
+        assertNotNull(retrievedUser);
+        assertEquals("maxcurkovic", retrievedUser.getUsername());
     }
 }
 
