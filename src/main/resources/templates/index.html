@@ -32,6 +32,13 @@
         </li>
       </ul>
     </div>
+  <nav>
+    <div class="tab">
+      <a href="/manageSurvey">
+        <button class="manage-button" th:attr="disabled=${#lists.isEmpty(surveys)}">Manage Surveys</button>
+      </a>
+    </div>
+  </nav>
   <div th:replace="~{fragments/footer :: footer}"></div>
   </body>
 </html>

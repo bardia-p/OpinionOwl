@@ -263,4 +263,22 @@ public class APIController {
         System.out.println(appUser);
         return 200;
     }
+
+    /**
+     * API call to close a survey of a specified user id
+     * @param id, id of the logged-in user
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @PostMapping("/closeSurvey/{id}")
+    public int closeSurvey(@PathVariable("id") Long id) throws IOException {
+        System.out.println("closeSurvey() API");
+        Survey survey = surveyRepo.findById(id).orElse(null);
+        if (survey == null) {
+            return 400;
+        }
+        survey.setClosed(true);
+        surveyRepo.save(survey);
+        return 200;
+    }
 }

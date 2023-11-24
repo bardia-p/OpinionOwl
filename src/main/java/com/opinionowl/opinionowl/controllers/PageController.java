@@ -147,7 +147,6 @@ public class PageController {
         return "viewResponse";
     }
 
-
     /**
      * GET mapping for register user.
      * @return A String HTML template for registerUser.
@@ -155,5 +154,16 @@ public class PageController {
     @GetMapping("/registerUser")
     public String addUser(){
         return "registerUser";
+    }
+
+    /**
+     * Route to direct the client to view the list of existing surveys to manage them.
+     * @return, String HTML template for manageSurvey
+     */
+    @GetMapping("/manageSurvey")
+    public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model){
+        List<Survey> surveys = surveyRepo.findAll();
+        model.addAttribute("surveys", surveys);
+        return "manageSurvey";
     }
 }
