@@ -9,7 +9,7 @@ submitButton.click((e) => {
     const dataDictionary = {};
     dataDictionary["username"] = $("#username").val();
     dataDictionary["password"] = $("#password").val();
-    var formData = JSON.stringify(dataDictionary);
+    const formData = JSON.stringify(dataDictionary);
 
     $.ajax({
         type: "POST",
@@ -19,7 +19,9 @@ submitButton.click((e) => {
         contentType: "application/json",
         success: function (res) {
             console.log('User registered successfully');
-            if (res === 200) window.location.href = "/";
+            if (res === 200) {
+                setCookie(dataDictionary["username"])
+            }
             else if (res === 401) errorMessage.text("Invalid Username or Password");
         },
         error: function (xhr, status, error) {
@@ -29,3 +31,26 @@ submitButton.click((e) => {
     })
 
 });
+
+const setCookie = (username) => {
+    const dataDictionary = {};
+    dataDictionary["username"] = username;
+    const formData = JSON.stringify(dataDictionary);
+    console.log("MADE IT HERE");
+
+    $.ajax({
+        type: "POST",
+        url: "/api/v1/setCookie",
+        data: formData,
+        dataType: "json",
+        contentType: "application/json",
+        success: function (res) {
+            console.log('cookie created successfully');
+            if (res === 200) window.location.href = '/';
+        },
+        error: function (xhr, status, error) {
+            // error handling
+            console.error('Error creating cookie:', error);
+        }
+    })
+}

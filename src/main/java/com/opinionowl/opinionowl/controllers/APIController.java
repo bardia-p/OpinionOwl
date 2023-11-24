@@ -7,6 +7,8 @@ import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -284,4 +286,28 @@ public class APIController {
         }
         return 200;
     }
+
+    @PostMapping("/setCookie")
+    public int setCookie(HttpServletResponse response, HttpServletRequest request) throws IOException{
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
+        });
+        String username = userData.get("username");
+        Cookie cookie = new Cookie( "username", username);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return 200;
+    }
+
+    @GetMapping("/getCookie")
+    public int getCookie(@CookieValue (value = "username", defaultValue = "") String signedIn){
+        if(signedIn.equals("")){
+            return 401;
+        }
+        return 200;
+    }
+
+
+
 }
