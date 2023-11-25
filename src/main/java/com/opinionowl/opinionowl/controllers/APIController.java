@@ -348,7 +348,6 @@ public class APIController {
                 break;
             }
         }
-        System.out.println(cookie);
         if (cookie == null) return 401;
         cookie.setPath("/");
         response.addCookie(cookie);
