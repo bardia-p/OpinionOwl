@@ -165,7 +165,6 @@ public class APIController {
         }
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
-//        System.out.println(request.getCookies().length);
         return 200;
     }
 
