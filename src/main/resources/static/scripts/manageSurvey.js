@@ -9,6 +9,7 @@ function closeSurvey(id) {
         success: function (res) {
             if(res === 200) {
                 console.log("Success");
+                location.reload();
             }
         },
         error: function(xhr, status, error) {
