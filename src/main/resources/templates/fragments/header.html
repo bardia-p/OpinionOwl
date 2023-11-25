@@ -1,12 +1,23 @@
 <header>
-  <div class="logo">
-    <img src="/images/owl.png" alt="owl" width="50px" height="50px" />
+  <div className="logo">
+    <img src="/images/owl.png" alt="owl" width="50px" height="50px"/>
     <p>Opinion Owl</p>
-    <nav><div class="tab">
-      <button class="tablinks">Login</button>
-      <a href="/registerUser">
-        <button class="tablinks">Register User</button>
-      </a>
-    </div></nav>
+    <div th:if="${userId == null}">
+      <nav>
+        <div className="tab">
+          <a href="/loginUser">
+            <button className="tablinks">Login</button>
+          </a>
+          <a href="/registerUser">
+            <button className="tablinks">Register User</button>
+          </a>
+        </div>
+      </nav>
+    </div>
+    <div th:if="${userId != null}">
+      <p>username: <span th:text="${userId}"></span></p>
+      <button class="tablinks" id="logout-btn">Logout</button>
+    </div>
   </div>
+  <script src="/scripts/logoutFunc.js" type="application/javascript"></script>
 </header>

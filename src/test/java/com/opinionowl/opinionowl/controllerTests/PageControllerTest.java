@@ -188,4 +188,38 @@ public class PageControllerTest {
         System.out.println("------------------------------");
     }
 
+    /**
+     * <p>Handle tests for Get mapping the register user page</p>
+     * <br />
+     * <strong>Expects:</strong> the <u>registerUser</u> HTML page
+     * @throws Exception
+     */
+    @Test
+    public void testRegisterUserPageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testRegisterUserPageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/RegisterUser', expecting to retrieve an HTML page");
+        String content = this.mockMvc.perform(get("/registerUser"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Create Survey, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Register User"));
+        System.out.println("------------------------------");
+    }
 }

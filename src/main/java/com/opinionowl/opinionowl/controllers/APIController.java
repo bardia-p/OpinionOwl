@@ -7,6 +7,7 @@ import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Cookie;
 import lombok.NoArgsConstructor;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -261,6 +262,86 @@ public class APIController {
         AppUser appUser = new AppUser(username, password);
         userRepository.save(appUser);
         System.out.println(appUser);
+        return 200;
+    }
+
+    /**
+     * <p>API Call to login a user by verifying that it exists in the userRespository</p>
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if user successfully logs in, 401 if user is not authenticated properly.
+     * @throws IOException
+     */
+    @PostMapping("/loginUser")
+    public int loginUser(HttpServletRequest request) throws IOException{
+        AppUser loggedInUser = null;
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
+        });
+        String username = userData.get("username");
+        String password = userData.get("password");
+        for(AppUser user : userRepository.findAll()){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                loggedInUser = user;
+                break;
+            }
+        }
+        if(loggedInUser == null){
+            return 401; //indicates unauthorized
+        }
+        return 200;
+    }
+
+    /**
+     *
+     * @param response HttpServletResponse server side response.
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200 if the API was successful. return 401 if the cookie could not be created
+     * @throws IOException
+     */
+    @PostMapping("/setCookie")
+    public int setCookie(HttpServletResponse response, HttpServletRequest request) throws IOException{
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
+        });
+        // TODO make this more generic
+        String username = userData.get("username");
+        String password = userData.get("password");
+        Cookie cookie = null;
+        for(AppUser user : userRepository.findAll()){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                cookie = new Cookie( "userId", String.valueOf(user.getId()));
+                break;
+            }
+        }
+        if (cookie == null) return 401;
+        cookie.setPath("/");
+        response.addCookie(cookie);
+        return 200;
+    }
+
+    /**
+     * <p>API Call to log out a user by deleting their cookies</p>
+     * @param response HttpServletResponse server side response.
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @PostMapping("/logout")
+    public int logoutUser(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("userId")) {
+                    Cookie cRemove = new Cookie("userId", "");
+                    cRemove.setMaxAge(0);
+                    cRemove.setPath("/");
+                    response.addCookie(cRemove);
+                    break;
+                }
+            }
+        }
         return 200;
     }
 
