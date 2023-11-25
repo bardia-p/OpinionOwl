@@ -8,7 +8,6 @@ import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Cookie;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.json.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,7 +165,7 @@ public class APIController {
         }
         surveyRepo.save(survey);
         System.out.println("survey generated\n\n" + survey);
-        System.out.println(request.getCookies().length);
+//        System.out.println(request.getCookies().length);
         return 200;
     }
 
@@ -294,19 +293,36 @@ public class APIController {
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
         });
+        // TODO make this more generic
         String username = userData.get("username");
-        Cookie cookie = new Cookie( "username", username);
+        String password = userData.get("password");
+        Cookie cookie = null;
+        for(AppUser user : userRepository.findAll()){
+            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
+                cookie = new Cookie( "userId", String.valueOf(user.getId()));
+                break;
+            }
+        }
+        if (cookie == null) return 401;
         cookie.setPath("/");
         response.addCookie(cookie);
         return 200;
     }
-    /**
-    @GetMapping("/getCookie")
-    public String getCookie(@CookieValue (value = "username", defaultValue = "") String signedIn){
-        return signedIn;
+
+    @PostMapping("/logout")
+    public int logoutUser(HttpServletResponse response, HttpServletRequest request) throws IOException {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("userId")) {
+                    Cookie cRemove = new Cookie("userId", "");
+                    cRemove.setMaxAge(0);
+                    cRemove.setPath("/");
+                    response.addCookie(cRemove);
+                    break;
+                }
+            }
+        }
+        return 200;
     }
-    **/
-
-
-
 }

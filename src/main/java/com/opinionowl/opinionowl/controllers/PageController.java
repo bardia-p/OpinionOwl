@@ -3,12 +3,14 @@ package com.opinionowl.opinionowl.controllers;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import jakarta.servlet.http.Cookie;
 
 import java.util.*;
 
@@ -25,17 +27,33 @@ public class PageController {
     @Autowired
     SurveyRepository surveyRepo;
 
+    private void retrieveCookies(Model model, HttpServletRequest request) {
+        Cookie[] cookie = request.getCookies();
+        String username = null;
+        if (cookie != null) {
+            for (Cookie c : cookie) {
+                if (c.getName().equals("userId") && c.getMaxAge() != 0) {
+                    username = c.getValue();
+                }
+            }
+        }
+        model.addAttribute("userId", username);
+    }
+
     /**
      * <p>Home route that gets all the surveys in the database, sends it to the model and directs the user to the home page</p>
      * @param model Model, the client Model
      * @return String, the html template
      */
     @GetMapping("/")
-    public String getHomePage(Model model) {
+    public String getHomePage(Model model, HttpServletRequest request) {
         List<Survey> surveys = surveyRepo.findAll();
         model.addAttribute("surveys", surveys);
+        retrieveCookies(model, request);
         return "index";
     }
+
+
 
     /**
      * <p>Route for the create survey page</p>
@@ -43,7 +61,8 @@ public class PageController {
      * @return String ,the html template
      */
     @GetMapping("/createSurvey")
-    public String getCreateSurveyPage(Model model) {
+    public String getCreateSurveyPage(Model model, HttpServletRequest request) {
+        retrieveCookies(model, request);
         return "createSurvey";
     }
 
@@ -56,7 +75,7 @@ public class PageController {
      * @return String, the html template
      */
     @GetMapping("/answerSurvey")
-    public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
+    public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
         // find the survey by id
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
@@ -97,6 +116,7 @@ public class PageController {
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "index";
         }
+        retrieveCookies(model, request);
         return "answerSurvey";
     }
 
@@ -109,7 +129,7 @@ public class PageController {
      * @return String, the html template
      */
     @GetMapping("/viewResponse")
-    public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model) {
+    public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
         // find the survey by id
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
@@ -144,6 +164,7 @@ public class PageController {
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "index";
         }
+        retrieveCookies(model, request);
         return "viewResponse";
     }
 

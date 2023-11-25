@@ -20,7 +20,7 @@ submitButton.click((e) => {
         success: function (res) {
             console.log('User registered successfully');
             if (res === 200) {
-                setCookie(dataDictionary["username"])
+                setCookie(formData)
             }
             else if (res === 401) errorMessage.text("Invalid Username or Password");
         },
@@ -32,12 +32,7 @@ submitButton.click((e) => {
 
 });
 
-const setCookie = (username) => {
-    const dataDictionary = {};
-    dataDictionary["username"] = username;
-    const formData = JSON.stringify(dataDictionary);
-    console.log("MADE IT HERE");
-
+const setCookie = (formData) => {
     $.ajax({
         type: "POST",
         url: "/api/v1/setCookie",
