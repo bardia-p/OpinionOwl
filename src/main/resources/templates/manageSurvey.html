@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OpinionOwl | Manage Survey</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+    <body>
+        <div>
+            <div th:replace="~{fragments/header :: header}"></div>
+            <h2>Manage Surveys</h2>
+            <form id="closeSurvey-form" th:action="@{/api/v1/createUser}" method="post">
+                <table>
+                    <tr th:each="survey : ${surveys}">
+                        <!-- First column populates survey information -->
+                        <td>
+                            <p>Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
+                        </td>
+                        <td> <!-- Second column contains all buttons needed to manage the surveys -->
+                            <div class="button-container">
+                                <p><a th:href="@{/viewResponse(surveyId=${survey.getId()})}"><button type="button" th:disabled="${!survey.isClosed()}">View Results</button></a></p>
+                                <p><button class="manage-button" type="submit" disabled>Edit Survey <span th:text="${survey.getId()}"></span></button></p>
+                                <p><button type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey ' + survey.getId()}">Close Survey</button></p>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+        <footer>
+            <a href="/" th:href="@{/}">Go Back</a>
+            <div th:replace="~{fragments/footer :: footer}"></div>
+        </footer>
+        <script src="/scripts/manageSurvey.js" type="application/javascript"></script>
+    </body>
+</html>

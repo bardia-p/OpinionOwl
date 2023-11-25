@@ -10,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import jakarta.servlet.http.Cookie;
 
 import java.util.*;
 
@@ -27,23 +26,7 @@ public class PageController {
     @Autowired
     SurveyRepository surveyRepo;
 
-    /**
-     * Helper function to get the cookie information and add it to the model
-     * @param model Model, the client Model
-     * @param request An HttpServletRequest request.
-     */
-    private void retrieveCookies(Model model, HttpServletRequest request) {
-        Cookie[] cookie = request.getCookies();
-        String username = null;
-        if (cookie != null) {
-            for (Cookie c : cookie) {
-                if (c.getName().equals("userId") && c.getMaxAge() != 0) {
-                    username = c.getValue();
-                }
-            }
-        }
-        model.addAttribute("userId", username);
-    }
+
 
     /**
      * <p>Home route that gets all the surveys in the database, sends it to the model and directs the user to the home page</p>
@@ -53,8 +36,14 @@ public class PageController {
     @GetMapping("/")
     public String getHomePage(Model model, HttpServletRequest request) {
         List<Survey> surveys = surveyRepo.findAll();
-        model.addAttribute("surveys", surveys);
-        retrieveCookies(model, request);
+        List<Survey> openSurveys = new ArrayList<>();
+        for (Survey s: surveys){
+            if (!s.isClosed()){
+                openSurveys.add(s);
+            }
+        }
+        model.addAttribute("surveys", openSurveys);
+        CookieController.setUsernameCookie(model, request);
         return "index";
     }
 
@@ -67,7 +56,7 @@ public class PageController {
      */
     @GetMapping("/createSurvey")
     public String getCreateSurveyPage(Model model, HttpServletRequest request) {
-        retrieveCookies(model, request);
+        CookieController.setUsernameCookie(model, request);
         return "createSurvey";
     }
 
@@ -121,7 +110,7 @@ public class PageController {
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "index";
         }
-        retrieveCookies(model, request);
+        CookieController.setUsernameCookie(model, request);
         return "answerSurvey";
     }
 
@@ -169,10 +158,9 @@ public class PageController {
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "index";
         }
-        retrieveCookies(model, request);
+        CookieController.setUsernameCookie(model, request);
         return "viewResponse";
     }
-
 
     /**
      * GET mapping for register user.
@@ -181,6 +169,25 @@ public class PageController {
     @GetMapping("/registerUser")
     public String addUser(){
         return "registerUser";
+    }
+
+    /**
+     * Route to direct the client to view the list of existing surveys to manage them.
+     * @return, String HTML template for manageSurvey
+     */
+    @GetMapping("/manageSurvey")
+    public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
+        List<Survey> surveys = surveyRepo.findAll();
+        List<Survey> userSurveys = new ArrayList<>();
+
+        for (Survey s : surveys){
+            if (s.getUser().getId().equals(userId)){
+                userSurveys.add(s);
+            }
+        }
+        model.addAttribute("surveys", userSurveys);
+        CookieController.setUsernameCookie(model, request);
+        return "manageSurvey";
     }
 
     /**

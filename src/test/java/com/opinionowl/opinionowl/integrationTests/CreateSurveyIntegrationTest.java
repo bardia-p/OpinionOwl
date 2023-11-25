@@ -1,5 +1,6 @@
 package com.opinionowl.opinionowl.integrationTests;
 
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -23,10 +24,19 @@ public class CreateSurveyIntegrationTest {
      */
     @Test
     public void testCreateAndRetrieveSurvey() throws Exception {
-        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
+        String postUserData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        this.mockMvc.perform(post("/api/v1/createUser")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postUserData))
+                        .andExpect(status().isOk());
+
+        Cookie cookie = new Cookie("userId", "1");
+
+       String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
 
         // Create a survey using the POST request.
         this.mockMvc.perform(post("/api/v1/createSurvey")
+                        .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                         .andExpect(status().isOk());
 

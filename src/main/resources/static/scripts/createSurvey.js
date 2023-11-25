@@ -213,8 +213,12 @@ submitButton.click((e) => {
         contentType: 'application/json',
         success: function(res) {
             // success handling
-            console.log('Survey created successfully');
-            if (res === 200) window.location.href = "/";
+            if (res === 200) {
+                console.log('Survey created successfully');
+                window.location.href = "/";
+            } else {
+                alert("Could not create the survey!");
+            }
         },
         error: function(xhr, status, error) {
             // error handling

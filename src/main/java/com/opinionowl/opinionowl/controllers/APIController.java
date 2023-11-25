@@ -135,6 +135,13 @@ public class APIController {
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
+        String userid = CookieController.getUserIdFromCookie(request);
+
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return 400;
+        }
+
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
@@ -145,8 +152,15 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        AppUser user = new AppUser("username", "password");
-        userRepository.save(user);
+        Optional<AppUser> optionalAppUser = userRepository.findById(Long.valueOf(userid));
+        AppUser user = null;
+        if (optionalAppUser.isPresent()){
+            user = optionalAppUser.get();
+        } else {
+            System.out.println("Could not find the user!");
+            return 400;
+        }
+
         Survey survey = new Survey(user, title);
         user.addSurvey(survey);
         // add all the question types to the survey
@@ -266,6 +280,24 @@ public class APIController {
     }
 
     /**
+     * API call to close a survey of a specified user id
+     * @param id, id of the logged-in user
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @PostMapping("/closeSurvey/{id}")
+    public int closeSurvey(@PathVariable("id") Long id) throws IOException {
+        System.out.println("closeSurvey() API");
+        Survey survey = surveyRepo.findById(id).orElse(null);
+        if (survey == null) {
+            return 400;
+        }
+        survey.setClosed(true);
+        surveyRepo.save(survey);
+        return 200;
+    }
+
+    /**
      * <p>API Call to login a user by verifying that it exists in the userRespository</p>
      * @param request HttpServletRequest, a request from the client.
      * @return 200, if user successfully logs in, 401 if user is not authenticated properly.
@@ -273,6 +305,7 @@ public class APIController {
      */
     @PostMapping("/loginUser")
     public int loginUser(HttpServletRequest request) throws IOException{
+        System.out.println("Reached the Login User endpoint!");
         AppUser loggedInUser = null;
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();

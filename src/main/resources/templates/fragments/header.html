@@ -15,8 +15,11 @@
       </nav>
     </div>
     <div th:if="${userId != null}">
-      <p>username: <span th:text="${userId}"></span></p>
+      <p>User ID: <span th:text="${userId}"></span></p>
       <button class="tablinks" id="logout-btn">Logout</button>
+      <a th:href="@{/manageSurvey(userId=${userId})}">
+        <button class="manage-button">Manage Surveys</button>
+      </a>
     </div>
   </div>
   <script src="/scripts/logoutFunc.js" type="application/javascript"></script>

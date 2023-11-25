@@ -4,6 +4,7 @@ import com.opinionowl.opinionowl.models.Response;
 import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -36,12 +37,21 @@ public class PostSurveyIntegrationTest {
      */
     @Test
     public void testCreateAndPostSurveyResponse() throws Exception {
+        String postUserData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        this.testController.perform(post("/api/v1/createUser")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postUserData))
+                        .andExpect(status().isOk());
+
+        Cookie cookie = new Cookie("userId", "1");
+
         String postDataResponse = "{\"1\": \"some text answer\", \"2\" : \"some radio choice\", \"3\" : \"25\"}";
         String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"This is a test\",\"textQuestions\":[\"Test1\"]}";
         // create a survey
         this.testController.perform(post("/api/v1/createSurvey")
+                        .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postDataSurvey))
-                .andExpect(status().isOk());
+                        .andExpect(status().isOk());
 
         Survey createdSurvey = null;
         for (Survey survey : this.surveyRepository.findAll()) {
@@ -52,13 +62,14 @@ public class PostSurveyIntegrationTest {
         assertEquals(createdSurvey.getTitle(), "This is a test");
 
         // post a response to the survey created. We can guarantee there is only one survey, so we grab the id=1
-        this.testController.perform(post("/api/v1/postSurveyResponses/" + createdSurvey.getId()).contentType(MediaType.APPLICATION_JSON).content(postDataResponse))
-                .andExpect(status().isOk());
+        this.testController.perform(post("/api/v1/postSurveyResponses/" + createdSurvey.getId())
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON).content(postDataResponse))
+                        .andExpect(status().isOk());
 
         for (Response res : this.responseRepository.findAll()) {
             assertNotNull(res);
             assertEquals(3, res.getAnswers().size());
         }
-
     }
 }
