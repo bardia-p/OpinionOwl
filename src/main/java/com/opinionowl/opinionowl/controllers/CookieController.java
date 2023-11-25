@@ -23,6 +23,11 @@ public class CookieController {
         model.addAttribute("userId", userid);
     }
 
+    /**
+     * Helper function to get the logged in user id from the cookie
+     * @param request An HttpServletRequest request.
+     * @return String
+     */
     public static String getUserIdFromCookie(HttpServletRequest request){
         Cookie[] cookie = request.getCookies();
         String userid = null;
