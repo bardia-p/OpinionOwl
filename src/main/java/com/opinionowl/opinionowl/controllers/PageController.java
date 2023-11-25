@@ -33,7 +33,13 @@ public class PageController {
     @GetMapping("/")
     public String getHomePage(Model model) {
         List<Survey> surveys = surveyRepo.findAll();
-        model.addAttribute("surveys", surveys);
+        List<Survey> openSurveys = new ArrayList<>();
+        for (Survey s: surveys){
+            if (!s.isClosed()){
+                openSurveys.add(s);
+            }
+        }
+        model.addAttribute("surveys", openSurveys);
         return "index";
     }
 

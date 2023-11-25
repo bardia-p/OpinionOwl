@@ -49,10 +49,6 @@ public class Survey {
         this.closed = false;
     }
 
-    public boolean getClosed(){
-        return this.closed;
-    }
-
     /**
      * Adds a question to the survey.
      *
