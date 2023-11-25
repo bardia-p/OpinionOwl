@@ -26,9 +26,6 @@
             <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
             <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
           </a>
-          <a href="/viewResponse" th:href="@{/viewResponse(surveyId=${survey.getId()})}">
-            View Response
-          </a>
         </li>
       </ul>
     </div>
