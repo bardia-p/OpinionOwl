@@ -32,6 +32,10 @@ submitButton.click((e) => {
 
 });
 
+
+/**
+ * The Javascript AJAX call that creates a cookie when a user logs in
+ */
 const setCookie = (formData) => {
     $.ajax({
         type: "POST",

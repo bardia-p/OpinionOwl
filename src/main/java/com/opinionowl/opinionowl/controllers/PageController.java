@@ -27,6 +27,11 @@ public class PageController {
     @Autowired
     SurveyRepository surveyRepo;
 
+    /**
+     * Helper function to get the cookie information and add it to the model
+     * @param model Model, the client Model
+     * @param request An HttpServletRequest request.
+     */
     private void retrieveCookies(Model model, HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
         String username = null;
@@ -178,6 +183,10 @@ public class PageController {
         return "registerUser";
     }
 
+    /**
+     * GET mapping for login user.
+     * @return A string HTML template for loginUsers
+     */
     @GetMapping("/loginUser")
     public String loginUser(){
         return "loginUsers";

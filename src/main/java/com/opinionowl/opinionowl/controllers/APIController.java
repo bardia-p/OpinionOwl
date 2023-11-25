@@ -266,6 +266,12 @@ public class APIController {
         return 200;
     }
 
+    /**
+     * <p>API Call to login a user by verifying that it exists in the userRespository</p>
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if user successfully logs in, 401 if user is not authenticated properly.
+     * @throws IOException
+     */
     @PostMapping("/loginUser")
     public int loginUser(HttpServletRequest request) throws IOException{
         AppUser loggedInUser = null;
@@ -287,6 +293,13 @@ public class APIController {
         return 200;
     }
 
+    /**
+     *
+     * @param response HttpServletResponse server side response.
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200 if the API was successful. return 401 if the cookie could not be created
+     * @throws IOException
+     */
     @PostMapping("/setCookie")
     public int setCookie(HttpServletResponse response, HttpServletRequest request) throws IOException{
         String jsonData = this.JSONBuilder(request);
@@ -309,6 +322,13 @@ public class APIController {
         return 200;
     }
 
+    /**
+     * <p>API Call to log out a user by deleting their cookies</p>
+     * @param response HttpServletResponse server side response.
+     * @param request HttpServletRequest, a request from the client.
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
     @PostMapping("/logout")
     public int logoutUser(HttpServletResponse response, HttpServletRequest request) throws IOException {
         Cookie[] cookies = request.getCookies();
