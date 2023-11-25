@@ -172,7 +172,6 @@ public class PageController {
     }
 
     /**
-<<<<<<<<< Temporary merge branch 1
      * Route to direct the client to view the list of existing surveys to manage them.
      * @return, String HTML template for manageSurvey
      */

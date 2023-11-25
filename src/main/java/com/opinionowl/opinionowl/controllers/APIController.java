@@ -305,6 +305,7 @@ public class APIController {
      */
     @PostMapping("/loginUser")
     public int loginUser(HttpServletRequest request) throws IOException{
+        System.out.println("Reached the Login User endpoint!");
         AppUser loggedInUser = null;
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -347,6 +348,7 @@ public class APIController {
                 break;
             }
         }
+        System.out.println(cookie);
         if (cookie == null) return 401;
         cookie.setPath("/");
         response.addCookie(cookie);
