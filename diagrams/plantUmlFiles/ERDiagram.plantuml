@@ -1,49 +1,61 @@
-@startuml Milestone1_ER_Diagram
+@startuml
 skinparam classFontSize 11
 skinparam classBackgroundColor beige
 skinparam ClassBorderColor red
 skinparam ArrowColor red
 
 entity "Answer" as answer {
-  *id : Long
-  *content : String
-  *description: String
+  <u>id : Long</u>
+  --
+  content : String
+  description: String
+  ~~response_id: Long~~
 }
 
 entity "Response" as response {
-  *id : Long
+  <u>id : Long</u>
+  --
+  ~~survey_id: Long~~
 }
 
 entity "AppUser" as user{
-  *id : Long
-  *password : String
-  *username: String
+  <u>id : Long</u>
+  --
+  password : String
+  username: String
 }
 
 entity "Survey" as survey {
-  *id : Long
-  *closed : boolean
-  *title: String
+  <u>id : Long</u>
+  --
+  closed : boolean
+  title: String
+  ~~user_id: Long~~
 }
 
 entity "Question" as question {
-  *id : Long
-  *prompt : String
-  *type: QuestionType
+  <u>id : Long</u>
+  --
+  prompt : String
+  type: QuestionType
+  ~~survey_id: Long~~
 }
 
 entity "RadioChoiceQuestion" as rcq {
-  *choices : String[]
+  --
+  choices : String[]
 }
 
 entity "LongAnswerQuestion" as laq {
-  *charLimit : int
+  --
+  charLimit : int
 }
 
 entity "RangeQuestion" as rq {
-  *increment: int
-  *lower: int
-  *upper: int
+  --
+  increment: int
+  lower: int
+  upper: int
 }
 
 user ||--|{ survey
