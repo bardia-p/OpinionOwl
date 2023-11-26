@@ -529,3 +529,9 @@ header .header-contents nav .btn {
     border-color: var(--light-brown);
     opacity: 0.5;
 }
+
+@media only screen and (max-width: 600px) {
+    .home-page .intro-content img {
+        display: none;
+    }
+}
