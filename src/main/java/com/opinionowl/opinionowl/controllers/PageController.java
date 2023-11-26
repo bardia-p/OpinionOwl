@@ -35,6 +35,7 @@ public class PageController {
      */
     @GetMapping("/")
     public String getHomePage(Model model, HttpServletRequest request) {
+        CookieController.setUsernameCookie(model, request);
         List<Survey> surveys = surveyRepo.findAll();
         List<Survey> openSurveys = new ArrayList<>();
         for (Survey s: surveys){
@@ -43,11 +44,8 @@ public class PageController {
             }
         }
         model.addAttribute("surveys", openSurveys);
-        CookieController.setUsernameCookie(model, request);
         return "index";
     }
-
-
 
     /**
      * <p>Route for the create survey page</p>
@@ -56,6 +54,12 @@ public class PageController {
      */
     @GetMapping("/createSurvey")
     public String getCreateSurveyPage(Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
         CookieController.setUsernameCookie(model, request);
         return "createSurvey";
     }
@@ -70,11 +74,24 @@ public class PageController {
      */
     @GetMapping("/answerSurvey")
     public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
+        CookieController.setUsernameCookie(model, request);
+
         // find the survey by id
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
             // was able to obtain a survey from the database by id, and grab it from the Optional Object
             Survey survey = surveyO.get();
+            if (survey.isClosed()){
+                System.out.println("Survey is closed");
+                return "redirect:/";
+            }
+
             System.out.println("Survey found:");
             System.out.println(survey);
             // cast the order of the questions to the associtate subclass they belong to
@@ -108,9 +125,8 @@ public class PageController {
             // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
             // for now redirect to home page
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
-            return "index";
+            return "redirect:/";
         }
-        CookieController.setUsernameCookie(model, request);
         return "answerSurvey";
     }
 
@@ -124,6 +140,14 @@ public class PageController {
      */
     @GetMapping("/viewResponse")
     public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
+        CookieController.setUsernameCookie(model, request);
+
         // find the survey by id
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
@@ -131,6 +155,11 @@ public class PageController {
             Survey survey = surveyO.get();
             System.out.println("Survey found:");
             System.out.println(survey);
+
+            if (!Long.valueOf(cookieUserId).equals(survey.getUser().getId())){
+                System.out.println("You do not have access!");
+                return "redirect:/";
+            }
 
             List<Question> questions = survey.getQuestions();
             Map<Long, Map<String, Integer>> longAnswerResponses = new HashMap<>();
@@ -156,9 +185,8 @@ public class PageController {
             // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
             // for now redirect to home page
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
-            return "index";
+            return "redirect:/";
         }
-        CookieController.setUsernameCookie(model, request);
         return "viewResponse";
     }
 
@@ -177,6 +205,19 @@ public class PageController {
      */
     @GetMapping("/manageSurvey")
     public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
+        CookieController.setUsernameCookie(model, request);
+
+        if (!Long.valueOf(cookieUserId).equals(userId)){
+            System.out.println("You do not have access!");
+            return "redirect:/";
+        }
+
         List<Survey> surveys = surveyRepo.findAll();
         List<Survey> userSurveys = new ArrayList<>();
 
@@ -186,7 +227,6 @@ public class PageController {
             }
         }
         model.addAttribute("surveys", userSurveys);
-        CookieController.setUsernameCookie(model, request);
         return "manageSurvey";
     }
 

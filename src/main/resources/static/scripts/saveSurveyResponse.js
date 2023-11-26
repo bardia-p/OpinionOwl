@@ -25,6 +25,7 @@ submitButton.click((e) => {
                 console.log("successfully posted survey response");
                 window.location.href = "/";
             } else {
+                alert('Could not post the survey response!');
                 console.log("Something went wrong with posting the survey response")
             }
         },

@@ -20,7 +20,7 @@ submitButton.click((e) => {
         success: function (res) {
             console.log('User registered successfully');
             if (res === 200) {
-                setCookie(formData)
+                window.location.href = '/';
             }
             else if (res === 401) errorMessage.text("Invalid Username or Password");
         },
@@ -31,25 +31,3 @@ submitButton.click((e) => {
     })
 
 });
-
-
-/**
- * The Javascript AJAX call that creates a cookie when a user logs in
- */
-const setCookie = (formData) => {
-    $.ajax({
-        type: "POST",
-        url: "/api/v1/setCookie",
-        data: formData,
-        dataType: "json",
-        contentType: "application/json",
-        success: function (res) {
-            console.log('cookie created successfully');
-            if (res === 200) window.location.href = '/';
-        },
-        error: function (xhr, status, error) {
-            // error handling
-            console.error('Error creating cookie:', error);
-        }
-    })
-}

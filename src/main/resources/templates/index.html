@@ -22,7 +22,7 @@
         </p>
       </div>
       <div class="contents">
-        <a href="/createSurvey" th:href="@{/createSurvey}" class="btn">Create a survey</a>
+        <a href="/createSurvey" th:if="${userId != null}" th:href="@{/createSurvey}" class="btn">Create a survey</a>
         <div class="lst-of-surveys">
           <h2>Surveys Available</h2>
           <ul th:if="${surveys.size() > 0}">
