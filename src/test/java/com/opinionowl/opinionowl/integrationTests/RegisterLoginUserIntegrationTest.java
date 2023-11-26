@@ -63,6 +63,6 @@ public class RegisterLoginUserIntegrationTest {
                 .andExpect(status().isOk());
 
         this.testController.perform(get("/")).andDo(print()).andExpect(status().isOk())
-                .andExpect(content().string(containsString("<a href=\"/loginUser\">")));
+                .andExpect(content().string(containsString("<a href=\"/loginUser\" class=\"btn\">")));
     }
 }
