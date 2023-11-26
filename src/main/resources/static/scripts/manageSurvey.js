@@ -10,6 +10,8 @@ function closeSurvey(id) {
             if(res === 200) {
                 console.log("Success");
                 location.reload();
+            } else {
+                alert('You cannot complete this action.');
             }
         },
         error: function(xhr, status, error) {
