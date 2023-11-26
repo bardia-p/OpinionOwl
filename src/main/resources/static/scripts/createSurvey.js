@@ -22,10 +22,10 @@ const addMoreRadioOptions = (radioQuestionContainer, uniqueName) => {
     const uniqueId = generateUniqueID();
     const divId = generateUniqueID();
     $(radioQuestionContainer).append(`
-                <div id=${divId} class="radio-container">
-                    <input id=${uniqueId} type="radio" name=${uniqueName}>
+                <div id=${divId} class="radio-container flex">
+                    <input id=${uniqueId} type="radio">
                     <label for=${uniqueId} contenteditable="true">sample</label>
-                    <button onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">-</button>
+                    <button class="btn" onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">-</button>
                 </div>
         `);
     $(`${radioQuestionContainer} .radio-container`).find('button').prop("disabled", $(`${radioQuestionContainer}`).find('.radio-container').length === 1);
@@ -76,11 +76,10 @@ addTextQuestion.click((e) => {
     const question = `
           <tr id=${rowId} class="text-questions">
               <td>
-                 <button type="button" onclick="removeTableRow('#${rowId}')">-</button>
+                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
                   <label contenteditable="true">Question title</label>
-                  <br />
                   <input type="text" />
               </td>
           </tr>
@@ -98,13 +97,13 @@ addRadioChoice.click((e) => {
     const question = `
           <tr id='${rowId}' class="radio-questions">
             <td>
-               <button type="button" onclick="removeTableRow('#${rowId}')">-</button>
+               <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
             </td>
             <td>
               <div id=${radioQuestionContainer}>
                 <label contenteditable="true" class="title">Question title</label>
               </div>
-              <button type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}','${uniqueName}')">+</button>
+              <button class="btn add-more-radio-choices" type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}','${uniqueName}')">+</button>
             </td>
           </tr>
         `;
@@ -119,14 +118,15 @@ addNumericRange.click((e) => {
     const question = `
           <tr id='${rowId}' class="numeric-questions">
                <td>
-                 <button type="button" onclick="removeTableRow('#${rowId}')">-</button>
+                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
                 <label contenteditable="true" class="title">Question title</label>
-                <br />
-                <span contenteditable="true">0</span>
-                <input type="range" min="0" max="11" />
-                <span contenteditable="true">11</span>
+                <div class="flex range-option">
+                    <span contenteditable="true">0</span>
+                    <input type="range" min="0" max="11" />
+                    <span contenteditable="true">11</span>
+                </div>
               </td>
           </tr>
         `;

@@ -4,22 +4,23 @@
     <title>OpinionOwl | Login</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/globals.css">
 </head>
 <body>
-    <div th:replace="~{fragments/header :: header}"></div>
+<div th:replace="~{fragments/header :: header}"></div>
+<div class="container">
     <h1>Login</h1>
-
-    <form id="registerUser-form" th:action="@{/api/v1/loginUser}" method="post">
-        <p>Username: <input type="text" id="username"/></p>
-        <p>Password: <input type="password" id="password"/></p>
+    <form class="login-register-form" id="registerUser-form" th:action="@{/api/v1/loginUser}" method="post">
+        <p>Username:</p>
+        <input type="text" id="username" />
+        <p>Password:</p>
+        <input type="password" id="password"/>
         <p id="error-message"></p>
-        <p><input type="submit" id="loginUser-submit" value="Submit" /> <input type="reset" value="Reset" /></p>
+        <button type="submit" id="loginUser-submit" class="btn">Login</button>
+        <a href="/registerUser">Register</a>
     </form>
-
-    <footer>
-        <a href="/" th:href="@{/}">Go Back</a>
-    </footer>
-    <script src="/scripts/loginUser.js" type="application/javascript"></script>
-
+</div>
+<div th:replace="~{fragments/footer :: footer}"></div>
+<script src="/scripts/loginUser.js" type="application/javascript"></script>
 </body>
 </html>
