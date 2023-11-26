@@ -31,7 +31,7 @@ public class PostSurveyIntegrationTest {
     private SurveyRepository surveyRepository;
 
     /**
-     * Method to test the post sruvey response mapping. It simply verifies that a new survey response was posted to the repository.
+     * Method to test the post survey response mapping. It simply verifies that a new survey response was posted to the repository.
      * It will first create a survey with questions then post a response to that very survey.
      * @throws Exception
      */
