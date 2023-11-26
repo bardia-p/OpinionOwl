@@ -74,12 +74,6 @@ public class PageController {
      */
     @GetMapping("/answerSurvey")
     public String getAnswerSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
-
         CookieController.setUsernameCookie(model, request);
 
         // find the survey by id
@@ -94,7 +88,7 @@ public class PageController {
 
             System.out.println("Survey found:");
             System.out.println(survey);
-            // cast the order of the questions to the associtate subclass they belong to
+            // cast the order of the questions to the associate subclass they belong to
             // Cast in hashmaps as <question#, Question>
             List<Question> q = survey.getQuestions();
             HashMap<Integer, LongAnswerQuestion> longAnswerQuestions = new HashMap<>();
