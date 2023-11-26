@@ -3,6 +3,7 @@ package com.opinionowl.opinionowl.controllerTests;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
+import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -73,11 +74,15 @@ public class PageControllerTest {
         System.out.println("------------------------------");
         System.out.println("TESTING: testCreateSurveyPageMapping()");
         System.out.println();
+        AppUser u = new AppUser("test1", "test1");
+        userRepository.save(u);
+        Cookie cookie = new Cookie("userId", u.getId().toString());
         System.out.println("Mocking get page '/createSurvey', expecting to retrieve an HTML page");
-        String content = this.mockMvc.perform(get("/createSurvey"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
-                .andReturn().getResponse().getContentAsString();
+        String content = this.mockMvc.perform(get("/createSurvey")
+                        .cookie(cookie))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType("text/html;charset=UTF-8"))
+                        .andReturn().getResponse().getContentAsString();
 
         // extract the title
         System.out.println("Parsing the title of the page");
@@ -116,6 +121,8 @@ public class PageControllerTest {
         u1.addSurvey(survey);
         userRepository.save(u1);
 
+        Cookie cookie = new Cookie("userId", u1.getId().toString());
+
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
         RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         RangeQuestion q3 = new RangeQuestion(survey, "test3", 1, 10, 1);
@@ -128,6 +135,7 @@ public class PageControllerTest {
 
         System.out.println("Performing get of /answerSurvey with query ?surveyId=1. Final mapping = /answerSurvey?surveyId=1");
         String content = this.mockMvc.perform(get("/answerSurvey")
+                        .cookie(cookie)
                         .param("surveyId", String.valueOf(surveyId)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -167,8 +175,7 @@ public class PageControllerTest {
         System.out.println("Performing get of /answerSurvey with query ?surveyId=3. Final mapping = /answerSurvey?surveyId=3");
         String content = this.mockMvc.perform(get("/answerSurvey")
                         .param("surveyId", String.valueOf(surveyId)))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(status().is3xxRedirection())
                 .andReturn().getResponse().getContentAsString();
 
         // extract the title
@@ -182,9 +189,9 @@ public class PageControllerTest {
             title = matcher.group(1);
         }
 
-        System.out.println("Expects title: OpinionOwl | Answer Survey, Actual: " + title);
+        System.out.println("Expects title: , Actual: " + title);
         // assert the title equals to the redirect page title
-        assert(title.equals("OpinionOwl"));
+        assert(title.equals(""));
         System.out.println("------------------------------");
     }
 

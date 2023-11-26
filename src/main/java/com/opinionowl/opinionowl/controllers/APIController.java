@@ -70,6 +70,7 @@ public class APIController {
         // handle save of survey data
         // redirect to home
         System.out.println("Post survey response api API");
+
         String jsonData = JSONBuilder(request);
         System.out.println("JSONDATA: " + jsonData);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -79,6 +80,11 @@ public class APIController {
 
         if (s == null) {
             System.out.println("Could not find survey with ID: " + surveyId);
+            return 400;
+        }
+
+        if (s.isClosed()){
+            System.out.println("Survey is closed!");
             return 400;
         }
 
@@ -94,20 +100,6 @@ public class APIController {
         System.out.println(responseToSurvey);
 
         return 200;
-    }
-
-    /**
-     * <p>Api call to handle the survey answers by a user.</p>
-     * <br />
-     * <strong>Api route: api/v1/postSurveyResponses</strong>
-     * @param response HttpServletResponse server side response
-     * @throws IOException
-     */
-    @PostMapping("/postSurveyResponses")
-    public void postSurveyResponses(HttpServletResponse response) throws IOException {
-        // handle save of survey data
-        // redirect to home
-        response.sendRedirect("/");
     }
 
     /**
@@ -135,8 +127,8 @@ public class APIController {
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
-        String userid = CookieController.getUserIdFromCookie(request);
 
+        String userid = CookieController.getUserIdFromCookie(request);
         if (userid == null){
             System.out.println("You must be logged in first");
             return 400;
@@ -221,14 +213,23 @@ public class APIController {
      * @throws JSONException
      */
     @GetMapping("/getSurveyResults/{id}")
-    public String getSurveyResults(@PathVariable("id") String id) throws JSONException {
+    public String getSurveyResults(@PathVariable("id") String id, HttpServletRequest request) throws JSONException {
         System.out.println("getSurveyResults() API");
-        Long surveyId = Long.parseLong(id);
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return "";
+        }
+
+        Long surveyId = Long.valueOf(id);
         Optional<Survey> s = surveyRepo.findById(surveyId);
         JSONObject resObject = new JSONObject();
         if (s.isPresent()) {
             Survey survey = s.get();
-            HashMap<Long, String> questions = new HashMap<>();
+            if (!survey.getUser().getId().equals(Long.valueOf(userid))){
+                return "";
+            }
             JSONObject qObject = new JSONObject();
             JSONObject rObject = new JSONObject();
             for (Question q : survey.getQuestions()) {
@@ -286,12 +287,24 @@ public class APIController {
      * @throws IOException
      */
     @PostMapping("/closeSurvey/{id}")
-    public int closeSurvey(@PathVariable("id") Long id) throws IOException {
+    public int closeSurvey(@PathVariable("id") Long id, HttpServletRequest request) throws IOException {
         System.out.println("closeSurvey() API");
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return 400;
+        }
+
         Survey survey = surveyRepo.findById(id).orElse(null);
         if (survey == null) {
             return 400;
         }
+
+        if (!survey.getUser().getId().equals(Long.valueOf(userid))){
+            return 401;
+        }
+
         survey.setClosed(true);
         surveyRepo.save(survey);
         return 200;
@@ -304,8 +317,7 @@ public class APIController {
      * @throws IOException
      */
     @PostMapping("/loginUser")
-    public int loginUser(HttpServletRequest request) throws IOException{
-        System.out.println("Reached the Login User endpoint!");
+    public int loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException{
         AppUser loggedInUser = null;
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -322,33 +334,8 @@ public class APIController {
         if(loggedInUser == null){
             return 401; //indicates unauthorized
         }
-        return 200;
-    }
 
-    /**
-     *
-     * @param response HttpServletResponse server side response.
-     * @param request HttpServletRequest, a request from the client.
-     * @return 200 if the API was successful. return 401 if the cookie could not be created
-     * @throws IOException
-     */
-    @PostMapping("/setCookie")
-    public int setCookie(HttpServletResponse response, HttpServletRequest request) throws IOException{
-        String jsonData = this.JSONBuilder(request);
-        ObjectMapper objectMapper = new ObjectMapper();
-        HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {
-        });
-        // TODO make this more generic
-        String username = userData.get("username");
-        String password = userData.get("password");
-        Cookie cookie = null;
-        for(AppUser user : userRepository.findAll()){
-            if(user.getUsername().equals(username) && user.getPassword().equals(password)){
-                cookie = new Cookie( "userId", String.valueOf(user.getId()));
-                break;
-            }
-        }
-        if (cookie == null) return 401;
+        Cookie cookie = new Cookie( "userId", String.valueOf(loggedInUser.getId()));
         cookie.setPath("/");
         response.addCookie(cookie);
         return 200;

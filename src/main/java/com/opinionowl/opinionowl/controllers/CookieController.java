@@ -4,6 +4,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.ui.Model;
 
+/**
+ * The class in charge of maintaining all the Cookie related functions.
+ */
 public class CookieController {
     /**
      * Helper function to get the cookie information and add it to the model
@@ -12,15 +15,7 @@ public class CookieController {
      */
     public static void setUsernameCookie(Model model, HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
-        String userid = null;
-        if (cookie != null) {
-            for (Cookie c : cookie) {
-                if (c.getName().equals("userId") && c.getMaxAge() != 0) {
-                    userid = c.getValue();
-                }
-            }
-        }
-        model.addAttribute("userId", userid);
+        model.addAttribute("userId", retrieveCookie(cookie, "userId"));
     }
 
     /**
@@ -30,14 +25,25 @@ public class CookieController {
      */
     public static String getUserIdFromCookie(HttpServletRequest request){
         Cookie[] cookie = request.getCookies();
-        String userid = null;
-        if (cookie != null) {
-            for (Cookie c : cookie) {
-                if (c.getName().equals("userId") && c.getMaxAge() != 0) {
-                    userid = c.getValue();
-                }
+        return retrieveCookie(cookie, "userId");
+    }
+
+    /**
+     * Returns the cookie from the list of the cookies.
+     * @param cookies the list of the cookies
+     * @param name the name of the cookie.
+     * @return the value of the coookie.
+     */
+    private static String retrieveCookie(Cookie[] cookies, String name){
+        String res = null;
+        if (cookies == null){
+            return null;
+        }
+        for (Cookie c : cookies) {
+            if (c.getName().equals(name) && c.getMaxAge() != 0) {
+                res = c.getValue();
             }
         }
-        return userid;
+        return res;
     }
 }

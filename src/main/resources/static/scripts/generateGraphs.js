@@ -124,8 +124,12 @@ $(document).ready(function () {
         url: '/api/v1/getSurveyResults/' + surveyId,
         success: function(res) {
             // success handling
-            console.log('Survey created successfully');
-            generateGraphs(res);
+            if (res !== ""){
+                console.log('Survey created successfully');
+                generateGraphs(res);
+            } else {
+                alert('You cannot complete this request');
+            }
         },
         error: function(xhr, status, error) {
             // error handling

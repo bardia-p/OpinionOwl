@@ -217,7 +217,7 @@ submitButton.click((e) => {
                 console.log('Survey created successfully');
                 window.location.href = "/";
             } else {
-                alert("Could not create the survey!");
+                alert('You cannot complete this request at the moment.');
             }
         },
         error: function(xhr, status, error) {
