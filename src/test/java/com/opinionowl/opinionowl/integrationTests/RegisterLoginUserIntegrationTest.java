@@ -41,13 +41,6 @@ public class RegisterLoginUserIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("userId", "4");
-
-        this.testController.perform(post("/api/v1/loginUser")
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
-                .andExpect(status().isOk());
-
         AppUser loggedInUser = null;
         for (AppUser user : userRepository.findAll()) {
             if (user.getUsername().equals("maxcurkovic") && user.getPassword().equals("sysc4806")) {
@@ -55,6 +48,14 @@ public class RegisterLoginUserIntegrationTest {
                 break;
             }
         }
+
+        Cookie cookie = new Cookie("userId", loggedInUser.getId().toString());
+
+        this.testController.perform(post("/api/v1/loginUser")
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON).content(postData))
+                .andExpect(status().isOk());
+
         assertEquals(parseLong(cookie.getValue()), loggedInUser.getId());
         this.testController.perform(post("/api/v1/logout")
                         .cookie(cookie)
