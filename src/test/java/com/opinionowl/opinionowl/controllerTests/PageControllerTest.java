@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,11 +117,20 @@ public class PageControllerTest {
         System.out.println();
         System.out.println("Mocking get page '/answerSurvey', expecting to retrieve an HTML page");
         System.out.println("Creating a survey for the page to get. ID: 1L");
-        long surveyId = 1;
         AppUser u1 = new AppUser("Test", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
+
+        Long surveyId = null;
+
+        List<Survey> surveyList = surveyRepository.findAll();
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("TEST_SURVEY")){
+                surveyId = s.getId();
+                break;
+            }
+        }
 
         Cookie cookie = new Cookie("userId", u1.getId().toString());
 
@@ -137,7 +148,7 @@ public class PageControllerTest {
         String content = this.mockMvc.perform(get("/answerSurvey")
                         .cookie(cookie)
                         .param("surveyId", String.valueOf(surveyId)))
-                .andExpect(status().is3xxRedirection())
+                .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
         // extract the title
@@ -153,7 +164,7 @@ public class PageControllerTest {
 
         System.out.println("Expects title: OpinionOwl | Answer Survey, Actual: " + title);
         // assert the title equals to the Answer Survey page title
-        //assert(title.equals("OpinionOwl | Answer Survey"));
+        assert(title.equals("OpinionOwl | Answer Survey"));
         System.out.println("------------------------------");
     }
 
