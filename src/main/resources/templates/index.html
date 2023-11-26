@@ -21,17 +21,20 @@
           owl companions.
         </p>
       </div>
-      <a href="/createSurvey" th:href="@{/createSurvey}" class="btn">Create a survey</a>
-      <div class="lst-of-surveys">
-        <h2>Surveys Available</h2>
-        <ul>
-          <li th:each="survey : ${surveys}">
-            <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}">
-              <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
-              <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
-            </a>
-          </li>
-        </ul>
+      <div class="contents">
+        <a href="/createSurvey" th:href="@{/createSurvey}" class="btn">Create a survey</a>
+        <div class="lst-of-surveys">
+          <h2>Surveys Available</h2>
+          <ul th:if="${surveys.size() > 0}">
+            <li th:each="survey : ${surveys}">
+              <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}">
+                <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
+                <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
+              </a>
+            </li>
+          </ul>
+          <p th:if="${surveys.size() == 0}" class="no-surveys">Currently no surveys made!</p>
+        </div>
       </div>
     </div>
   <div th:replace="~{fragments/footer :: footer}"></div>

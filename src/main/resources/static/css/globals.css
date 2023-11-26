@@ -26,7 +26,7 @@ body {
     position: relative;
     font-style: normal;
     min-height: 100vh;
-    overflow: hidden;
+    padding-bottom: 3rem;
 }
 
 footer {
@@ -38,7 +38,28 @@ footer {
 }
 
 h1 {
-    font-family: "Playfair Display", serif, Helvetica, sans-serif;
+    position: relative;
+    width: fit-content;
+    margin: 0 auto 2rem auto;
+    font-size: 2.5rem;
+    text-align: center;
+    font-family: "Playfair Display", "Roboto", serif, Helvetica, sans-serif;
+
+}
+
+h2 {
+    position: relative;
+    width: fit-content;
+}
+
+h1::after, h2::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-bottom: 0.25rem dotted var(--dark-brown);
 }
 
 header,
@@ -48,24 +69,24 @@ footer {
 }
 
 form {
-    background-color: var(--lighter-yellow);
+    background-color: var(--dark-brown);
     padding: 1.5rem;
-    border: 2px solid var(--dark-brown);
+    border: 2px solid var(--yellow);
     border-radius: 10px;
     margin: 1.5rem auto;
-}
-
-form label {
-    display: block;
-    margin: 0.5rem 0;
+    color: var(--white);
 }
 
 form input {
     width: 100%;
     padding: 0.75rem;
     margin-bottom: 1rem;
-    border: 1px solid var(--dark-brown);
+    border: 2px solid var(--yellow);
     border-radius: 5px;
+    background-color: var(--lighter-yellow);
+    outline: none;
+    color: var(--black);
+    font-size: 1rem;
 }
 
 .flex {
@@ -73,9 +94,15 @@ form input {
     display: -webkit-flex;
 }
 
+.grid-auto-fit {
+    display: grid;
+    display: -moz-grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
 .container {
     width: 100%;
-    margin: 1rem auto;
+    margin: 0 auto;
     max-width: 1200px;
     position: relative;
     height: inherit;
@@ -87,11 +114,17 @@ form input {
     background-color: var(--dark-brown);
     color: var(--white);
     padding: 1rem;
+    font-size: 1rem;
     width: fit-content;
     border-radius: 5px;
     cursor: pointer;
     border: 2px solid var(--yellow);
     transition: box-shadow 0.2s ease-in-out;
+}
+
+.btn:disabled {
+    opacity: 0.7;
+    pointer-events: none;
 }
 
 .btn:hover {
@@ -112,6 +145,11 @@ header .header-contents .logo {
     font-weight: 600;
 }
 
+header .header-contents .logo a {
+    color: var(--yellow);
+    text-align: center;
+}
+
 header .header-contents .logo img {
     width: 3.5rem;
     height: 3.5rem;
@@ -125,10 +163,57 @@ header .header-contents nav {
     gap: 0.5rem;
 }
 
+header .header-contents nav.top-right-profile {
+    flex-direction: column;
+    gap: 0.2rem;
+}
+
+header .header-contents nav.top-right-profile .btn{
+    height: auto;
+}
+
+header .header-contents nav.top-right-profile div {
+    gap: 0.5rem;
+}
+
 header .header-contents nav .btn {
     height: fit-content;
     padding: 0.4rem;
 }
+
+/*Login page and register page*/
+.login-register-form {
+    max-width: 400px;
+    color: var(--white);
+}
+
+.login-register-form .btn {
+    width: 100%;
+}
+
+.login-register-form p {
+    margin: 0.5rem 0;
+}
+
+.login-register-form #error-message {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.login-register-form a {
+    color: var(--black);
+    display: block;
+    width: fit-content;
+    text-align: center;
+    text-decoration: underline;
+    font-size: 1.2rem;
+    margin: 0.5rem auto 0 auto;
+}
+
+.login-register-form a:hover {
+    color: var(--yellow);
+}
+
 
 /* register */
 .register-page h1 {
@@ -140,23 +225,6 @@ header .header-contents nav .btn {
 }
 
 /* Home page */
-.home-page h1 {
-    position: relative;
-    width: fit-content;
-    margin: 0 auto 2rem auto;
-    font-size: 2.5rem;
-}
-
-.home-page h1::after {
-    content: '';
-    position: absolute;
-    width: 50%;
-    bottom: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-bottom: 0.25rem dotted var(--dark-brown);
-}
-
 .home-page .intro-content img {
     max-width: 200px;
     width: 100%;
@@ -181,4 +249,283 @@ header .header-contents nav .btn {
 
 .home-page .lst-of-surveys {
     margin-top: 2rem;
+}
+
+.home-page .contents {
+    padding: 0 2rem;
+}
+
+.home-page .lst-of-surveys ul {
+    display: grid;
+    display: -moz-grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.home-page .lst-of-surveys ul a {
+    display: block;
+    color: var(--white);
+    background-color: var(--dark-brown);
+    border: 2px solid var(--yellow);
+    padding: 0.5rem;
+    border-radius: 20px;
+    transition: box-shadow 0.2s ease-in-out;
+}
+
+.home-page .lst-of-surveys ul a:hover {
+    box-shadow: 0 0 5px 1px var(--yellow);
+}
+
+.home-page .lst-of-surveys .no-surveys {
+    margin-top: 2rem;
+}
+
+/*Survey form generic css*/
+.survey-form :is(h2, label) {
+    padding: 0.5rem 0;
+}
+
+.survey-form .text-questions label {
+    margin-bottom: 0.5rem;
+}
+
+.survey-form {
+    max-width: 800px;
+    margin: 1rem auto 0 auto;
+    color: var(--white);
+}
+
+.survey-form h2 {
+    margin: 0 auto 1rem auto;
+}
+
+.survey-form h2::after {
+    background-color: var(--white);
+}
+
+.survey-form :is(label, input[type="text"]) {
+    display: block;
+    width: 100%;
+}
+
+.survey-form .radio-container {
+    align-items: center;
+    margin: 0.5rem 0;
+    position: relative;
+}
+
+.survey-form .radio-container input{
+    align-self: center;
+    position: absolute;
+    width: 1.3rem;
+    height: 1.3rem;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    z-index: 2;
+    opacity: 0;
+}
+
+.survey-form input[type="radio"] + label {
+    position: relative;
+    padding-left: 1.9rem;
+    display: inline-block;
+}
+
+.survey-form input[type="radio"] + label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1.3rem;
+    height: 1.3rem;
+    background-color: var(--lighter-yellow);
+    border: 2px solid var(--dark-brown);
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: flex;
+    display: -moz-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.survey-form input[type="radio"]:checked + label::before {
+    content: '\2713';
+    font-size: 1.2rem;
+    color: var(--dark-brown);
+    font-weight: bold;
+}
+
+.survey-form button[type="submit"].btn {
+    margin-top: 1rem;
+}
+
+.survey-form .range-option {
+    align-items: center;
+}
+
+.survey-form .range-option span {
+    height: fit-content;
+}
+
+.survey-form .range-option input[type="range"]{
+    margin: 0 0.5rem;
+}
+
+/* Create Survey Page */
+
+.create-survey-container .form-builder-options {
+    display: grid;
+    display: -moz-grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.create-survey-container .form-builder-options .btn {
+    width: 100%;
+}
+
+.create-survey-container .form-container :is(h2, label, span) {
+    border: 2px solid var(--darker-brown);
+    outline: none;
+}
+
+.create-survey-container .form-container h2 {
+    width: 100%;
+}
+
+.create-survey-container .form-container h2::after {
+    border: none;
+}
+
+.create-survey-container .form-container :is(h2, label, span):hover {
+    cursor: text;
+}
+
+.create-survey-container .form-container input {
+    margin-bottom: 0;
+}
+
+.create-survey-container .form-container table {
+    width: 100%;
+}
+.create-survey-container .form-container table td:first-of-type {
+    width: 5%;
+}
+
+.create-survey-container .form-container table td:first-of-type .btn {
+    position: relative;
+    top: 13px;
+}
+
+.create-survey-container .form-container table .btn {
+    height: 5px;
+    width: 5px;
+    margin: 0 5px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+}
+
+.create-survey-container .form-container table .btn.add-more-radio-choices {
+    width: 100%;
+    border-radius: 0;
+    margin: 0;
+}
+
+.create-survey-container .form-container .radio-container input {
+    visibility: hidden;
+}
+
+/*Answer Survey Page*/
+.answer-survey-form :is(label, h2) {
+    font-size: 1.35rem;
+}
+
+.answer-survey-form label.question {
+    text-decoration: underline;
+}
+
+/* Manage Survey page */
+
+.manage-survey-page .no-surveys {
+    text-align: center;
+}
+
+.manage-survey-page .user-survey-lst {
+    gap: 0.5rem;
+}
+
+.manage-survey-page .user-survey {
+    background-color: var(--dark-brown);
+    color: var(--white);
+    padding: 0.5rem;
+    border: 2px solid var(--yellow);
+    border-radius: 0.5rem;
+}
+
+.manage-survey-page .user-survey .title {
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.manage-survey-page .user-survey .num-questions{
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.manage-survey-page .button-container .view button {
+    width: 100%;
+}
+
+.manage-survey-page .button-container div {
+    gap: 0.25rem;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+}
+
+.manage-survey-page .button-container button {
+    width: 100%;
+    padding: 0.5rem;
+}
+
+/*View response page*/
+.view-response-page h2 {
+    margin-bottom: 1.5rem;
+}
+
+.view-response-page .question-container {
+    padding: 0 0.75rem;
+}
+
+.view-response-page :is(#radio-choice-container, #range-container){
+    display: grid;
+    display: -moz-grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    text-align: center;
+    gap: 0.5rem;
+}
+
+.view-response-page .question-container span{
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.view-response-page .text-answers .text-answer {
+    list-style-type: disc;
+    color: var(--dark-brown);
+    padding-left: 2rem;
+}
+
+.view-response-page hr {
+    border-color: var(--light-brown);
+    opacity: 0.5;
 }

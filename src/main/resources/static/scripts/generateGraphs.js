@@ -10,7 +10,7 @@ const displayRadioChoiceResponse = (qid, prompt, responses) => {
     const responseList= $("#radio-choice-container");
     const response = `
             <li>
-                <span>${prompt}</span>
+                <span class="question-title">${prompt}</span>
                 <canvas id="chart${qid}" style="width:100%;max-width:700px"></canvas>
             </li>
         `;
@@ -34,7 +34,7 @@ const displayRadioChoiceResponse = (qid, prompt, responses) => {
         },
         options: {
             title:{
-                display: true,
+                display: false,
                 text: prompt
             },
             scales: {
@@ -59,7 +59,7 @@ const displayRangeResponse = (qid, prompt, responses) => {
     const responseList= $("#range-container");
     const response = `
             <li>
-                <span>${prompt}</span>
+                <span class="question-title">${prompt}</span>
                 <canvas id="chart${qid}" style="width:100%;max-width:700px"></canvas>
             </li>
         `;
@@ -81,7 +81,7 @@ const displayRangeResponse = (qid, prompt, responses) => {
         },
         options: {
             title:{
-                display: true,
+                display: false,
                 text: prompt
             },
             scales: {
