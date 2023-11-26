@@ -181,7 +181,7 @@ public class PageControllerTest {
         System.out.println("TESTING: testInvalidAnswerSurveyPageMapping() with an Invalid survey retrieving");
         System.out.println();
         System.out.println("Mocking get page '/answerSurvey', expecting to retrieve an HTML page");
-        long surveyId = 3;
+        long surveyId = 2000;
         System.out.println("Performing get of /answerSurvey with query ?surveyId=3. Final mapping = /answerSurvey?surveyId=3");
         String content = this.mockMvc.perform(get("/answerSurvey")
                         .param("surveyId", String.valueOf(surveyId)))
