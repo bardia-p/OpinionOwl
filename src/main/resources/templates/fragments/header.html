@@ -1,26 +1,28 @@
 <header>
-  <div className="logo">
-    <img src="/images/owl.png" alt="owl" width="50px" height="50px"/>
-    <p>Opinion Owl</p>
-    <div th:if="${userId == null}">
-      <nav>
-        <div className="tab">
-          <a href="/loginUser">
-            <button className="tablinks">Login</button>
-          </a>
-          <a href="/registerUser">
-            <button className="tablinks">Register User</button>
-          </a>
-        </div>
-      </nav>
-    </div>
-    <div th:if="${userId != null}">
-      <p>User ID: <span th:text="${userId}"></span></p>
-      <button class="tablinks" id="logout-btn">Logout</button>
-      <a th:href="@{/manageSurvey(userId=${userId})}">
-        <button class="manage-button">Manage Surveys</button>
+  <div class="container header-contents flex">
+    <div class="logo flex">
+      <a href="/">
+        <img src="/images/owl.png" alt="owl" width="50px" height="50px"/>
+        <p>Opinion Owl</p>
       </a>
     </div>
+    <nav th:if="${userId == null}" class="flex">
+        <a href="/loginUser" class="btn">
+          Login
+        </a>
+        <a href="/registerUser" class="btn">
+          Register User
+        </a>
+    </nav>
+    <nav th:if="${userId != null}" class="flex top-right-profile">
+      <p>User ID: <span th:text="${userId}"></span></p>
+      <div class="flex">
+        <button class="btn" id="logout-btn">Logout</button>
+        <a th:href="@{/manageSurvey(userId=${userId})}" class="btn">
+          Manage Surveys
+        </a>
+      </div>
+    </nav>
   </div>
   <script src="/scripts/logoutFunc.js" type="application/javascript"></script>
 </header>

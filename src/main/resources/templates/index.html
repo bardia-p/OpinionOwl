@@ -4,30 +4,38 @@
   <title>OpinionOwl</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="/css/globals.css">
 </head>
   <body>
   <div th:replace="~{fragments/header :: header}"></div>
-    <h1>Welcome To OpinionOwl</h1>
-
-    <p>
-      The ultimate platform for both survey creators and respondents. If you're
-      a survey creator - a fellow owl companion, our user-friendly interface
-      will allow you to craft surveys with any topic your choosing. If you are a
-      survey respondents - either an owl companion or an unknown owl, you are
-      free to share your thoughts and opinions on the topics created by other
-      owl companions.
-    </p>
-  <a href="/createSurvey" th:href="@{/createSurvey}"><button type="button" th:disabled="${userId == null}">Create a survey</button></a>
-  <div>
-      <h2>Surveys Available</h2>
-      <ul>
-        <li th:each="survey : ${surveys}">
-          <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}">
-            <h3>Survey ID: <span th:text="${survey.getId()}"></span> | Title: <span th:text="${survey.getTitle()}"></span></h3>
-            <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
-          </a>
-        </li>
-      </ul>
+    <div class="container home-page">
+      <h1>Welcome To OpinionOwl</h1>
+      <div class="intro-content flex">
+        <img src="/images/owl.png" alt="owl"/>
+        <p>
+          The ultimate platform for both survey creators and respondents. If you're
+          a survey creator - a fellow owl companion, our user-friendly interface
+          will allow you to craft surveys with any topic your choosing. If you are a
+          survey respondents - either an owl companion or an unknown owl, you are
+          free to share your thoughts and opinions on the topics created by other
+          owl companions.
+        </p>
+      </div>
+      <div class="contents">
+        <a href="/createSurvey" th:if="${userId != null}" th:href="@{/createSurvey}" class="btn">Create a survey</a>
+        <div class="lst-of-surveys">
+          <h2>Surveys Available</h2>
+          <ul th:if="${surveys.size() > 0}">
+            <li th:each="survey : ${surveys}">
+              <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}">
+                <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
+                <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
+              </a>
+            </li>
+          </ul>
+          <p th:if="${surveys.size() == 0}" class="no-surveys">Currently no surveys made!</p>
+        </div>
+      </div>
     </div>
   <div th:replace="~{fragments/footer :: footer}"></div>
   </body>

@@ -5,36 +5,42 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <link rel="stylesheet" href="/css/globals.css">
     </head>
     <body>
         <div th:replace="~{fragments/header :: header}"></div>
-        <h1>Survey#<span id="surveyId" th:text="${surveyId}"></span>: <span th:text="${surveyTitle}"></span></h1>
-        <h2>Long Answer Questions</h2>
-        <ul id="text-container">
-            <li th:each="qid : ${longAnswerResponses.keySet()}">
-                <span th:text = "${questionMap.get(qid).getPrompt()}"></span>
-                <ul>
-                    <li th:each="res : ${longAnswerResponses.get(qid).keySet()}">
-                        <span th:text="${res}"></span>
+        <div class="container view-response-page">
+            <h1>Responses for Survey#<span id="surveyId" th:text="${surveyId}"></span>: <span th:text="${surveyTitle}"></span></h1>
+            <h2>Long Answer Questions</h2>
+            <div class="question-container">
+                <ul id="text-container">
+                    <li th:each="qid : ${longAnswerResponses.keySet()}" class="text-answers">
+                        <span th:text = "${questionMap.get(qid).getPrompt()}" class="question-title"></span>
+                        <ul class="text-answer">
+                            <li th:each="res : ${longAnswerResponses.get(qid).keySet()}">
+                                <p th:text="${res}"></p>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
-            </li>
-        </ul>
+            </div>
+            <hr />
 
-        <h2>Radio Choice Questions</h2>
-        <ul id="radio-choice-container">
+            <h2>Radio Choice Questions</h2>
+            <div class="question-container">
+                <ul id="radio-choice-container">
 
-        </ul>
+                </ul>
+            </div>
+            <hr />
+            <h2>Range Questions</h2>
+            <div class="question-container">
+                <ul id="range-container">
 
-
-        <h2>Range Questions</h2>
-        <ul id="range-container">
-
-        </ul>
-        <footer>
-            <a href="/" th:href="@{/}">Go Back</a>
-            <div th:replace="~{fragments/footer :: footer}"></div>
-        </footer>
+                </ul>
+            </div>
+        </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
     </body>
     <script src="/scripts/generateGraphs.js" type="application/javascript"></script>
 </html>

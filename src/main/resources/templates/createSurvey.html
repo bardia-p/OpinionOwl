@@ -3,30 +3,30 @@
 <head>
   <title>OpinionOwl | Create Survey</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="stylesheet" href="/css/globals.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 </head>
   <body>
     <div th:replace="~{fragments/header :: header}"></div>
-    <h1>Create a Survey</h1>
-    <div class="form-builder-options">
-      <button id="add-text">Add Text Question</button>
-      <button id="add-radio-choice">Add Multiple Choice Question</button>
-      <button id="add-numeric-range">Add Numeric Range Select Question</button>
-    </div>
+    <div class="container create-survey-container">
+      <h1>Create a Survey</h1>
+      <div class="form-builder-options">
+        <button id="add-text" class="btn">Add Text Question</button>
+        <button id="add-radio-choice" class="btn">Add Multiple Choice Question</button>
+        <button id="add-numeric-range" class="btn">Add Numeric Range Select Question</button>
+      </div>
 
-    <div class="form-container">
-      <h2 contenteditable="true" class="form-title">Form Title</h2>
-      <form th:action="@{/api/v1/createSurvey}" method="post" id="survey-container">
-        <table id="survey">
+      <div class="form-container">
+        <form class="survey-form" th:action="@{/api/v1/createSurvey}" method="post" id="survey-container">
+          <h2 contenteditable="true" class="form-title">Form Title</h2>
+          <table id="survey">
 
-        </table>
-        <button type="submit" id="create-survey">Create Form</button>
-      </form>
+          </table>
+          <button type="submit" id="create-survey" class="btn">Create Survey</button>
+        </form>
+      </div>
     </div>
-    <footer>
-      <a href="/" th:href="@{/}">Go Back</a>
-      <div th:replace="~{fragments/footer :: footer}"></div>
-    </footer>
+    <div th:replace="~{fragments/footer :: footer}"></div>
     <script src="/scripts/createSurvey.js" type="application/javascript"></script>
   </body>
 </html>

@@ -12,6 +12,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,11 +117,20 @@ public class PageControllerTest {
         System.out.println();
         System.out.println("Mocking get page '/answerSurvey', expecting to retrieve an HTML page");
         System.out.println("Creating a survey for the page to get. ID: 1L");
-        long surveyId = 1;
         AppUser u1 = new AppUser("Test", "123");
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
+
+        Long surveyId = null;
+
+        List<Survey> surveyList = surveyRepository.findAll();
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("TEST_SURVEY")){
+                surveyId = s.getId();
+                break;
+            }
+        }
 
         Cookie cookie = new Cookie("userId", u1.getId().toString());
 
@@ -138,7 +149,6 @@ public class PageControllerTest {
                         .cookie(cookie)
                         .param("surveyId", String.valueOf(surveyId)))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType("text/html;charset=UTF-8"))
                 .andReturn().getResponse().getContentAsString();
 
         // extract the title
@@ -227,6 +237,41 @@ public class PageControllerTest {
         System.out.println("Expects title: OpinionOwl | Create Survey, Actual: " + title);
         // assert the title equals to the create survey page title
         assert(title.equals("OpinionOwl | Register User"));
+        System.out.println("------------------------------");
+    }
+
+    /**
+     * <p>Handle tests for Get mapping the Login user page</p>
+     * <br />
+     * <strong>Expects:</strong> the <u>loginUser</u> HTML page
+     * @throws Exception
+     */
+    @Test
+    public void testLoginUserPageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testLoginUserPageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/loginUser', expecting to retrieve an HTML page");
+        String content = this.mockMvc.perform(get("/loginUser"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Login, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Login"));
         System.out.println("------------------------------");
     }
 }

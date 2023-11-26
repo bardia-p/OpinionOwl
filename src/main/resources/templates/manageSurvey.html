@@ -4,31 +4,28 @@
     <title>OpinionOwl | Manage Survey</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/globals.css">
 </head>
     <body>
         <div th:replace="~{fragments/header :: header}"></div>
-        <h2>Manage Surveys</h2>
-        <form id="closeSurvey-form" th:action="@{/api/v1/createUser}" method="post">
-            <table>
-                <tr th:each="survey : ${surveys}">
-                    <!-- First column populates survey information -->
-                    <td>
-                        <p>Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
-                    </td>
-                    <td> <!-- Second column contains all buttons needed to manage the surveys -->
-                        <div class="button-container">
-                            <p><a th:href="@{/viewResponse(surveyId=${survey.getId()})}"><button type="button">View Results</button></a></p>
-                            <p><button class="manage-button" type="submit" disabled>Edit Survey <span th:text="${survey.getId()}"></span></button></p>
-                            <p><button type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey ' + survey.getId()}">Close Survey</button></p>
+        <div class="container manage-survey-page">
+            <h1>Manage Surveys</h1>
+            <div class="grid-auto-fit user-survey-lst">
+                <div class="user-survey" th:each="survey : ${surveys}">
+                    <p class="title">Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
+                    <p class="num-questions">Number of Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
+                    <div class="button-container">
+                        <a th:href="@{/viewResponse(surveyId=${survey.getId()})}" class="view"><button type="button" th:disabled="${!survey.isClosed()}" class="btn">View Results</button></a>
+                        <div class="flex">
+                            <button class="btn editable" type="submit" disabled>Edit Survey</button>
+                            <button class="btn close" type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey'}">Close Survey</button>
                         </div>
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <footer>
-            <a href="/" th:href="@{/}">Go Back</a>
-            <div th:replace="~{fragments/footer :: footer}"></div>
-        </footer>
+                    </div>
+                </div>
+            </div>
+            <p th:if="${surveys.size() == 0}" class="no-surveys">Make Surveys to see them here!</p>
+        </div>
+        <div th:replace="~{fragments/footer :: footer}"></div>
         <script src="/scripts/manageSurvey.js" type="application/javascript"></script>
     </body>
 </html>

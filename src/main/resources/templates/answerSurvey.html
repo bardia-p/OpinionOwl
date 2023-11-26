@@ -4,38 +4,39 @@
     <title>OpinionOwl | Answer Survey</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/globals.css">
 </head>
     <body>
         <div th:replace="~{fragments/header :: header}"></div>
-        <h1>Survey#<span th:text="${surveyId}"></span>: <span th:text="${surveyTitle}"></span></h1>
-        <form th:action="@{/api/v1/createSurvey}" method="POST" id="answer-survey-form">
-            <div th:each="i : ${#numbers.sequence(1, numberOfQuestions)}">
-                <div th:if="${longAnswerQuestions.get(i) != null}" class="text-questions">
-                    <label th:text="${longAnswerQuestions.get(i).getPrompt()}"></label>
-                    <br />
-                    <input type="text" th:id="${longAnswerQuestions.get(i).getId()}" required />
-                </div>
-                <div th:if="${radioChoiceQuestions.get(i) != null}">
-                    <label th:text="${radioChoiceQuestions.get(i).getPrompt()}"></label>
-                    <div th:each="choice : ${radioChoiceQuestions.get(i).getChoices()}" class="radio-choices">
-                        <input type="radio" required th:id="${radioChoiceQuestions.get(i).getId()}" th:name="${radioChoiceQuestions.get(i).getId()}">
-                        <label th:text="${choice}"></label>
+        <div class="container">
+            <h1>Answering Survey#<span th:text="${surveyId}"></span></h1>
+            <form class="survey-form answer-survey-form" th:action="@{/api/v1/createSurvey}" method="POST" id="answer-survey-form">
+                <h2 class="form-title"><span th:text="${surveyTitle}"></span></h2>
+                <div th:each="i : ${#numbers.sequence(1, numberOfQuestions)}">
+                    <div th:if="${longAnswerQuestions.get(i) != null}" class="text-questions">
+                        <label class="question" th:text="${longAnswerQuestions.get(i).getPrompt()}"></label>
+                        <input type="text" th:id="${longAnswerQuestions.get(i).getId()}" required />
+                    </div>
+                    <div th:if="${radioChoiceQuestions.get(i) != null}">
+                        <label th:text="${radioChoiceQuestions.get(i).getPrompt()}" class="question"></label>
+                        <div th:each="choice : ${radioChoiceQuestions.get(i).getChoices()}" class="radio-container flex">
+                            <input type="radio" required th:id="${radioChoiceQuestions.get(i).getId()}" th:name="${radioChoiceQuestions.get(i).getId()}">
+                            <label th:text="${choice}"></label>
+                        </div>
+                    </div>
+                    <div th:if="${rangeQuestionQuestions.get(i) != null}" class="range-question">
+                        <label th:text="${rangeQuestionQuestions.get(i).getPrompt()}" class="question"></label>
+                        <div class="flex range-option">
+                            <span th:text="${rangeQuestionQuestions.get(i).getLower()}"></span>
+                            <input type="range" th:id="${rangeQuestionQuestions.get(i).getId()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
+                            <span th:text="${rangeQuestionQuestions.get(i).getUpper()}"></span>
+                        </div>
                     </div>
                 </div>
-                <div th:if="${rangeQuestionQuestions.get(i) != null}" class="range-question">
-                    <label th:text="${rangeQuestionQuestions.get(i).getPrompt()}"></label>
-                    <br />
-                    <span th:text="${rangeQuestionQuestions.get(i).getLower()}"></span>
-                    <input type="range" th:id="${rangeQuestionQuestions.get(i).getId()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
-                    <span th:text="${rangeQuestionQuestions.get(i).getUpper()}"></span>
-                </div>
-            </div>
-            <button type="submit" id="submit-button">Submit</button>
-        </form>
-        <footer>
-            <a href="/" th:href="@{/}">Go Back</a>
-            <div th:replace="~{fragments/footer :: footer}"></div>
-        </footer>
+                <button class="btn" type="submit" id="submit-button">Submit</button>
+            </form>
+        </div>
+        <div th:replace="~{fragments/footer :: footer}"></div>
         <script src="/scripts/saveSurveyResponse.js" type="application/javascript"></script>
     </body>
 </html>
