@@ -1,4 +1,4 @@
-@startuml Milestone1_UML_Class_Diagram
+@startuml Milestone2_UML_Class_Diagram
 skinparam classFontSize 11
 skinparam classBackgroundColor beige
 skinparam ClassBorderColor red
@@ -12,6 +12,14 @@ package "models" <<frame>> {
         - question: Long
         - content: String
         + Answer(response: Response, Long question, content: String)
+        + getId(): Long
+        + getResponse(): Response
+        + getQuestion(): Long
+        + getContent(): String
+        + setId(): void
+        + setResponse(): void
+        + setQuestion(): void
+        + setContent(): void
         + toString(): String
         + equals(o: Object): boolean
     }
@@ -22,6 +30,14 @@ package "models" <<frame>> {
         - password: String
         - listSurveys: List<Survey>
         + AppUser(username: String, password: String)
+        + getId(): Long
+        + getUsername(): String
+        + getPassword(): String
+        + getListSurveys(): List<Survey>
+        + setId(): void
+        + setUsername(): void
+        + setPassword(): void
+        + setListSurveys(): void
         + addSurvey(survey: Survey): void
         + removeSurvey(surveyId: Long): boolean
         + toString(): String
@@ -38,11 +54,20 @@ package "models" <<frame>> {
 
     class "Question" {
         - id: Long
-        - prompt: String 
+        - prompt: String
         - type: QuestionType
         - survey: Survey
         + Question(survey: Survey, prompt: String, type: QuestionType)
+        + getId(): Long
+        + getPrompt(): String
+        + getType(): QuestionType
+        + getSurvey(): Survey
+        + setId(): void
+        + setPrompt(): void
+        + setType(): void
+        + setSurvey(): void
         + toString(): String
+        + equals(comparedQuestion: Question): boolean
         + equals(o: Object): boolean
     }
 
@@ -50,6 +75,8 @@ package "models" <<frame>> {
         - charLimit: Integer
         + LongAnswerQuestion()
         + LongAnswerQuestion(survey: Survey, prompt: String, charLimit: Integer)
+        + getCharLimit(): Integer
+        + setCharLimit(): void
         + toString(): String
         + equals(o: Object): boolean
     }
@@ -58,6 +85,8 @@ package "models" <<frame>> {
         - choices: String[]
         + RadioChoiceQuestion()
         + RadioChoiceQuestion(survey: Survey, prompt: String, choices: String[])
+        + getChoices: String[]
+        + setChoices: void
         + toString(): String
         + equals(o: Object): boolean
     }
@@ -69,6 +98,12 @@ package "models" <<frame>> {
         + RangeQuestion()
         + RangeQuestion(prompt: String, lower: Integer, upper: Integer)
         + RangeQuestion(survey: Survey, prompt: String, lower: Integer, upper: Integer, increment: Integer)
+        + getLower(): Integer
+        + getUpper(): Integer
+        + getIncremental(): Integer
+        + setLower(): void
+        + setUpper(): void
+        + setIncremental(): void
         + toString(): String
         + equals(o: Object): boolean
     }
@@ -78,8 +113,15 @@ package "models" <<frame>> {
         - survey: Survey
         - answers: List<Answer>
         + Response(survey: Survey)
+        + getId(): Long
+        + getSurvey(): Survey
+        + getAnswers(): List<Answer>
+        + setId(): void
+        + setSurvey(): void
+        + setAnswers(): void
         + addAnswer(question: Long, content: String): void
         + toString(): String
+        + equals(comparedResponse: Response): boolean
         + equals(o: Object): boolean
     }
 
@@ -88,9 +130,21 @@ package "models" <<frame>> {
         - questions: List<Question>
         - responses: List<Response>
         - closed: boolean
-        - title: String 
+        - title: String
         - user: AppUser
         + Survey(user: AppUser, title: String)
+        + getId(): Long
+        + getQuestions(): List<Question>
+        + getResponses(): List<Response>
+        + isClosed(): boolean
+        + getTitle(): String
+        + getUser(): AppUser
+        + setId(): void
+        + setQuestions(): void
+        + setResponses(): void
+        + setClosed(): void
+        + setTitle(): void
+        + setUser(): void
         + addQuestion(question: Question): boolean
         + removeQuestion(questionId: long): boolean
         + addResponse(response: Response): boolean
@@ -104,7 +158,7 @@ package "models" <<frame>> {
 
 
 ' note right of "APIController"::createSurvey
-'     // returns 200 if survey created successfully 
+'     // returns 200 if survey created successfully
 '     // otherwise look at integer responses to handle errors
 ' end note
 
@@ -112,13 +166,11 @@ package "models" <<frame>> {
 "RangeQuestion" -up-|> "Question"
 "LongAnswerQuestion" -up-|> "Question"
 "RadioChoiceQuestion" -up-|> "Question"
-"Question" --* "1" "QuestionType"
 
-"Response" "1  " --* "0..*      " "Answer"
+"Question" "1" *-- "QuestionType"
 
-"Survey" "1  " --* "0..*  " "Question"
-"Survey" "1  " --* "0..*     " "Response"
-"AppUser" "1  " --* "0..*  " "Survey"
-
-
+"Response" "0..*  " *-- "1      " "Answer"
+"Survey" "0..*  " *-- "1  " "Question"
+"Survey" "0..*     " *-- "1   " "Response"
+"AppUser" "0..*  " *-- "1 " "Survey"
 @enduml
