@@ -77,4 +77,4 @@ All open issues and planned work can be found on our [kanban board](https://gith
 ## Diagrams
 
 - [UML diagram](diagrams/Milestone2_UML_Class_Diagram.png)
-- [Schema](diagrams/Milestone2_ER_Diagam.png)
+- [Schema](diagrams/Milestone2_ER_Diagram.png)
