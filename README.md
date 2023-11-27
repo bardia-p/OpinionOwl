@@ -1,4 +1,4 @@
-# SYSC 4806 Project - Opinion Owl <img src="/src/owl.png" height="40px" width="auto">
+# SYSC 4806 Project - Opinion Owl <img src="/images/owl.png" height="40px" width="auto">
 
 Build Status: ![Build Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml/badge.svg)
 
