@@ -1,4 +1,4 @@
-# SYSC 4806 Project - Opinion Owl
+# SYSC 4806 Project - Opinion Owl <img src="/src/owl.png" height="40px" width="auto">
 
 Build Status: ![Build Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml/badge.svg)
 
@@ -25,17 +25,31 @@ For milestone 1 of the project, the survey creation functionality was implemente
 retrieving it so that users can access it and fill out information. This milestone contains the app's initial structure and also included setting up the processes and
 workflows to be used throughout the project.
 
+## Milestone 2
+
+For milestone 2 of the project, the user account functionality was implemented. This included the ability to register a user and the ability for a user to log in and out.
+This involved the creation of cookies which allow the user to remain logged in even if they cloes the tab. The cookies are deleted once the user chooses to log out. Additionally,
+users are now connected to the surveys that they have created through their accounts. Users who have created a survey are able to manage them and close them so that they are no
+longer visible to other users. Users who do not own a survey are able to view and answer surveys that are currently open. The team also implemented the ability to view survey 
+responses as outlined in the project description. (ie. text answers are displayed as written, ranged answers are displayed as a histogram, and multiple choice answers are displayed
+in a pie chart). 
+
+Other smaller updates include security measures that were implemented to protect the endpoints from unauthorized access, configuration changes to allow for deployment on GCP, and 
+the addition of CSS styling.
+
 ## Plan for Next Milestone
 
 All open issues and planned work can be found on our [kanban board](https://github.com/users/bardia-p/projects/2). The current issues in backlog are listed below.
 
-- [Issue 17 - Add CSS Styles to the web pages](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44211716)
-- [Issue 18 - Edit Surveys](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44211831)
-- [Issue 20 - Fill Surveys](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44212227)
-- [Issue 21 - Close survey and display the results in the charts](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44212259)
-- [Issue 22 - Register users](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44212259)
-- [Issue 23 - Login users](https://github.com/users/bardia-p/projects/2?pane=issue&itemId=44212340)
-
+* Issue 18 - [Edit Surveys](https://github.com/bardia-p/OpinionOwl/issues/18)
+* Issue 63 - [Save Survey Responses](https://github.com/bardia-p/OpinionOwl/issues/63)
+* Issue 64 - [Add More Thorough Testing and Resolve All Warnings](https://github.com/bardia-p/OpinionOwl/issues/64)
+* Issue 65 - [Replace the Login Check With an Aspect](https://github.com/bardia-p/OpinionOwl/issues/65)
+* Issue 70 - [Extra Validation Before Survey is Created](https://github.com/bardia-p/OpinionOwl/issues/70)
+* Issue 71 - [Change App User Unique Identifier](https://github.com/bardia-p/OpinionOwl/issues/71)
+* Issue 72 - [Register User Input Validation](https://github.com/bardia-p/OpinionOwl/issues/72)
+* Issue 73 - [Update the Front-End UI](https://github.com/bardia-p/OpinionOwl/issues/73)
+  
 ## Dependencies:
 
 - Java JDK 17
