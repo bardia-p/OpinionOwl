@@ -492,7 +492,7 @@ header .header-contents nav .btn {
     margin-top: 0.5rem;
 }
 
-.manage-survey-page .button-container button {
+.manage-survey-page .button-container :is(.editable, .close-survey) {
     width: 100%;
     padding: 0.5rem;
 }

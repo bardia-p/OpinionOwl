@@ -17,8 +17,8 @@
                     <div class="button-container">
                         <a th:href="@{/viewResponse(surveyId=${survey.getId()})}" class="view"><button type="button" th:disabled="${!survey.isClosed()}" class="btn">View Results</button></a>
                         <div class="flex">
-                            <button class="btn editable" type="submit" disabled>Edit Survey</button>
-                            <button class="btn close" type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey'}">Close Survey</button>
+                            <a th:href="@{/editSurvey(surveyId=${survey.getId()})}" class="editable"><button class="btn">Edit Survey</button></a>
+                            <button class="btn close-survey" type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey'}">Close Survey</button>
                         </div>
                     </div>
                 </div>

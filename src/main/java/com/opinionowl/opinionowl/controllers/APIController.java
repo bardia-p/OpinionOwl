@@ -364,4 +364,100 @@ public class APIController {
         }
         return 200;
     }
+
+    @GetMapping("/getSurveyQuestions/{id}")
+    public String getSurveyQuestions(@PathVariable("id") String id, HttpServletRequest request) throws JSONException  {
+        System.out.println("getSurveyResults() API");
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return "";
+        }
+
+        Optional<Survey> s = surveyRepo.findById(Long.valueOf(id));
+        JSONObject resObject = new JSONObject();
+        if (s.isPresent()) {
+            Survey survey = s.get();
+            if (!survey.getUser().getId().equals(Long.valueOf(userid))){
+                return "";
+            }
+            JSONObject questionObject = new JSONObject();
+            for (Question q : survey.getQuestions()) {
+                JSONObject indQObject = new JSONObject();
+                indQObject.put("type", q.getType().getType());
+                indQObject.put("prompt", q.getPrompt());
+                if (q.getType() == QuestionType.RANGE) {
+                    RangeQuestion rangeQuestion = (RangeQuestion) q;
+                    int[] ranges = {rangeQuestion.getLower(), rangeQuestion.getUpper()};
+                    indQObject.put("ranges", ranges);
+                } else if (q.getType() == QuestionType.RADIO_CHOICE) {
+                    indQObject.put("choices", ((RadioChoiceQuestion) q).getChoices());
+                }
+                questionObject.put(q.getId().toString(), indQObject);
+            }
+            resObject.put("questions", questionObject);
+        }
+        System.out.println(resObject);
+        return resObject.toString();
+    }
+
+    @PostMapping("/updateSurvey/{id}")
+    public int updateSurvey(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
+        System.out.println("Updating survey API()");
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return 400;
+        }
+
+        String jsonData = this.JSONBuilder(request);
+        ObjectMapper objectMapper = new ObjectMapper();
+        HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
+        // Extract specific data from the parsed JSON
+        String title = (String) surveyData.get("title");
+        List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
+        HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
+        HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
+
+        AppUser appUser = userRepository.findById(Long.valueOf(userid)).orElse(null);
+        Survey currSurvey = surveyRepo.findById((Long.valueOf(id))).orElse(null);
+        Survey newSurvey = new Survey(appUser, title);
+
+        if (appUser == null) {
+            System.out.println("Could not find the user!");
+            return 400;
+        }
+
+        if (currSurvey == null) {
+            System.out.println("Could not find survey");
+            return 400;
+        }
+
+        if (!Objects.equals(currSurvey.getUser().getId(), appUser.getId())) {
+            System.out.println("Not the user associated with the user");
+            return 400;
+        }
+
+        appUser.removeSurvey(currSurvey.getId());
+        surveyRepo.deleteById(currSurvey.getId());
+        // add all the question types to the survey
+        for (String questionTitle : textQuestions) {
+            newSurvey.addQuestion(new LongAnswerQuestion(newSurvey, questionTitle, 50));
+        }
+
+        for (String questionTitle : radioQuestions.keySet()) {
+            String[] radioQuestionsArr = new String[radioQuestions.get(questionTitle).size()];
+            newSurvey.addQuestion(new RadioChoiceQuestion(newSurvey, questionTitle, radioQuestions.get(questionTitle).toArray(radioQuestionsArr)));
+        }
+
+        for (String questionTitle : numericRanges.keySet()) {
+            List<Integer> ranges = numericRanges.get(questionTitle);
+            newSurvey.addQuestion(new RangeQuestion(newSurvey, questionTitle, ranges.get(0), ranges.get(1), 1));
+        }
+        appUser.addSurvey(newSurvey);
+        surveyRepo.save(newSurvey);
+        return 200;
+    }
 }
