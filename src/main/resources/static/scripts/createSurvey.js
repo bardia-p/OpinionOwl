@@ -6,8 +6,9 @@ const survey = $("#survey");
 const addTextQuestion = $("#add-text");
 const addRadioChoice = $("#add-radio-choice");
 const addNumericRange = $("#add-numeric-range");
+const formButton = $(".create-edit-submit-btn");
 const submitButton = $("#create-survey");
-submitButton.attr("disabled", true);
+formButton.attr("disabled", true);
 const generateUniqueID = () => {
     counter++;
     return `unique-${counter}-${Math.floor(Math.random() * 1000)}`;
@@ -16,15 +17,15 @@ const generateUniqueID = () => {
 /**
  *
  * @param {string} radioQuestionContainer
- * @param {string} uniqueName
+ * @param {string} prompt
  */
-const addMoreRadioOptions = (radioQuestionContainer, uniqueName) => {
+const addMoreRadioOptions = (radioQuestionContainer, prompt= "Sample") => {
     const uniqueId = generateUniqueID();
     const divId = generateUniqueID();
     $(radioQuestionContainer).append(`
                 <div id=${divId} class="radio-container flex">
                     <input id=${uniqueId} type="radio">
-                    <label for=${uniqueId} contenteditable="true">sample</label>
+                    <label for=${uniqueId} contenteditable="true">${prompt}</label>
                     <button class="btn" onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">-</button>
                 </div>
         `);
@@ -60,18 +61,17 @@ const removeTableRow = (tableRowId) => {
 
 const incrementNumOfQuestions = () => {
     numOfQuestions++;
-    submitButton.removeAttr('disabled');
+    formButton.removeAttr('disabled');
 };
 
 const decrementNumOfQuestion = () => {
     numOfQuestions--;
     if (numOfQuestions === 0){
-        submitButton.attr("disabled", true);
+        formButton.attr("disabled", true);
     }
 };
 
-addTextQuestion.click((e) => {
-    e.preventDefault();
+const addTextQuestionRow = (prompt = "Question Title") => {
     const rowId = generateUniqueID();
     const question = `
           <tr id=${rowId} class="text-questions">
@@ -79,20 +79,23 @@ addTextQuestion.click((e) => {
                  <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
-                  <label contenteditable="true">Question title</label>
+                  <label contenteditable="true">${prompt}</label>
                   <input type="text" />
               </td>
           </tr>
         `;
     survey.append(question);
     incrementNumOfQuestions();
+}
+
+addTextQuestion.click((e) => {
+    e.preventDefault();
+    addTextQuestionRow();
 });
 
-addRadioChoice.click((e) => {
-    e.preventDefault();
+const addRadioChoicesRow = (prompt= "Question title", choices= ["Sample"]) => {
     const rowId = generateUniqueID();
     const radioQuestionContainer = generateUniqueID();
-    const uniqueName = generateUniqueID();
 
     const question = `
           <tr id='${rowId}' class="radio-questions">
@@ -101,19 +104,25 @@ addRadioChoice.click((e) => {
             </td>
             <td>
               <div id=${radioQuestionContainer}>
-                <label contenteditable="true" class="title">Question title</label>
+                <label contenteditable="true" class="title">${prompt}</label>
               </div>
-              <button class="btn add-more-radio-choices" type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}','${uniqueName}')">+</button>
+              <button class="btn add-more-radio-choices" type="button" onclick="addMoreRadioOptions('#${radioQuestionContainer}')">+</button>
             </td>
           </tr>
         `;
     survey.append(question);
-    addMoreRadioOptions(`#${radioQuestionContainer}`, `#${uniqueName}`)
+    for (const choice of choices) {
+        addMoreRadioOptions(`#${radioQuestionContainer}`, choice);
+    }
     incrementNumOfQuestions();
+}
+
+addRadioChoice.click((e) => {
+    e.preventDefault();
+    addRadioChoicesRow();
 });
 
-addNumericRange.click((e) => {
-    e.preventDefault();
+const addRangeQuestionRow = (prompt = "Question Title", ranges = [0, 10]) => {
     const rowId = generateUniqueID();
     const question = `
           <tr id='${rowId}' class="numeric-questions">
@@ -121,21 +130,25 @@ addNumericRange.click((e) => {
                  <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
               </td>
               <td>
-                <label contenteditable="true" class="title">Question title</label>
+                <label contenteditable="true" class="title">${prompt}</label>
                 <div class="flex range-option">
-                    <span contenteditable="true">0</span>
+                    <span contenteditable="true">${ranges[0]}</span>
                     <input type="range" min="0" max="11" />
-                    <span contenteditable="true">11</span>
+                    <span contenteditable="true">${ranges[1]}</span>
                 </div>
               </td>
           </tr>
         `;
     survey.append(question);
     incrementNumOfQuestions();
+}
+
+addNumericRange.click((e) => {
+    e.preventDefault();
+    addRangeQuestionRow();
 });
 
-submitButton.click((e) => {
-    e.preventDefault();
+const parseSurveyFormData = () => {
     const dataDictionary = {};
     dataDictionary["radioQuestions"] = {};
     dataDictionary["numericRanges"] = {};
@@ -202,8 +215,13 @@ submitButton.click((e) => {
         return;
     }
 
-    console.log(dataDictionary);
+    return dataDictionary;
+}
 
+submitButton.click((e) => {
+    e.preventDefault();
+    const dataDictionary = parseSurveyFormData();
+    console.log(dataDictionary);
     // send post using ajax
     const dataJson = JSON.stringify(dataDictionary);
     $.ajax({

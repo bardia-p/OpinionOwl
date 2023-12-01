@@ -122,7 +122,8 @@ form input {
     transition: box-shadow 0.2s ease-in-out;
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn.pointer-none {
     opacity: 0.7;
     pointer-events: none;
 }
@@ -482,7 +483,11 @@ header .header-contents nav .btn {
     margin-bottom: 2px;
 }
 
-.manage-survey-page .button-container .view button {
+.manage-survey-page .button-container .btn {
+    text-align: center;
+}
+
+.manage-survey-page .button-container .view {
     width: 100%;
 }
 
@@ -492,7 +497,7 @@ header .header-contents nav .btn {
     margin-top: 0.5rem;
 }
 
-.manage-survey-page .button-container button {
+.manage-survey-page .button-container :is(.editable, .close-survey) {
     width: 100%;
     padding: 0.5rem;
 }

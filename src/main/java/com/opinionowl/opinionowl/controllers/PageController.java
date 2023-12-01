@@ -124,6 +124,28 @@ public class PageController {
         return "answerSurvey";
     }
 
+    @GetMapping("/editSurvey")
+    public String editSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+        CookieController.setUsernameCookie(model, request);
+        Optional<Survey> surveyO = surveyRepo.findById(surveyId);
+        if (surveyO.isPresent()) {
+            // was able to obtain a survey from the database by id, and grab it from the Optional Object
+            Survey survey = surveyO.get();
+            if (!Long.valueOf(cookieUserId).equals(survey.getUser().getId())) {
+                System.out.println("You do not have access!");
+                return "redirect:/";
+            }
+            model.addAttribute("surveyTitle", survey.getTitle());
+            model.addAttribute("surveyId", survey.getId());
+        }
+        return "editSurvey";
+    }
+
     /**
      * <p>Route to direct the client to view the survey responses.</p>
      * <br />

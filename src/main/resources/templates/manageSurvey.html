@@ -15,10 +15,10 @@
                     <p class="title">Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
                     <p class="num-questions">Number of Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
                     <div class="button-container">
-                        <a th:href="@{/viewResponse(surveyId=${survey.getId()})}" class="view"><button type="button" th:disabled="${!survey.isClosed()}" class="btn">View Results</button></a>
+                        <a th:href="@{/viewResponse(surveyId=${survey.getId()})}" th:class="'view btn ' + ${!survey.isClosed() ? 'pointer-none' : ''}">View Results</a>
                         <div class="flex">
-                            <button class="btn editable" type="submit" disabled>Edit Survey</button>
-                            <button class="btn close" type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey'}">Close Survey</button>
+                            <a th:href="@{/editSurvey(surveyId=${survey.getId()})}" th:class="'editable btn ' + ${survey.isClosed() ? 'pointer-none' : ''} ">Edit Survey</a>
+                            <button class="btn close-survey" type="button" th:disabled="${survey.isClosed()}" th:onclick="'closeSurvey(' + ${survey.getId()} + ')'" th:text="${'Close Survey'}">Close Survey</button>
                         </div>
                     </div>
                 </div>
