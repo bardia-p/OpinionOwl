@@ -502,6 +502,11 @@ header .header-contents nav .btn {
     padding: 0.5rem;
 }
 
+.manage-survey-page .disclaimer {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
 /*View response page*/
 .view-response-page h2 {
     margin-bottom: 1.5rem;

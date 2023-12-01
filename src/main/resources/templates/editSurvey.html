@@ -9,8 +9,8 @@
   <body>
     <div th:replace="~{fragments/header :: header}"></div>
     <div class="container create-survey-container">
-      <p><strong>Note:</strong>Editing the survey will remove the existing responses from the previous survey!</p>
       <h1>Editing Survey#<span th:text="${surveyId}" id="surveyId"></span></h1>
+      <p class="disclaimer"><strong>Note:</strong>Editing the survey will remove the existing responses from the previous survey!</p>
       <div class="form-builder-options">
         <button id="add-text" class="btn">Add Text Question</button>
         <button id="add-radio-choice" class="btn">Add Multiple Choice Question</button>
