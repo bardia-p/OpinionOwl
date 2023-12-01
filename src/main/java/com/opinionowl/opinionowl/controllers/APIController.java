@@ -395,19 +395,10 @@ public class APIController {
     public String getSurveyQuestions(@PathVariable("id") String id, HttpServletRequest request) throws JSONException  {
         System.out.println("getSurveyResults() API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
-            System.out.println("You must be logged in first");
-            return "";
-        }
-
         Optional<Survey> s = surveyRepo.findById(Long.valueOf(id));
         JSONObject resObject = new JSONObject();
         if (s.isPresent()) {
             Survey survey = s.get();
-            if (!survey.getUser().getId().equals(Long.valueOf(userid))){
-                return "";
-            }
             JSONObject questionObject = new JSONObject();
             for (Question q : survey.getQuestions()) {
                 JSONObject indQObject = new JSONObject();
@@ -423,8 +414,10 @@ public class APIController {
                 questionObject.put(q.getId().toString(), indQObject);
             }
             resObject.put("questions", questionObject);
+        } else {
+            System.out.println("No survey found of ID " + id);
+            return "";
         }
-        System.out.println(resObject);
         return resObject.toString();
     }
 
