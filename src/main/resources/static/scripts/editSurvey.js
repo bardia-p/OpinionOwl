@@ -1,5 +1,9 @@
 const updateSurveyBtn = $("#update-survey");
 
+/**
+ * Add survey questions to the survey
+ * @param {object} questionsJson
+ */
 const addEditableQuestions = (questionsJson) => {
     const jsonRes = JSON.parse(questionsJson);
     const questions = jsonRes['questions'];
@@ -18,6 +22,9 @@ const addEditableQuestions = (questionsJson) => {
     });
 }
 
+/**
+ * Handle the survey update button functionality
+ */
 updateSurveyBtn.click((e) => {
     e.preventDefault();
     const surveyId = $("#surveyId").text();
@@ -46,6 +53,9 @@ updateSurveyBtn.click((e) => {
     });
 });
 
+/**
+ * On document ready, collect the data for the survey
+ */
 $(document).ready(function (){
     let surveyId = $("#surveyId").text();
     $.ajax({

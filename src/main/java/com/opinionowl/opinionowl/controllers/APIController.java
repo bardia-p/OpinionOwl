@@ -365,6 +365,32 @@ public class APIController {
         return 200;
     }
 
+    /**
+     * <p>Handler for retrieving the survey questions based on its ID as a JSON</p>
+     * <strong>Example return json will full data of questions</strong>
+     * <pre>
+     *     returnJson = {
+     *         "1": {
+     *             "type": "Long Answer",
+     *             "prompt": "Question prompt",
+     *         },
+     *         "2": {
+     *             "type": "Radio Choice",
+     *             "prompt": "Question prompt",
+     *             "choices": ["choice 1", "choice 2"],
+     *         },
+     *         "3": {
+     *             "type": "Range",
+     *             "prompt": "Question prompt",
+     *             "ranges": [0, 22],
+     *         }
+     *     }
+     * </pre>
+     * @param id String, the survey ID
+     * @param request
+     * @return JSON of survey questions
+     * @throws JSONException
+     */
     @GetMapping("/getSurveyQuestions/{id}")
     public String getSurveyQuestions(@PathVariable("id") String id, HttpServletRequest request) throws JSONException  {
         System.out.println("getSurveyResults() API");
@@ -402,6 +428,13 @@ public class APIController {
         return resObject.toString();
     }
 
+    /**
+     * <p>Handle the update of a survey based on its ID</p>
+     * @param id The survey ID
+     * @param request
+     * @return 200 if successful, otherwise 400
+     * @throws IOException
+     */
     @PostMapping("/updateSurvey/{id}")
     public int updateSurvey(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
         System.out.println("Updating survey API()");
