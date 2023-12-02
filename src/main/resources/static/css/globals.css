@@ -464,7 +464,7 @@ header .header-contents nav .btn {
     gap: 0.5rem;
 }
 
-.manage-survey-page .user-survey {
+.manage-survey-page .user-survey .user-response{
     background-color: var(--dark-brown);
     color: var(--white);
     padding: 0.5rem;
@@ -472,13 +472,13 @@ header .header-contents nav .btn {
     border-radius: 0.5rem;
 }
 
-.manage-survey-page .user-survey .title {
+.manage-survey-page .user-survey .user-response .title {
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
 }
 
-.manage-survey-page .user-survey .num-questions{
+.manage-survey-page .user-survey .user-response .num-questions{
     text-align: center;
     margin-bottom: 2px;
 }

@@ -71,6 +71,12 @@ public class APIController {
         // redirect to home
         System.out.println("Post survey response api API");
 
+        String userid = CookieController.getUserIdFromCookie(request);
+        AppUser user = null;
+        if (userid != null){
+            user = userRepository.findById(Long.valueOf(userid)).orElse(null);
+        }
+
         String jsonData = JSONBuilder(request);
         System.out.println("JSONDATA: " + jsonData);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -96,6 +102,13 @@ public class APIController {
         }
 
         responseRepo.save(responseToSurvey);
+
+        // Add the response to the user.
+        if (user != null){
+            user.addResponse(responseToSurvey.getId());
+            userRepository.save(user);
+        }
+
         // TODO: maybe consider toast messages? for now printing is fine for proof
         System.out.println(responseToSurvey);
 
@@ -308,6 +321,51 @@ public class APIController {
         survey.setClosed(true);
         surveyRepo.save(survey);
         return 200;
+    }
+
+    /**
+     * API call to get all the survey responses.
+     * @param id, id of the logged-in user
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @GetMapping("/savedResponses/{id}")
+    public String getSavedResponses(@PathVariable("id") Long id, HttpServletRequest request) throws IOException, JSONException {
+        System.out.println("getSavedResponses() API");
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return "";
+        }
+
+        if (!id.equals(Long.valueOf(userid))){
+            return "";
+        }
+
+        AppUser user = userRepository.findById(id).orElse(null);
+        if (user == null) {
+            return "";
+        }
+
+        JSONObject rObject = new JSONObject();
+
+        for (Long rid: user.getResponses()){
+            Response r = responseRepo.findById(rid).orElse(null);
+            if (r != null){
+                JSONObject responseObject = new JSONObject();
+                JSONObject answerObject = new JSONObject();
+                for (Answer a : r.getAnswers()){
+                    answerObject.put(a.getQuestion().toString(), a.getContent());
+                }
+                responseObject.put("answers", answerObject);
+                responseObject.put("surveyId", r.getSurvey().getId().toString());
+                rObject.put(r.getId().toString(), responseObject);
+            }
+        }
+
+        System.out.println(rObject);
+        return rObject.toString();
     }
 
     /**
