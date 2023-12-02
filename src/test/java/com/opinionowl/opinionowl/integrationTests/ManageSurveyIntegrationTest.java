@@ -1,5 +1,4 @@
 package com.opinionowl.opinionowl.integrationTests;
-import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
@@ -8,6 +7,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.Objects;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -55,7 +57,8 @@ public class ManageSurveyIntegrationTest {
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                         .andExpect(status().isOk());
+
         // Check that the survey is closed
-        assertTrue(surveyRepository.findById(surveyId).orElse(null).isClosed());
+        assertTrue(Objects.requireNonNull(surveyRepository.findById(surveyId).orElse(null)).isClosed());
     }
 }

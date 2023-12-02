@@ -1,6 +1,5 @@
 package com.opinionowl.opinionowl.integrationTests;
 
-import com.opinionowl.opinionowl.models.Response;
 import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import jakarta.servlet.http.Cookie;
@@ -30,7 +29,7 @@ public class FillAndGetResultsIntegrationTest {
 
     /**
      * Method to test the get survey results. mapping. It will create a survey, fill it, and confirm the result exists.
-     * @throws Exception
+     * @throws Exception - throws Exception
      */
     @Test
     public void testCreateAndPostSurveyResponse() throws Exception {

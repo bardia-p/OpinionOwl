@@ -32,7 +32,7 @@ public class RegisterLoginUserIntegrationTest {
     /**
      * Integration test the register and login user response mappings.
      * Verifies that a user can be registered, be logged in, and then logged out.
-     * @throws Exception
+     * @throws Exception - throws Exception
      */
     @Test
     public void testRegisterAndLoginUserResponse() throws Exception {
@@ -49,6 +49,7 @@ public class RegisterLoginUserIntegrationTest {
             }
         }
 
+        assert loggedInUser != null;
         Cookie cookie = new Cookie("userId", loggedInUser.getId().toString());
 
         this.testController.perform(post("/api/v1/loginUser")
