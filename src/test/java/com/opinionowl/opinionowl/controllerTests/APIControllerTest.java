@@ -33,7 +33,7 @@ public class APIControllerTest {
     /**
      * Method to test the Create Survey post mapping. It simply verifies that a new survey was posted to the repository.
      *
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testCreateSurvey() throws Exception {
@@ -52,7 +52,7 @@ public class APIControllerTest {
     /**
      * Method to test the Register User post mapping. It simply verifies that a new survey was posted to the repository.
      *
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testRegisterUser() throws Exception {
@@ -74,7 +74,7 @@ public class APIControllerTest {
 
     /**
      * Method that tests the loginUser POST mapping. It tests that a user can successfully be logged in.
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testLoginUser() throws Exception {

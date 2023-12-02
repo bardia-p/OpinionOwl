@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -34,7 +35,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the home page</p>
      * <br />
      * <strong>Expects:</strong> the <u>index</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testHomePageMapping() throws Exception {
@@ -68,7 +69,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the create survey page</p>
      * <br />
      * <strong>Expects:</strong> the <u>createSurvey</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testCreateSurveyPageMapping() throws Exception {
@@ -107,7 +108,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the answer survey page using a valid survey id</p>
      * <br />
      * <strong>Expects:</strong> the <u>answerSurvey</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testValidAnswerSurveyPageMapping() throws Exception {
@@ -172,7 +173,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the answer survey page using an invalid survey id</p>
      * <br />
      * <strong>Expects:</strong> the <u>index</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testInvalidAnswerSurveyPageMapping() throws Exception {
@@ -201,7 +202,7 @@ public class PageControllerTest {
 
         System.out.println("Expects title: , Actual: " + title);
         // assert the title equals to the redirect page title
-        assert(title.equals(""));
+        assertEquals(title, "");
         System.out.println("------------------------------");
     }
 
@@ -209,7 +210,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the register user page</p>
      * <br />
      * <strong>Expects:</strong> the <u>registerUser</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testRegisterUserPageMapping() throws Exception {
@@ -244,7 +245,7 @@ public class PageControllerTest {
      * <p>Handle tests for Get mapping the Login user page</p>
      * <br />
      * <strong>Expects:</strong> the <u>loginUser</u> HTML page
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testLoginUserPageMapping() throws Exception {
