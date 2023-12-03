@@ -33,6 +33,10 @@ public class AppUser {
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Survey> listSurveys;
 
+    // Keeps track of all the responses for the user.
+    @ElementCollection
+    private List<Long> responses;
+
     /**
      * Default constructor for User.
      * @param username A string username.
@@ -60,6 +64,22 @@ public class AppUser {
      */
     public boolean removeSurvey (Long surveyId) {
         return this.listSurveys.removeIf(s -> s.getId().equals(surveyId));
+    }
+
+    /**
+     * Adds a response to the user.
+     * @param response, the response to add to the user.
+     */
+    public void addResponse(Long response){
+        this.responses.add(response);
+    }
+
+    /**
+     * Removes the response from the user.
+     * @param response, the response to remove.
+     */
+    public boolean removeResponse(Long response){
+        return this.responses.remove(response);
     }
 
     /**
