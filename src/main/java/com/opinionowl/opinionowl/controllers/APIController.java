@@ -290,6 +290,11 @@ public class APIController {
         HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {});
         String username = userData.get("username");
         String password = userData.get("password");
+        for (AppUser appUser: userRepo.findAll()){
+            if (appUser.getUsername().equals(username)){
+                return 401;
+            }
+        }
         AppUser appUser = new AppUser(username, password);
         userRepo.save(appUser);
         System.out.println(appUser);
