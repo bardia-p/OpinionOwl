@@ -2,6 +2,7 @@ package com.opinionowl.opinionowl.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.opinionowl.opinionowl.models.*;
+import com.opinionowl.opinionowl.repos.QuestionRepository;
 import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
@@ -25,15 +26,17 @@ import java.util.*;
 @RequestMapping("/api/v1")
 @NoArgsConstructor
 public class APIController {
+    @Autowired
+    private UserRepository userRepo;
 
     @Autowired
     private SurveyRepository surveyRepo;
 
     @Autowired
-    private ResponseRepository responseRepo;
+    private QuestionRepository questionRepo;
 
     @Autowired
-    private UserRepository userRepository;
+    private ResponseRepository responseRepo;
 
     /**
      * Method for building a JSON format from a request.
@@ -74,7 +77,7 @@ public class APIController {
         String userid = CookieController.getUserIdFromCookie(request);
         AppUser user = null;
         if (userid != null){
-            user = userRepository.findById(Long.valueOf(userid)).orElse(null);
+            user = userRepo.findById(Long.valueOf(userid)).orElse(null);
         }
 
         String jsonData = JSONBuilder(request);
@@ -106,7 +109,7 @@ public class APIController {
         // Add the response to the user.
         if (user != null){
             user.addResponse(responseToSurvey.getId());
-            userRepository.save(user);
+            userRepo.save(user);
         }
 
         // TODO: maybe consider toast messages? for now printing is fine for proof
@@ -157,7 +160,7 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        Optional<AppUser> optionalAppUser = userRepository.findById(Long.valueOf(userid));
+        Optional<AppUser> optionalAppUser = userRepo.findById(Long.valueOf(userid));
         AppUser user = null;
         if (optionalAppUser.isPresent()){
             user = optionalAppUser.get();
@@ -288,7 +291,7 @@ public class APIController {
         String username = userData.get("username");
         String password = userData.get("password");
         AppUser appUser = new AppUser(username, password);
-        userRepository.save(appUser);
+        userRepo.save(appUser);
         System.out.println(appUser);
         return 200;
     }
@@ -343,7 +346,7 @@ public class APIController {
             return "";
         }
 
-        AppUser user = userRepository.findById(id).orElse(null);
+        AppUser user = userRepo.findById(id).orElse(null);
         if (user == null) {
             return "";
         }
@@ -356,10 +359,13 @@ public class APIController {
                 JSONObject responseObject = new JSONObject();
                 JSONObject answerObject = new JSONObject();
                 for (Answer a : r.getAnswers()){
-                    answerObject.put(a.getQuestion().toString(), a.getContent());
+                    Question q = questionRepo.findById(a.getQuestion()).orElse(null);
+                    if (q != null){
+                        answerObject.put(q.getPrompt(), a.getContent());
+                    }
                 }
                 responseObject.put("answers", answerObject);
-                responseObject.put("surveyId", r.getSurvey().getId().toString());
+                responseObject.put("surveyTitle", r.getSurvey().getTitle());
                 rObject.put(r.getId().toString(), responseObject);
             }
         }
@@ -383,7 +389,7 @@ public class APIController {
         });
         String username = userData.get("username");
         String password = userData.get("password");
-        for(AppUser user : userRepository.findAll()){
+        for(AppUser user : userRepo.findAll()){
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
                 loggedInUser = user;
                 break;
@@ -505,7 +511,7 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        AppUser appUser = userRepository.findById(Long.valueOf(userid)).orElse(null);
+        AppUser appUser = userRepo.findById(Long.valueOf(userid)).orElse(null);
         Survey currSurvey = surveyRepo.findById((Long.valueOf(id))).orElse(null);
         Survey newSurvey = new Survey(appUser, title);
 

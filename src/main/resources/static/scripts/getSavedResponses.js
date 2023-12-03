@@ -1,6 +1,6 @@
 const urlParams = new URLSearchParams(window.location.search);
 const userId = urlParams.toString().split("=")[1];
-const responseContainer = $(".user-response");
+const responseContainer = $(".user-response-lst");
 /**
  * Generates the appropriate response classes.
  * @param {Object} res
@@ -13,23 +13,24 @@ const displayResponses = (res) => {
         let response = jsonRes[r];
         if (Object.keys(response).length !== 0){
             let responseHTML = `
-            <ul id="text-container">
-                <span className="question-title">Response #: ${r}</span>
-                <span className="question-title">Survey #: ${response["surveyId"]}</span>
+            <div class="user-response">
+                <p class="title">Response #: ${r}</p>
+                <p class="survey-title">Survey Title: ${response["surveyTitle"]}</p>
+                <ul>
             `;
-
-            responseContainer.append(responseHTML);
 
             for(let q of Object.keys(response["answers"])) {
                 let answerHTML = `
-                <li className="text-answers">
-                    <span className="question-title">Question #: ${q} | Answer: ${response["answers"][q]}</span>
+                <li class="text-answers">
+                    <span class="question-title">Question: ${q} | Answer: ${response["answers"][q]}</span>
                 </li>
                 `;
-                responseContainer.append(answerHTML);
+                responseHTML += answerHTML;
             }
 
-            responseContainer.append(`</ul>`);
+            responseHTML += `</ul></div>`;
+
+            responseContainer.append(responseHTML);
         }
     }
 };

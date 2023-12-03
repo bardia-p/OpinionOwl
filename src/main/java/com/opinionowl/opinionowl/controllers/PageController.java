@@ -26,8 +26,6 @@ public class PageController {
     @Autowired
     SurveyRepository surveyRepo;
 
-
-
     /**
      * <p>Home route that gets all the surveys in the database, sends it to the model and directs the user to the home page</p>
      * @param model Model, the client Model
