@@ -153,10 +153,20 @@ const parseSurveyFormData = () => {
     dataDictionary["radioQuestions"] = {};
     dataDictionary["numericRanges"] = {};
     dataDictionary["title"] = formTitle.text();
+
+    if(!formTitle.text()) {
+        alert("Form title empty. Please put a title.")
+        return
+    }
+
     let duplicateFound = false;
+    let emptyLabelFound = false;
     // Iterate over table rows with the class 'text-questions'
     const textQuestions = []
     $('.text-questions label').each(function () {
+        if (!$(this).text()) {
+            emptyLabelFound = true;
+        }
         if (!textQuestions.includes($(this).text())) {
             textQuestions.push($(this).text());
         } else {
@@ -164,6 +174,11 @@ const parseSurveyFormData = () => {
             duplicateFound = true;
         }
     }).get();
+
+    if (emptyLabelFound) {
+        alert("Empty label found for text question. Please input something.")
+        return
+    }
 
     if (duplicateFound) {
         alert("duplicate questions for Text questions. Please make them unique before submitting");
@@ -176,6 +191,9 @@ const parseSurveyFormData = () => {
         const title = $(this).find('.title').text();
         const radioQuestions = [];
 
+        if (!title){
+            emptyLabelFound = true;
+        }
         if (dataDictionary["radioQuestions"][title]) {
             // duplicate question
             duplicateFound = true;
@@ -194,9 +212,18 @@ const parseSurveyFormData = () => {
         return;
     }
 
+    if (emptyLabelFound) {
+        alert("Empty label found for radio question. Please input something.")
+        return
+    }
+
     $('.numeric-questions').each(function() {
         const title = $(this).find(".title").text();
         const ranges = [];
+
+        if (!title){
+            emptyLabelFound = true;
+        }
 
         if (dataDictionary["numericRanges"][title]) {
             // duplicate question
@@ -205,10 +232,21 @@ const parseSurveyFormData = () => {
         }
 
         $(this).find("span").each(function() {
-            ranges.push(parseInt($(this).text()));
+            try {
+                ranges.push(parseInt($(this).text()));
+            }
+            catch(e) {
+                alert("Numeric inputs need to be numbers, not characters!")
+                return
+            }
         });
         dataDictionary["numericRanges"][title] = ranges;
     });
+
+    if (emptyLabelFound) {
+        alert("Empty label found for numeric question. Please input something.")
+        return
+    }
 
     if (duplicateFound) {
         alert("duplicate questions for numeric range questions. Please make them unique before submitting");
