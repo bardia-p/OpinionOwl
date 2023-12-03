@@ -161,6 +161,7 @@ const parseSurveyFormData = () => {
 
     let duplicateFound = false;
     let emptyLabelFound = false;
+    let invalidRange = false;
     // Iterate over table rows with the class 'text-questions'
     const textQuestions = []
     $('.text-questions label').each(function () {
@@ -202,7 +203,12 @@ const parseSurveyFormData = () => {
 
         const radioQuestionContainer = $(this).find('div');
         $(radioQuestionContainer).find('label:not(.title)').each(function () {
-            radioQuestions.push($(this).text());
+            if(!$(this).text()){
+                emptyLabelFound = true
+            }
+            else {
+                radioQuestions.push($(this).text());
+            }
         });
         dataDictionary["radioQuestions"][title] = radioQuestions;
     });
@@ -232,12 +238,18 @@ const parseSurveyFormData = () => {
         }
 
         $(this).find("span").each(function() {
-            try {
-                ranges.push(parseInt($(this).text()));
+            if ($(this).text()){
+                if (!isNaN(parseInt($(this).text()))) {
+                    ranges.push(parseInt($(this).text()));
+                }
+                else {
+                    invalidRange = true;
+                    return;
+                }
             }
-            catch(e) {
-                alert("Numeric inputs need to be numbers, not characters!")
-                return
+            else {
+                emptyLabelFound = true;
+                return;
             }
         });
         dataDictionary["numericRanges"][title] = ranges;
@@ -245,7 +257,12 @@ const parseSurveyFormData = () => {
 
     if (emptyLabelFound) {
         alert("Empty label found for numeric question. Please input something.")
-        return
+        return;
+    }
+
+    if (invalidRange) {
+        alert("Numeric inputs need to be numbers, not characters!")
+        return;
     }
 
     if (duplicateFound) {
@@ -259,6 +276,9 @@ const parseSurveyFormData = () => {
 submitButton.click((e) => {
     e.preventDefault();
     const dataDictionary = parseSurveyFormData();
+    if(!dataDictionary) {
+        return
+    }
     console.log(dataDictionary);
     // send post using ajax
     const dataJson = JSON.stringify(dataDictionary);
