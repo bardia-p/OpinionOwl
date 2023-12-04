@@ -1,6 +1,7 @@
 @import url("./reset.css");
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.1/toastr.min.css");
 
 :root {
     --yellow: #fb9d06;

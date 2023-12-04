@@ -155,7 +155,7 @@ const parseSurveyFormData = () => {
     dataDictionary["title"] = formTitle.text();
 
     if(!formTitle.text()) {
-        alert("Form title empty. Please put a title.")
+        setToast("warning", "Empty Field", "Please put a title");
         return
     }
 
@@ -177,12 +177,12 @@ const parseSurveyFormData = () => {
     }).get();
 
     if (emptyLabelFound) {
-        alert("Empty label found for text question. Please input something.")
+        setToast("warning", "Empty Field", "Please put a question for text questions");
         return
     }
 
     if (duplicateFound) {
-        alert("duplicate questions for Text questions. Please make them unique before submitting");
+        setToast("warning", "Duplicate Questions", "Text input questions needs to be unique");
         return;
     }
 
@@ -214,12 +214,12 @@ const parseSurveyFormData = () => {
     });
 
     if (duplicateFound) {
-        alert("duplicate questions for Radio questions. Please make them unique before submitting");
+        setToast("warning", "Duplicate Questions", "Radio choice questions needs to be unique");
         return;
     }
 
     if (emptyLabelFound) {
-        alert("Empty label found for radio question. Please input something.")
+        setToast("warning", "Empty Fields", "Please put a question for the radio choices");
         return
     }
 
@@ -256,17 +256,17 @@ const parseSurveyFormData = () => {
     });
 
     if (emptyLabelFound) {
-        alert("Empty label found for numeric question. Please input something.")
+        setToast("warning", "Empty Fields", "Please put inputs for the numeric ranges and questions");
         return;
     }
 
     if (invalidRange) {
-        alert("Numeric inputs need to be numbers, not characters!")
+        setToast("warning", "Range Invalid Input", "Ranges needs to be numeric!");
         return;
     }
 
     if (duplicateFound) {
-        alert("duplicate questions for numeric range questions. Please make them unique before submitting");
+        setToast("warning", "Duplicate Questions", "Range Questions needs to be unique");
         return;
     }
 
@@ -276,7 +276,7 @@ const parseSurveyFormData = () => {
 submitButton.click((e) => {
     e.preventDefault();
     const dataDictionary = parseSurveyFormData();
-    if(!dataDictionary) {
+    if (!dataDictionary) {
         return
     }
     console.log(dataDictionary);
@@ -291,14 +291,16 @@ submitButton.click((e) => {
             // success handling
             if (res === 200) {
                 console.log('Survey created successfully');
+                setToast("success", "Survey Created!", "Survey Successfully Created", true);
                 window.location.href = "/";
             } else {
-                alert('You cannot complete this request at the moment.');
+                setToast("error", "Something went wrong", "You cannot complete this request at the moment");
             }
         },
         error: function(xhr, status, error) {
             // error handling
             console.error('Error creating survey:', error);
+            setToast("error", "Something went wrong", "Could not create survey");
         }
     });
 });
