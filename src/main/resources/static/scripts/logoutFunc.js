@@ -2,15 +2,16 @@ const logoutButton = $("#logout-btn");
 const profileName = $("#profile-name");
 const dropDownSelections = $("#drop-down-selections");
 
+/**
+ * drop down the nav menu for when u are logged in
+ */
 profileName.click(() => {
-    if (dropDownSelections.css("opacity") === "1") {
-        dropDownSelections.css("opacity", "0");
-        dropDownSelections.css("visibility", "hidden");
+    if (!dropDownSelections.hasClass("visible")) {
+        dropDownSelections.addClass("visible");
         return;
     }
-    dropDownSelections.css("opacity", "1");
-    dropDownSelections.css("visibility", "visible");
-})
+    dropDownSelections.removeClass("visible");
+});
 
 /**
  * The JavaScript AJAX call for when a user logs out of their account

@@ -8,11 +8,11 @@
 </head>
   <body>
     <div th:replace="~{fragments/header :: header}"></div>
-    <div class="container create-survey-container">
+    <div class="container create-survey-container edit-survey-page">
       <h1>Editing Survey#<span th:text="${surveyId}" id="surveyId"></span></h1>
-      <p class="disclaimer"><strong>Note:</strong>Editing the survey will remove the existing responses from the previous survey!</p>
+      <p class="disclaimer"><strong>Note:</strong> Editing the survey will remove the existing responses from the previous survey!</p>
       <div class="form-builder-options">
-        <button id="add-text" class="btn">Add Text Question</button>
+        <button id="add-text" class="btn">Add Text Question </button>
         <button id="add-radio-choice" class="btn">Add Multiple Choice Question</button>
         <button id="add-numeric-range" class="btn">Add Numeric Range Select Question</button>
       </div>
@@ -22,7 +22,14 @@
           <h2 contenteditable="true" class="form-title" th:text="${surveyTitle}"></h2>
           <table id="survey">
           </table>
-          <button type="submit" id="update-survey" class="btn create-edit-submit-btn">Update Survey</button>
+          <button type="submit" id="update-survey" class="btn create-edit-submit-btn flex">
+            Update Survey
+            <svg viewBox="0 0 24 24" width="23px" height="23px"
+                 xmlns="http://www.w3.org/2000/svg" fill="#fff" stroke="#fff"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g>
+              <path d="M19 21H5V5h2v2h10V5h2v2.172l1-1V4h-3V3h-3a2 2 0 0 0-4 0H7v1H4v18h16V11.828l-1 1zM8 4h3V2.615A.615.615 0 0 1 11.614 2h.771a.615.615 0 0 1 .615.615V4h3v2H8zm14.646 1.646l.707.707-8.853 8.854-3.854-3.854.707-.707 3.147 3.147z"></path>
+            </g>
+            </svg>
+          </button>
         </form>
       </div>
     </div>
