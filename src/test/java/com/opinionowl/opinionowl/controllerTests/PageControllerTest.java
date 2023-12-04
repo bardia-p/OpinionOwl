@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
@@ -273,6 +275,196 @@ public class PageControllerTest {
         System.out.println("Expects title: OpinionOwl | Login, Actual: " + title);
         // assert the title equals to the create survey page title
         assert(title.equals("OpinionOwl | Login"));
+        System.out.println("------------------------------");
+    }
+
+    /**
+     * Handle tests for Get mapping the Edit Survey page
+     * @throws Exception, exception
+     */
+    @Test
+    public void testEditSurveyPageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testEditSurveyPageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/editSurvey', expecting to retrieve an HTML page");
+        long surveyId = 2000;
+
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        u1.addSurvey(survey);
+        userRepository.save(u1);
+        Cookie cookie = new Cookie("userId", u1.getId().toString());
+
+        String content = this.mockMvc.perform(get("/editSurvey")
+                    .param("surveyId", String.valueOf(surveyId)).cookie(cookie))
+                    .andExpect(status().isOk())
+                    .andExpect(content().contentType("text/html;charset=UTF-8"))
+                    .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Edit Survey, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Edit Survey"));
+        System.out.println("------------------------------");
+    }
+
+    /**
+     * Handle tests for Get mapping the Manage Survey page
+     * @throws Exception, exception
+     */
+    @Test
+    public void testManageSurveyPageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testManageSurveyPageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/manageSurvey', expecting to retrieve an HTML page");
+
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        u1.addSurvey(survey);
+        userRepository.save(u1);
+        Cookie cookie = new Cookie("userId", u1.getId().toString());
+
+        String content = this.mockMvc.perform(get("/manageSurvey")
+                .param("userId", String.valueOf(u1.getId()))
+                .cookie(cookie))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Manage Survey, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Manage Survey"));
+        System.out.println("------------------------------");
+    }
+
+    /**
+     * Handle tests for Get mapping the View Response page
+     * @throws Exception, exception
+     */
+    @Test
+    public void testViewResponsePageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testViewResponsePageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/viewResponse', expecting to retrieve an HTML page");
+
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        u1.addSurvey(survey);
+        userRepository.save(u1);
+        Long surveyId = null;
+
+        List<Survey> surveyList = surveyRepository.findAll();
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("TEST_SURVEY")){
+                surveyId = s.getId();
+                break;
+            }
+        }
+        Cookie cookie = new Cookie("userId", u1.getId().toString());
+        LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
+        survey.addQuestion(q1);
+        surveyRepository.save(survey);
+
+        String content = this.mockMvc.perform(get("/viewResponse")
+                        .param("surveyId", String.valueOf(surveyId))
+                        .cookie(cookie))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Responses, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Responses"));
+        System.out.println("------------------------------");
+    }
+
+    /**
+     * Handle tests for Get mapping the Saved Responses page
+     * @throws Exception, exception
+     */
+    @Test
+    public void testSavedResponsesPageMapping() throws Exception {
+        System.out.println();
+        System.out.println("------------------------------");
+        System.out.println("TESTING: testSavedResponsesPageMapping()");
+        System.out.println();
+        System.out.println("Mocking get page '/savedResponses', expecting to retrieve an HTML page");
+
+        AppUser u1 = new AppUser("Test", "123");
+        Survey survey = new Survey(u1, "TEST_SURVEY");
+        u1.addSurvey(survey);
+        userRepository.save(u1);
+
+        Cookie cookie = new Cookie("userId", u1.getId().toString());
+        LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
+        survey.addQuestion(q1);
+        Response r1 = new Response(survey);
+        Response r2 = new Response(survey);
+        r1.addAnswer(q1.getId(),"response1");
+        r2.addAnswer(q1.getId(),"response2");
+        survey.addResponse(r1);
+        survey.addResponse(r2);
+        surveyRepository.save(survey);
+
+        String content = this.mockMvc.perform(get("/savedResponses")
+                        .param("userId", String.valueOf(u1.getId()))
+                        .cookie(cookie))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andReturn().getResponse().getContentAsString();
+
+        // extract the title
+        System.out.println("Parsing the title of the page");
+        Pattern pattern = Pattern.compile("<title>(.*?)</title>");
+        Matcher matcher = pattern.matcher(content);
+
+        // Find the title using the regex pattern
+        String title = "";
+        if (matcher.find()) {
+            title = matcher.group(1);
+        }
+
+        System.out.println("Expects title: OpinionOwl | Saved Responses, Actual: " + title);
+        // assert the title equals to the create survey page title
+        assert(title.equals("OpinionOwl | Saved Responses"));
         System.out.println("------------------------------");
     }
 }

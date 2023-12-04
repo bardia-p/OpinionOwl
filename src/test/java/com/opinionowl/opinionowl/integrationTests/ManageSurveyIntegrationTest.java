@@ -35,7 +35,6 @@ public class ManageSurveyIntegrationTest {
      */
     @Test
     public void testCloseSurvey() throws Exception {
-        //Cookie cookie = new Cookie("userId", "1");
         Long surveyId = 1L;
 
         String postData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
@@ -57,13 +56,6 @@ public class ManageSurveyIntegrationTest {
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
-
-        // Creating a user
-        String postUserData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
-        this.mockMvc.perform(post("/api/v1/createUser")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(postUserData))
-                        .andExpect(status().isOk());
 
         // Create a survey using the POST request.
         String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";

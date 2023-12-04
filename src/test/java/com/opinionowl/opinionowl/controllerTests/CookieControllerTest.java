@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,17 +28,20 @@ public class CookieControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    private SurveyRepository surveyRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
+    // TODO
     @Test
     public void testSetUsernameCookie() throws Exception {
         System.out.println();
         System.out.println("------------------------------");
         System.out.println("TESTING: setUsernameCookie()");
         System.out.println();
+
+        String postData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        this.mockMvc.perform(post("/api/v1/createUser")
+                        .contentType(MediaType.APPLICATION_JSON).content(postData))
+                .andExpect(status().isOk());
 
     }
 }
