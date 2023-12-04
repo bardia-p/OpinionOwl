@@ -3,7 +3,7 @@ const profileName = $("#profile-name");
 const dropDownSelections = $("#drop-down-selections");
 
 /**
- * drop down the nav menu for when u are logged in
+ * drop down the nav menu for when you are logged in
  */
 profileName.click(() => {
     if (!dropDownSelections.hasClass("visible")) {
