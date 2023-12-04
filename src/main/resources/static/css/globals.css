@@ -137,6 +137,7 @@ header .header-contents {
     margin: 0 auto;
     max-width: 1300px;
     justify-content: space-between;
+    padding-right: 0!important;
 }
 
 header .header-contents .logo {
@@ -162,19 +163,53 @@ header .header-contents .logo img {
 header .header-contents nav {
     align-items: center;
     gap: 0.5rem;
+    position: relative;
 }
 
 header .header-contents nav.top-right-profile {
-    flex-direction: column;
-    gap: 0.2rem;
+    position: relative;
+    padding: 0 1rem;
 }
 
-header .header-contents nav.top-right-profile .btn{
-    height: auto;
-}
-
-header .header-contents nav.top-right-profile div {
+header .header-contents nav.top-right-profile #profile-name {
+    align-items: center;
     gap: 0.5rem;
+    cursor: pointer;
+}
+
+header .header-contents nav.top-right-profile #profile-name img {
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid var(--yellow);
+}
+
+header .header-contents nav.top-right-profile .drop-down {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 10;
+    left: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+header .header-contents nav.top-right-profile .drop-down :is(button, a) {
+    display: block;
+    color: white;
+    background: var(--dark-brown);
+    width: 100%;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid var(--yellow);
+    transition: background-color 0.3s ease;
+}
+
+header .header-contents nav.top-right-profile .drop-down :is(button, a):hover {
+    background-color: var(--light-brown);
 }
 
 header .header-contents nav .btn {

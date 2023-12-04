@@ -15,15 +15,27 @@
         </a>
     </nav>
     <nav th:if="${userId != null}" class="flex top-right-profile">
-      <p>User ID: <span th:text="${userId}"></span></p>
-      <div class="flex">
-        <button class="btn" id="logout-btn">Logout</button>
-        <a th:href="@{/manageSurvey(userId=${userId})}" class="btn">
+      <div class="flex" id="profile-name">
+        <img src="/images/profilePic.png" alt="profile picture" width="25px" height="25px" />
+        <p>User ID: <span th:text="${userId}"></span></p>
+        <svg fill="#fff" viewBox="0 0 32 32"
+             width="20px"
+             height="20px"
+             xmlns="http://www.w3.org/2000/svg"
+             stroke="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <path d="M0.256 8.606c0-0.269 0.106-0.544 0.313-0.75 0.412-0.412 1.087-0.412 1.5 0l14.119 14.119 13.913-13.912c0.413-0.412 1.087-0.412 1.5 0s0.413 1.088 0 1.5l-14.663 14.669c-0.413 0.413-1.088 0.413-1.5 0l-14.869-14.869c-0.213-0.213-0.313-0.481-0.313-0.756z"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="drop-down" id="drop-down-selections">
+        <a th:href="@{/manageSurvey(userId=${userId})}">
           Manage Surveys
         </a>
-        <a th:href="@{/savedResponses(userId=${userId})}" class="btn">
+        <a th:href="@{/savedResponses(userId=${userId})}">
           View Saved Responses
         </a>
+        <button id="logout-btn">Logout</button>
       </div>
     </nav>
   </div>
