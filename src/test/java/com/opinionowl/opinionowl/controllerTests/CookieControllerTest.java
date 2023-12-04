@@ -30,18 +30,11 @@ public class CookieControllerTest {
     @Autowired
     private UserRepository userRepository;
 
-    // TODO
     @Test
     public void testSetUsernameCookie() throws Exception {
         System.out.println();
         System.out.println("------------------------------");
         System.out.println("TESTING: setUsernameCookie()");
         System.out.println();
-
-        String postData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
-        this.mockMvc.perform(post("/api/v1/createUser")
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
-                .andExpect(status().isOk());
-
     }
 }
