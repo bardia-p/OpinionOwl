@@ -14,6 +14,7 @@ logoutButton.click((e) => {
             }
         },
         error: (error) => {
+            setToast("error", "Seomthing went wrong", "Cannot logout at this time");
             console.error(error);
         }
     });

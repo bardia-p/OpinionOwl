@@ -8,14 +8,14 @@ submitButton.click((e) => {
     e.preventDefault();
     const dataDictionary = {};
     if (!$("#username").val()) {
-        alert("No username inputted. Please provide a username!")
+        setToast("warning", "No Input", "Please input a username");
         return;
     }
     else {
         dataDictionary["username"] = $("#username").val();
     }
     if (!$("#password").val()) {
-        alert("No password inputted. Please provide a username!")
+        setToast("warning", "No Input", "Please input a password");
         return;
     }
     else {
@@ -34,12 +34,16 @@ submitButton.click((e) => {
         contentType: "application/json",
         success: function (res) {
             console.log('User registered successfully');
-            if (res === 200) {window.location.href = "/"}
+            if (res === 200) {
+                setToast("success", "", "Successfully registered user", true);
+                window.location.href = "/";
+            }
             else if (res === 401) errorMessage.text("This username already exists!")
         },
         error: function (xhr, status, error) {
             // error handling
             console.error('Error creating user:', error);
+            setToast("error", "Something went wrong", "Could not create user");
         }
     })
 

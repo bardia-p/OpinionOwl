@@ -19,14 +19,13 @@ submitButton.click((e) => {
         contentType: "application/json",
         success: function (res) {
             console.log('User registered successfully');
-            if (res === 200) {
-                window.location.href = '/';
-            }
+            if (res === 200) window.location.href = '/';
             else if (res === 401) errorMessage.text("Invalid Username or Password");
         },
         error: function (xhr, status, error) {
             // error handling
             console.error('Error logging in user:', error);
+            setToast("error", "Something went wrong!", "Cannot log in at this time");
         }
     })
 
