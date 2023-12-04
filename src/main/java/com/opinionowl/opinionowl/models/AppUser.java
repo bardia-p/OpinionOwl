@@ -67,13 +67,13 @@ public class AppUser {
      */
     @Override
     public String toString(){
-        String user = "User ID: " + id + "Username: " + username + "Password: " + password;
-        user += "\n-----Surveys -----";
+        StringBuilder user = new StringBuilder("User ID: " + id + "Username: " + username + "Password: " + password);
+        user.append("\n-----Surveys -----");
         for (Survey s: listSurveys) {
-            user += "\n" + s.toString();
+            user.append("\n").append(s.toString());
 
         }
-        return user;
+        return user.toString();
     }
 
     /**

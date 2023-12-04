@@ -97,7 +97,7 @@ public class APIControllerTest {
                 break;
             }
         }
-        assertEquals(parseLong(cookie.getValue()), loggedInUser.getId());
+        assertEquals(parseLong(cookie.getValue()), loggedInUser != null ? loggedInUser.getId() : null);
     }
 }
 

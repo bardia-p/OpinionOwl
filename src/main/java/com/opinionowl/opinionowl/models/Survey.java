@@ -137,16 +137,16 @@ public class Survey {
      */
     @Override
     public String toString(){
-        String res = "Survey#" + id + " Title:" + title + " Closed?" + closed;
-        res += "\n-----Questions-----";
+        StringBuilder res = new StringBuilder("Survey#" + id + " Title:" + title + " Closed?" + closed);
+        res.append("\n-----Questions-----");
         for (Question q: questions){
-            res += "\n" + q.toString();
+            res.append("\n").append(q.toString());
         }
-        res += "\n-----Response-----";
+        res.append("\n-----Response-----");
         for (Response r: responses){
-            res += "\n" + r.toString();
+            res.append("\n").append(r.toString());
         }
-        return res;
+        return res.toString();
     }
 
     /**

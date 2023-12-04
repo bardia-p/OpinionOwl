@@ -56,10 +56,7 @@ public class Question {
         if(!(this.prompt.equals(comparedQuestion.getPrompt()))){
             return false;
         }
-        if(!(this.type.equals(comparedQuestion.getType()))){
-            return false;
-        }
-        return true;
+        return this.type.equals(comparedQuestion.getType());
     }
 
     /**

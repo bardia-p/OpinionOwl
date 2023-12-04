@@ -217,7 +217,7 @@ public class PageController {
 
     /**
      * Route to direct the client to view the list of existing surveys to manage them.
-     * @return, String HTML template for manageSurvey
+     * @return , String HTML template for manageSurvey
      */
     @GetMapping("/manageSurvey")
     public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {

@@ -39,7 +39,7 @@ public class APIController {
      * Method for building a JSON format from a request.
      * @param request An HttpServletRequest request.
      * @return An ObjectMapper that maps a request's parameter to a particular value in JSON format.
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     private String JSONBuilder(HttpServletRequest request) throws IOException {
         // read the json sent by the client
@@ -63,7 +63,7 @@ public class APIController {
      * <pre>
      *     JSON DATA: {"1":"tony","2":"on","3":"11"...etc}
      * </pre>
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/postSurveyResponses/{surveyId}")
     public int postSurveyResponses(@PathVariable("surveyId") Long surveyId, HttpServletRequest request) throws IOException {
@@ -122,7 +122,7 @@ public class APIController {
      * </pre>
      * @param request HttpServletRequest request from the client
      * @return 200 if api was a success
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/createSurvey")
     public int createSurvey(HttpServletRequest request) throws IOException {
@@ -140,8 +140,11 @@ public class APIController {
 
         // Extract specific data from the parsed JSON
         String title = (String) surveyData.get("title");
+        @SuppressWarnings("unchecked")
         List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
+        @SuppressWarnings("unchecked")
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
+        @SuppressWarnings("unchecked")
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
         Optional<AppUser> optionalAppUser = userRepository.findById(Long.valueOf(userid));
@@ -210,7 +213,7 @@ public class APIController {
      * </pre>
      * @param id String the id of the survey.
      * @return resObject, the results of the survey in JSON format.
-     * @throws JSONException
+     * @throws JSONException, JSON Exception
      */
     @GetMapping("/getSurveyResults/{id}")
     public String getSurveyResults(@PathVariable("id") String id, HttpServletRequest request) throws JSONException {
@@ -264,7 +267,7 @@ public class APIController {
      * </pre>
      * @param request HttpServletRequest, a request from the client.
      * @return 200, if the API was a success.
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/createUser")
     public int createUser(HttpServletRequest request) throws IOException {
@@ -284,7 +287,7 @@ public class APIController {
      * API call to close a survey of a specified user id
      * @param id, id of the logged-in user
      * @return 200, if the API was a success.
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/closeSurvey/{id}")
     public int closeSurvey(@PathVariable("id") Long id, HttpServletRequest request) throws IOException {
@@ -314,7 +317,7 @@ public class APIController {
      * <p>API Call to login a user by verifying that it exists in the userRespository</p>
      * @param request HttpServletRequest, a request from the client.
      * @return 200, if user successfully logs in, 401 if user is not authenticated properly.
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/loginUser")
     public int loginUser(HttpServletRequest request, HttpServletResponse response) throws IOException{
@@ -346,7 +349,7 @@ public class APIController {
      * @param response HttpServletResponse server side response.
      * @param request HttpServletRequest, a request from the client.
      * @return 200, if the API was a success.
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/logout")
     public int logoutUser(HttpServletResponse response, HttpServletRequest request) throws IOException {
@@ -387,9 +390,9 @@ public class APIController {
      *     }
      * </pre>
      * @param id String, the survey ID
-     * @param request
+     * @param request HttpServletRequest
      * @return JSON of survey questions
-     * @throws JSONException
+     * @throws JSONException, JSON Exception
      */
     @GetMapping("/getSurveyQuestions/{id}")
     public String getSurveyQuestions(@PathVariable("id") String id, HttpServletRequest request) throws JSONException  {
@@ -424,9 +427,9 @@ public class APIController {
     /**
      * <p>Handle the update of a survey based on its ID</p>
      * @param id The survey ID
-     * @param request
+     * @param request HttpServletRequest
      * @return 200 if successful, otherwise 400
-     * @throws IOException
+     * @throws IOException, IO exception
      */
     @PostMapping("/updateSurvey/{id}")
     public int updateSurvey(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
@@ -443,8 +446,11 @@ public class APIController {
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
         // Extract specific data from the parsed JSON
         String title = (String) surveyData.get("title");
+        @SuppressWarnings("unchecked")
         List<String> textQuestions = (List<String>) surveyData.get("textQuestions");
+        @SuppressWarnings("unchecked")
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
+        @SuppressWarnings("unchecked")
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
         AppUser appUser = userRepository.findById(Long.valueOf(userid)).orElse(null);
