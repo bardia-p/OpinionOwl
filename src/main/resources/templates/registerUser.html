@@ -10,7 +10,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="container">
     <h1>Register a User</h1>
-    <form id="registerUser-form" class="login-register-form" th:action="@{/api/v1/createUser}" method="post">
+    <form id="registerUser-form" class="login-register-form md-box-shadow" th:action="@{/api/v1/createUser}" method="post">
         <p>Username:</p>
         <input type="text" id="username"/>
         <p>Password:</p>

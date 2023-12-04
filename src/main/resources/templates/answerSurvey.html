@@ -10,7 +10,7 @@
         <div th:replace="~{fragments/header :: header}"></div>
         <div class="container">
             <h1>Answering Survey#<span th:text="${surveyId}"></span></h1>
-            <form class="survey-form answer-survey-form" th:action="@{/api/v1/createSurvey}" method="POST" id="answer-survey-form">
+            <form class="survey-form answer-survey-form md-box-shadow" th:action="@{/api/v1/createSurvey}" method="POST" id="answer-survey-form">
                 <h2 class="form-title"><span th:text="${surveyTitle}"></span></h2>
                 <div th:each="i : ${#numbers.sequence(1, numberOfQuestions)}">
                     <div th:if="${longAnswerQuestions.get(i) != null}" class="text-questions">
