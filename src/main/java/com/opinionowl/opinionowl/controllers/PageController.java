@@ -26,8 +26,6 @@ public class PageController {
     @Autowired
     SurveyRepository surveyRepo;
 
-
-
     /**
      * <p>Home route that gets all the surveys in the database, sends it to the model and directs the user to the home page</p>
      * @param model Model, the client Model
@@ -244,6 +242,33 @@ public class PageController {
         }
         model.addAttribute("surveys", userSurveys);
         return "manageSurvey";
+    }
+
+    /**
+     * Route to direct the client to view the list of their responses.
+     * @return, String HTML template for manageSurvey
+     */
+    @GetMapping("/savedResponses")
+    public String getSavedResponses(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
+        String cookieUserId = CookieController.getUserIdFromCookie(request);
+        if (cookieUserId == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
+        CookieController.setUsernameCookie(model, request);
+
+        if (!Long.valueOf(cookieUserId).equals(userId)){
+            System.out.println("You do not have access!");
+            return "redirect:/";
+        }
+
+        Optional<AppUser> user0 = userRepo.findById(userId);
+        if (user0.isPresent()){
+            return "savedResponses";
+        }
+
+        return "redirect:/";
     }
 
     /**

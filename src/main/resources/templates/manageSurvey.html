@@ -14,6 +14,7 @@
                 <div class="user-survey" th:each="survey : ${surveys}">
                     <p class="title">Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
                     <p class="num-questions">Number of Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
+                    <p class="num-responses">Number of Responses: <span th:text="${survey.getResponses().size()}"></span></p>
                     <div class="button-container">
                         <a th:href="@{/viewResponse(surveyId=${survey.getId()})}" th:class="'view btn ' + ${!survey.isClosed() ? 'pointer-none' : ''}">View Results</a>
                         <div class="flex">

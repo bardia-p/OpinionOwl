@@ -153,10 +153,21 @@ const parseSurveyFormData = () => {
     dataDictionary["radioQuestions"] = {};
     dataDictionary["numericRanges"] = {};
     dataDictionary["title"] = formTitle.text();
+
+    if(!formTitle.text()) {
+        alert("Form title empty. Please put a title.")
+        return
+    }
+
     let duplicateFound = false;
+    let emptyLabelFound = false;
+    let invalidRange = false;
     // Iterate over table rows with the class 'text-questions'
     const textQuestions = []
     $('.text-questions label').each(function () {
+        if (!$(this).text()) {
+            emptyLabelFound = true;
+        }
         if (!textQuestions.includes($(this).text())) {
             textQuestions.push($(this).text());
         } else {
@@ -164,6 +175,11 @@ const parseSurveyFormData = () => {
             duplicateFound = true;
         }
     }).get();
+
+    if (emptyLabelFound) {
+        alert("Empty label found for text question. Please input something.")
+        return
+    }
 
     if (duplicateFound) {
         alert("duplicate questions for Text questions. Please make them unique before submitting");
@@ -176,6 +192,9 @@ const parseSurveyFormData = () => {
         const title = $(this).find('.title').text();
         const radioQuestions = [];
 
+        if (!title){
+            emptyLabelFound = true;
+        }
         if (dataDictionary["radioQuestions"][title]) {
             // duplicate question
             duplicateFound = true;
@@ -184,7 +203,12 @@ const parseSurveyFormData = () => {
 
         const radioQuestionContainer = $(this).find('div');
         $(radioQuestionContainer).find('label:not(.title)').each(function () {
-            radioQuestions.push($(this).text());
+            if(!$(this).text()){
+                emptyLabelFound = true
+            }
+            else {
+                radioQuestions.push($(this).text());
+            }
         });
         dataDictionary["radioQuestions"][title] = radioQuestions;
     });
@@ -194,9 +218,18 @@ const parseSurveyFormData = () => {
         return;
     }
 
+    if (emptyLabelFound) {
+        alert("Empty label found for radio question. Please input something.")
+        return
+    }
+
     $('.numeric-questions').each(function() {
         const title = $(this).find(".title").text();
         const ranges = [];
+
+        if (!title){
+            emptyLabelFound = true;
+        }
 
         if (dataDictionary["numericRanges"][title]) {
             // duplicate question
@@ -205,10 +238,32 @@ const parseSurveyFormData = () => {
         }
 
         $(this).find("span").each(function() {
-            ranges.push(parseInt($(this).text()));
+            if ($(this).text()){
+                if (!isNaN(parseInt($(this).text()))) {
+                    ranges.push(parseInt($(this).text()));
+                }
+                else {
+                    invalidRange = true;
+                    return;
+                }
+            }
+            else {
+                emptyLabelFound = true;
+                return;
+            }
         });
         dataDictionary["numericRanges"][title] = ranges;
     });
+
+    if (emptyLabelFound) {
+        alert("Empty label found for numeric question. Please input something.")
+        return;
+    }
+
+    if (invalidRange) {
+        alert("Numeric inputs need to be numbers, not characters!")
+        return;
+    }
 
     if (duplicateFound) {
         alert("duplicate questions for numeric range questions. Please make them unique before submitting");
@@ -221,6 +276,9 @@ const parseSurveyFormData = () => {
 submitButton.click((e) => {
     e.preventDefault();
     const dataDictionary = parseSurveyFormData();
+    if(!dataDictionary) {
+        return
+    }
     console.log(dataDictionary);
     // send post using ajax
     const dataJson = JSON.stringify(dataDictionary);

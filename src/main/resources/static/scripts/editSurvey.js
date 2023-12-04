@@ -29,6 +29,9 @@ updateSurveyBtn.click((e) => {
     e.preventDefault();
     const surveyId = $("#surveyId").text();
     const dataDictionary = parseSurveyFormData();
+    if(!dataDictionary) {
+        return
+    }
     console.log(dataDictionary);
     // send post using ajax
     const dataJson = JSON.stringify(dataDictionary);

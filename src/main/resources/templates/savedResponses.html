@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>OpinionOwl | Saved Responses</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/globals.css">
+</head>
+    <body>
+        <div th:replace="~{fragments/header :: header}"></div>
+        <div class="container saved-responses-page">
+            <h1>View Responses</h1>
+            <div class="grid-auto-fit user-response-lst">
+            </div>
+        </div>
+        <div th:replace="~{fragments/footer :: footer}"></div>
+        <script src="/scripts/getSavedResponses.js" type="application/javascript"></script>
+    </body>
+</html>

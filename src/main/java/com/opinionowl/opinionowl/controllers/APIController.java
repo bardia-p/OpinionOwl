@@ -2,6 +2,7 @@ package com.opinionowl.opinionowl.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.opinionowl.opinionowl.models.*;
+import com.opinionowl.opinionowl.repos.QuestionRepository;
 import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
@@ -25,15 +26,17 @@ import java.util.*;
 @RequestMapping("/api/v1")
 @NoArgsConstructor
 public class APIController {
+    @Autowired
+    private UserRepository userRepo;
 
     @Autowired
     private SurveyRepository surveyRepo;
 
     @Autowired
-    private ResponseRepository responseRepo;
+    private QuestionRepository questionRepo;
 
     @Autowired
-    private UserRepository userRepository;
+    private ResponseRepository responseRepo;
 
     /**
      * Method for building a JSON format from a request.
@@ -71,6 +74,12 @@ public class APIController {
         // redirect to home
         System.out.println("Post survey response api API");
 
+        String userid = CookieController.getUserIdFromCookie(request);
+        AppUser user = null;
+        if (userid != null){
+            user = userRepo.findById(Long.valueOf(userid)).orElse(null);
+        }
+
         String jsonData = JSONBuilder(request);
         System.out.println("JSONDATA: " + jsonData);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -96,6 +105,13 @@ public class APIController {
         }
 
         responseRepo.save(responseToSurvey);
+
+        // Add the response to the user.
+        if (user != null){
+            user.addResponse(responseToSurvey.getId());
+            userRepo.save(user);
+        }
+
         // TODO: maybe consider toast messages? for now printing is fine for proof
         System.out.println(responseToSurvey);
 
@@ -147,7 +163,7 @@ public class APIController {
         @SuppressWarnings("unchecked")
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        Optional<AppUser> optionalAppUser = userRepository.findById(Long.valueOf(userid));
+        Optional<AppUser> optionalAppUser = userRepo.findById(Long.valueOf(userid));
         AppUser user = null;
         if (optionalAppUser.isPresent()){
             user = optionalAppUser.get();
@@ -277,8 +293,13 @@ public class APIController {
         HashMap<String, String> userData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, String>>() {});
         String username = userData.get("username");
         String password = userData.get("password");
+        for (AppUser appUser: userRepo.findAll()){
+            if (appUser.getUsername().equals(username)){
+                return 401;
+            }
+        }
         AppUser appUser = new AppUser(username, password);
-        userRepository.save(appUser);
+        userRepo.save(appUser);
         System.out.println(appUser);
         return 200;
     }
@@ -314,6 +335,54 @@ public class APIController {
     }
 
     /**
+     * API call to get all the survey responses.
+     * @param id, id of the logged-in user
+     * @return 200, if the API was a success.
+     * @throws IOException
+     */
+    @GetMapping("/savedResponses/{id}")
+    public String getSavedResponses(@PathVariable("id") Long id, HttpServletRequest request) throws IOException, JSONException {
+        System.out.println("getSavedResponses() API");
+
+        String userid = CookieController.getUserIdFromCookie(request);
+        if (userid == null){
+            System.out.println("You must be logged in first");
+            return "";
+        }
+
+        if (!id.equals(Long.valueOf(userid))){
+            return "";
+        }
+
+        AppUser user = userRepo.findById(id).orElse(null);
+        if (user == null) {
+            return "";
+        }
+
+        JSONObject rObject = new JSONObject();
+
+        for (Long rid: user.getResponses()){
+            Response r = responseRepo.findById(rid).orElse(null);
+            if (r != null){
+                JSONObject responseObject = new JSONObject();
+                JSONObject answerObject = new JSONObject();
+                for (Answer a : r.getAnswers()){
+                    Question q = questionRepo.findById(a.getQuestion()).orElse(null);
+                    if (q != null){
+                        answerObject.put(q.getPrompt(), a.getContent());
+                    }
+                }
+                responseObject.put("answers", answerObject);
+                responseObject.put("surveyTitle", r.getSurvey().getTitle());
+                rObject.put(r.getId().toString(), responseObject);
+            }
+        }
+
+        System.out.println(rObject);
+        return rObject.toString();
+    }
+
+    /**
      * <p>API Call to login a user by verifying that it exists in the userRespository</p>
      * @param request HttpServletRequest, a request from the client.
      * @return 200, if user successfully logs in, 401 if user is not authenticated properly.
@@ -328,7 +397,7 @@ public class APIController {
         });
         String username = userData.get("username");
         String password = userData.get("password");
-        for(AppUser user : userRepository.findAll()){
+        for(AppUser user : userRepo.findAll()){
             if(user.getUsername().equals(username) && user.getPassword().equals(password)){
                 loggedInUser = user;
                 break;
@@ -453,7 +522,7 @@ public class APIController {
         @SuppressWarnings("unchecked")
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        AppUser appUser = userRepository.findById(Long.valueOf(userid)).orElse(null);
+        AppUser appUser = userRepo.findById(Long.valueOf(userid)).orElse(null);
         Survey currSurvey = surveyRepo.findById((Long.valueOf(id))).orElse(null);
         Survey newSurvey = new Survey(appUser, title);
 
