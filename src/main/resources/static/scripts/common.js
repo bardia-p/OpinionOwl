@@ -44,7 +44,6 @@ const setToast = (severity, title, message, redirect= false) => {
 
 $(document).ready(() => {
     // on document load, see if there are messages that needs to be showed
-    sessionStorage.getItem("toasts")
     let toasts = sessionStorage.getItem("toasts");
     if (toasts) {
         toasts = JSON.parse(toasts);
