@@ -16,19 +16,24 @@ const displayResponses = (res) => {
             <div class="user-response">
                 <p class="title">Response #: ${r}</p>
                 <p class="survey-title">Survey Title: ${response["surveyTitle"]}</p>
-                <ul>
+                <table class="results-table">
+                  <tr>
+                    <th>Question</th>
+                    <th>Answer</th>
+                  </tr>
             `;
 
             for(let q of Object.keys(response["answers"])) {
                 let answerHTML = `
-                <li class="text-answers">
-                    <span class="question-title">Question: ${q} | Answer: ${response["answers"][q]}</span>
-                </li>
+                <tr>
+                    <td>${response["answers"][q]["prompt"]}</td>
+                    <td>${response["answers"][q]["answer"]}</td>
+                </tr>
                 `;
                 responseHTML += answerHTML;
             }
 
-            responseHTML += `</ul></div>`;
+            responseHTML += `</table></div>`;
 
             responseContainer.append(responseHTML);
         }

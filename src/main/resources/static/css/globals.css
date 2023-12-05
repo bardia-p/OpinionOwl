@@ -254,6 +254,13 @@ header .header-contents nav.top-right-profile #profile-name {
     cursor: pointer;
 }
 
+header .header-contents nav.top-right-profile #profile-name span {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 header .header-contents nav.top-right-profile #profile-name img {
     border-radius: 50%;
     width: 2.5rem;
@@ -732,6 +739,10 @@ header .header-contents nav .btn {
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
+}
+
+.saved-responses-page .user-response .results-table{
+    width: 100%;
 }
 
 @media only screen and (max-width: 600px) {

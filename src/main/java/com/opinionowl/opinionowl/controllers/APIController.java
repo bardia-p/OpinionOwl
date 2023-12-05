@@ -74,10 +74,10 @@ public class APIController {
         // redirect to home
         System.out.println("Post survey response api API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
+        String username = CookieController.getUsernameFromCookie(request);
         AppUser user = null;
-        if (userid != null){
-            user = userRepo.findById(Long.valueOf(userid)).orElse(null);
+        if (username != null){
+            user = userRepo.findByUsername(username).orElse(null);
         }
 
         String jsonData = JSONBuilder(request);
@@ -144,8 +144,8 @@ public class APIController {
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
+        String username = CookieController.getUsernameFromCookie(request);
+        if (username == null){
             System.out.println("You must be logged in first");
             return 400;
         }
@@ -160,8 +160,8 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        Optional<AppUser> optionalAppUser = userRepo.findById(Long.valueOf(userid));
-        AppUser user = null;
+        Optional<AppUser> optionalAppUser = userRepo.findByUsername(username);
+        AppUser user;
         if (optionalAppUser.isPresent()){
             user = optionalAppUser.get();
         } else {
@@ -232,8 +232,8 @@ public class APIController {
     public String getSurveyResults(@PathVariable("id") String id, HttpServletRequest request) throws JSONException {
         System.out.println("getSurveyResults() API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
+        String username = CookieController.getUsernameFromCookie(request);
+        if (username == null){
             System.out.println("You must be logged in first");
             return "";
         }
@@ -243,7 +243,7 @@ public class APIController {
         JSONObject resObject = new JSONObject();
         if (s.isPresent()) {
             Survey survey = s.get();
-            if (!survey.getUser().getId().equals(Long.valueOf(userid))){
+            if (!survey.getUser().getUsername().equals(username)){
                 return "";
             }
             JSONObject qObject = new JSONObject();
@@ -302,7 +302,7 @@ public class APIController {
     }
 
     /**
-     * API call to close a survey of a specified user id
+     * API call to close a survey of a specified survey id
      * @param id, id of the logged-in user
      * @return 200, if the API was a success.
      * @throws IOException
@@ -311,8 +311,8 @@ public class APIController {
     public int closeSurvey(@PathVariable("id") Long id, HttpServletRequest request) throws IOException {
         System.out.println("closeSurvey() API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
+        String username = CookieController.getUsernameFromCookie(request);
+        if (username == null){
             System.out.println("You must be logged in first");
             return 400;
         }
@@ -322,7 +322,7 @@ public class APIController {
             return 400;
         }
 
-        if (!survey.getUser().getId().equals(Long.valueOf(userid))){
+        if (!survey.getUser().getUsername().equals(username)){
             return 401;
         }
 
@@ -332,26 +332,48 @@ public class APIController {
     }
 
     /**
-     * API call to get all the survey responses.
-     * @param id, id of the logged-in user
-     * @return 200, if the API was a success.
+     * API call to get all the saved responses for a user.
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     "1": {
+     *         "answers": {
+     *             "1": {
+     *                 "answer": "efw",
+     *                 "prompt": "Question Title"
+     *             },
+     *             "2": {
+     *                 "answer": "Sample",
+     *                 "prompt": "Question Title"
+     *             },
+     *             "3": {
+     *                 "answer": "5",
+     *                 "prompt": "Question Title"
+     *             }
+     *         },
+     *         "surveyTitle": "Form Title"
+     *     }
+     * }
+     * </pre>
+     * @param username, username of the logged-in user
+     * @return resObject, the results of the survey in JSON format.
      * @throws IOException
      */
-    @GetMapping("/savedResponses/{id}")
-    public String getSavedResponses(@PathVariable("id") Long id, HttpServletRequest request) throws IOException, JSONException {
+    @GetMapping("/savedResponses/{username}")
+    public String getSavedResponses(@PathVariable("username") String username, HttpServletRequest request) throws IOException, JSONException {
         System.out.println("getSavedResponses() API");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
+        String storedUsername = CookieController.getUsernameFromCookie(request);
+        if (storedUsername == null){
             System.out.println("You must be logged in first");
             return "";
         }
 
-        if (!id.equals(Long.valueOf(userid))){
+        if (!username.equals(storedUsername)){
             return "";
         }
 
-        AppUser user = userRepo.findById(id).orElse(null);
+        AppUser user = userRepo.findByUsername(username).orElse(null);
         if (user == null) {
             return "";
         }
@@ -362,14 +384,17 @@ public class APIController {
             Response r = responseRepo.findById(rid).orElse(null);
             if (r != null){
                 JSONObject responseObject = new JSONObject();
-                JSONObject answerObject = new JSONObject();
+                JSONObject answersObject = new JSONObject();
                 for (Answer a : r.getAnswers()){
                     Question q = questionRepo.findById(a.getQuestion()).orElse(null);
                     if (q != null){
-                        answerObject.put(q.getPrompt(), a.getContent());
+                        JSONObject indAnswerObject = new JSONObject();
+                        indAnswerObject.put("prompt", q.getPrompt());
+                        indAnswerObject.put("answer", a.getContent());
+                        answersObject.put(a.getId().toString(), indAnswerObject);
                     }
                 }
-                responseObject.put("answers", answerObject);
+                responseObject.put("answers", answersObject);
                 responseObject.put("surveyTitle", r.getSurvey().getTitle());
                 rObject.put(r.getId().toString(), responseObject);
             }
@@ -404,7 +429,7 @@ public class APIController {
             return 401; //indicates unauthorized
         }
 
-        Cookie cookie = new Cookie( "userId", String.valueOf(loggedInUser.getId()));
+        Cookie cookie = new Cookie( "username", loggedInUser.getUsername());
         cookie.setPath("/");
         response.addCookie(cookie);
         return 200;
@@ -422,8 +447,8 @@ public class APIController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie c : cookies) {
-                if (c.getName().equals("userId")) {
-                    Cookie cRemove = new Cookie("userId", "");
+                if (c.getName().equals("username")) {
+                    Cookie cRemove = new Cookie("username", "");
                     cRemove.setMaxAge(0);
                     cRemove.setPath("/");
                     response.addCookie(cRemove);
@@ -501,8 +526,8 @@ public class APIController {
     public int updateSurvey(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
         System.out.println("Updating survey API()");
 
-        String userid = CookieController.getUserIdFromCookie(request);
-        if (userid == null){
+        String username = CookieController.getUsernameFromCookie(request);
+        if (username == null){
             System.out.println("You must be logged in first");
             return 400;
         }
@@ -516,7 +541,7 @@ public class APIController {
         HashMap<String, List<String>> radioQuestions = (HashMap<String, List<String>>) surveyData.get("radioQuestions");
         HashMap<String, List<Integer>> numericRanges = (HashMap<String, List<Integer>>) surveyData.get("numericRanges");
 
-        AppUser appUser = userRepo.findById(Long.valueOf(userid)).orElse(null);
+        AppUser appUser = userRepo.findByUsername(username).orElse(null);
         Survey currSurvey = surveyRepo.findById((Long.valueOf(id))).orElse(null);
         Survey newSurvey = new Survey(appUser, title);
 
@@ -530,7 +555,7 @@ public class APIController {
             return 400;
         }
 
-        if (!Objects.equals(currSurvey.getUser().getId(), appUser.getId())) {
+        if (!Objects.equals(currSurvey.getUser().getUsername(), appUser.getUsername())) {
             System.out.println("Not the user associated with the user");
             return 400;
         }

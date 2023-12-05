@@ -8,6 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -27,35 +30,44 @@ public class ManageSurveyIntegrationTest {
      */
     @Test
     public void testCloseSurvey() throws Exception {
-        Cookie cookie = new Cookie("userId", "1");
-        Long surveyId = 1L;
+        Cookie cookie = new Cookie("username", "closesurveyuser");
 
         // Creating a user
-        String postUserData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        String postUserData = "{\"username\":\"closesurveyuser\",\"password\":\"testpassword\"}";
         this.mockMvc.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(postUserData))
                 .andExpect(status().isOk());
 
         // Create a survey using the POST request.
-        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
+        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Test Close Survey\",\"textQuestions\":[\"Test1\"]}";
         this.mockMvc.perform(post("/api/v1/createSurvey")
                             .cookie(cookie)
                             .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                             .andExpect(status().isOk());
 
+        List<Survey> surveyList = surveyRepository.findAll();
+        Survey newSurvey = null;
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("Test Close Survey")){
+                newSurvey = s;
+                break;
+            }
+        }
+        assertNotNull(newSurvey);
+
         // Navigate to "/manageSurvey" page and expect that it contains the newly created survey in the list
-        this.mockMvc.perform(get("/manageSurvey?userId=1")
+        this.mockMvc.perform(get("/manageSurvey?username=closesurveyuser")
                         .cookie(cookie))
                         .andExpect(status().isOk())
-                        .andExpect(content().string(containsString("Form Title")));
+                        .andExpect(content().string(containsString("Test Close Survey")));
 
         // Close the survey
-        this.mockMvc.perform(post("/api/v1/closeSurvey/{id}", surveyId)
+        this.mockMvc.perform(post("/api/v1/closeSurvey/{id}", newSurvey.getId())
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                         .andExpect(status().isOk());
         // Check that the survey is closed
-        assertTrue(surveyRepository.findById(surveyId).orElse(null).isClosed());
+        assertTrue(surveyRepository.findById(newSurvey.getId()).orElse(null).isClosed());
     }
 }
