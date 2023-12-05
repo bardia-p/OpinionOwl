@@ -30,7 +30,7 @@ public class CreateSurveyIntegrationTest {
                         .content(postUserData))
                         .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("userId", "1");
+        Cookie cookie = new Cookie("username", "testuser");
 
        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
 

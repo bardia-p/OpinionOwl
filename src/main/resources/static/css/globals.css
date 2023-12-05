@@ -1,6 +1,7 @@
 @import url("./reset.css");
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=swap");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.1/toastr.min.css");
 
 :root {
     --yellow: #fb9d06;
@@ -68,6 +69,11 @@ footer {
     color: var(--white);
 }
 
+hr {
+    border-color: var(--light-brown);
+    opacity: 0.5;
+}
+
 form {
     background-color: var(--dark-brown);
     padding: 1.5rem;
@@ -89,9 +95,71 @@ form input {
     font-size: 1rem;
 }
 
+input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 10px;
+    border-radius: 5px;
+    background: var(--light-brown);
+    outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    position: relative;
+    top: -4px;
+    background: var(--lighter-yellow);
+    border: 1px solid var(--dark-brown);
+    cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1rem;
+    height: 1rem;
+    border-radius: 50%;
+    position: relative;
+    top: -4px;
+    background: var(--lighter-yellow);
+    border: 1px solid var(--dark-brown);
+    cursor: pointer;
+}
+
+
+input[type="range"]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 10px;
+    background: var(--lighter-yellow);
+    border-radius: 5px;
+    border: 1px solid var(--dark-brown);
+}
+
+input[type="range"]::-moz-range-track {
+    width: 100%;
+    height: 10px;
+    background: var(--lighter-yellow);
+    border-radius: 5px;
+    border: 1px solid var(--dark-brown);
+}
+
+input[type="range"]:focus {
+    outline: none;
+}
+
 .flex {
-    display: flex;
-    display: -webkit-flex;
+    display: flex!important;
+    display: -webkit-flex!important;
+}
+
+.md-box-shadow {
+    box-shadow: -1px 1px 7px var(--dark-brown);
 }
 
 .grid-auto-fit {
@@ -120,12 +188,21 @@ form input {
     cursor: pointer;
     border: 2px solid var(--yellow);
     transition: box-shadow 0.2s ease-in-out;
+    -moz-transition: box-shadow 0.2s ease-in-out;
+    -o-transition: box-shadow 0.2s ease-in-out;
+    -webkit-transition: box-shadow 0.2s ease-in-out;
 }
 
 .btn:disabled,
 .btn.pointer-none {
     opacity: 0.7;
     pointer-events: none;
+}
+
+.btn.flex {
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
 }
 
 .btn:hover {
@@ -137,6 +214,7 @@ header .header-contents {
     margin: 0 auto;
     max-width: 1300px;
     justify-content: space-between;
+    padding-right: 0!important;
 }
 
 header .header-contents .logo {
@@ -162,19 +240,76 @@ header .header-contents .logo img {
 header .header-contents nav {
     align-items: center;
     gap: 0.5rem;
+    position: relative;
 }
 
 header .header-contents nav.top-right-profile {
-    flex-direction: column;
-    gap: 0.2rem;
+    position: relative;
+    padding: 0 1rem;
 }
 
-header .header-contents nav.top-right-profile .btn{
-    height: auto;
-}
-
-header .header-contents nav.top-right-profile div {
+header .header-contents nav.top-right-profile #profile-name {
+    align-items: center;
     gap: 0.5rem;
+    cursor: pointer;
+}
+
+header .header-contents nav.top-right-profile #profile-name span {
+    width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+header .header-contents nav.top-right-profile #profile-name img {
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 2px solid var(--yellow);
+}
+
+header .header-contents nav.top-right-profile .drop-down {
+    position: absolute;
+    top: 100%;
+    width: 100%;
+    z-index: 10;
+    left: 0;
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    -moz-transition: opacity 0.3s ease, visibility 0.3s ease;
+    -o-transition: opacity 0.3s ease, visibility 0.3s ease;
+    -webkit-transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+header .header-contents nav.top-right-profile .drop-down.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+header .header-contents nav.top-right-profile .drop-down :is(button, a) {
+    display: block;
+    color: white;
+    background: var(--dark-brown);
+    width: 100%;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid var(--yellow);
+    transition: background-color 0.3s ease;
+    -moz-transition: background-color 0.3s ease;
+    -o-transition: background-color 0.3s ease;
+    -webkit-transition: background-color 0.3s ease;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+header .header-contents nav.top-right-profile .drop-down :is(button, a):hover {
+    background-color: var(--light-brown);
 }
 
 header .header-contents nav .btn {
@@ -202,13 +337,17 @@ header .header-contents nav .btn {
 }
 
 .login-register-form a {
-    color: var(--black);
+    color: var(--lighter-yellow);
     display: block;
     width: fit-content;
     text-align: center;
     text-decoration: underline;
     font-size: 1.2rem;
     margin: 0.5rem auto 0 auto;
+    transition: color 0.2s linear;
+    -moz-transition: color 0.2s linear;
+    -o-transition: color 0.2s linear;
+    -webkit-transition: color 0.2s linear;
 }
 
 .login-register-form a:hover {
@@ -257,25 +396,43 @@ header .header-contents nav .btn {
 }
 
 .home-page .lst-of-surveys ul {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    margin-top: 2rem;
     display: grid;
     display: -moz-grid;
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 0.5rem;
-    margin-top: 2rem;
 }
 
-.home-page .lst-of-surveys ul a {
-    display: block;
-    color: var(--white);
-    background-color: var(--dark-brown);
+.home-page .lst-of-surveys ul li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
     border: 2px solid var(--yellow);
+    border-radius: 5px;
     padding: 0.5rem;
-    border-radius: 20px;
-    transition: box-shadow 0.2s ease-in-out;
+    background-color: var(--dark-brown);
+    color: white;
+    transition: box-shadow 0.3s ease;
+    -moz-transition: box-shadow 0.3s ease;
+    -o-transition: box-shadow 0.3s ease;
+    -webkit-transition: box-shadow 0.3s ease;
 }
 
-.home-page .lst-of-surveys ul a:hover {
-    box-shadow: 0 0 5px 1px var(--yellow);
+.home-page .lst-of-surveys ul li h3 {
+    color: var(--yellow);
+    font-weight: bold;
+    text-shadow: 0 1px 2px black;
+}
+
+.home-page .lst-of-surveys ul li .btn {
+    font-size: 1.05rem;
+    width: 100%;
+    text-align: center;
+    margin-top: auto;
+}
+
+.home-page .lst-of-surveys ul li:hover {
+    box-shadow: -1px 1px 7px var(--dark-brown);
 }
 
 .home-page .lst-of-surveys .no-surveys {
@@ -299,10 +456,6 @@ header .header-contents nav .btn {
 
 .survey-form h2 {
     margin: 0 auto 1rem auto;
-}
-
-.survey-form h2::after {
-    background-color: var(--white);
 }
 
 .survey-form :is(label, input[type="text"]) {
@@ -344,7 +497,7 @@ header .header-contents nav .btn {
     width: 1.3rem;
     height: 1.3rem;
     background-color: var(--lighter-yellow);
-    border: 2px solid var(--dark-brown);
+    border: 2px solid var(--yellow);
     border-radius: 50%;
     box-sizing: border-box;
     display: flex;
@@ -366,6 +519,7 @@ header .header-contents nav .btn {
 
 .survey-form .range-option {
     align-items: center;
+    margin: 1rem 0;
 }
 
 .survey-form .range-option span {
@@ -391,6 +545,10 @@ header .header-contents nav .btn {
     width: 100%;
 }
 
+.create-survey-container .form-container :is(h2, label) {
+    padding-left: 0.5rem;
+}
+
 .create-survey-container .form-container :is(h2, label, span) {
     border: 2px solid var(--darker-brown);
     outline: none;
@@ -414,6 +572,9 @@ header .header-contents nav .btn {
 
 .create-survey-container .form-container table {
     width: 100%;
+    gap: 1rem;
+    display: grid;
+    display: -moz-grid;
 }
 .create-survey-container .form-container table td:first-of-type {
     width: 5%;
@@ -421,7 +582,7 @@ header .header-contents nav .btn {
 
 .create-survey-container .form-container table td:first-of-type .btn {
     position: relative;
-    top: 13px;
+    top: 5px;
 }
 
 .create-survey-container .form-container table .btn {
@@ -446,8 +607,25 @@ header .header-contents nav .btn {
 }
 
 /*Answer Survey Page*/
+.answer-survey-form {
+    color: var(--lighter-yellow);
+}
+
 .answer-survey-form :is(label, h2) {
     font-size: 1.35rem;
+}
+
+.answer-survey-form h2.form-title {
+    text-align: left;
+    color: var(--yellow);
+    font-weight: bold;
+    text-shadow: 0 1px 2px black;
+    margin: 0;
+    font-size: 2rem;
+}
+
+.answer-survey-form hr {
+    border-color: var(--yellow);
 }
 
 .answer-survey-form label.question {
@@ -470,12 +648,22 @@ header .header-contents nav .btn {
     padding: 0.5rem;
     border: 2px solid var(--yellow);
     border-radius: 0.5rem;
+    transition: box-shadow 0.3s ease;
+    -webkit-transition: box-shadow 0.3s ease;
+    -moz-transition: box-shadow 0.3s ease;
+    -o-transition: box-shadow 0.3s ease;
+}
+
+.manage-survey-page .user-survey:hover {
+    box-shadow: -1px 1px 7px var(--dark-brown);
 }
 
 .manage-survey-page .user-survey .title {
     text-align: center;
     font-size: 1.2rem;
-    font-weight: 600;
+    color: var(--yellow);
+    font-weight: bold;
+    text-shadow: 0 1px 2px black;
 }
 
 .manage-survey-page .user-survey .num-questions{
@@ -490,9 +678,7 @@ header .header-contents nav .btn {
 
 .manage-survey-page .button-container .btn {
     text-align: center;
-}
-
-.manage-survey-page .button-container .view {
+    padding: 0.5rem;
     width: 100%;
 }
 
@@ -502,12 +688,8 @@ header .header-contents nav .btn {
     margin-top: 0.5rem;
 }
 
-.manage-survey-page .button-container :is(.editable, .close-survey) {
-    width: 100%;
-    padding: 0.5rem;
-}
-
-.manage-survey-page .disclaimer {
+/* edit survey page */
+.edit-survey-page .disclaimer {
     text-align: center;
     margin-bottom: 1rem;
 }
@@ -540,11 +722,6 @@ header .header-contents nav .btn {
     padding-left: 2rem;
 }
 
-.view-response-page hr {
-    border-color: var(--light-brown);
-    opacity: 0.5;
-}
-
 /* saved responses page*/
 .saved-responses-page .user-response {
     background-color: var(--dark-brown);
@@ -562,6 +739,10 @@ header .header-contents nav .btn {
     text-align: center;
     font-size: 1.2rem;
     font-weight: 600;
+}
+
+.saved-responses-page .user-response .results-table{
+    width: 100%;
 }
 
 @media only screen and (max-width: 600px) {

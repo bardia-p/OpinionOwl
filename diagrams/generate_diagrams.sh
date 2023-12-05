@@ -1,8 +1,12 @@
 #!/bin/bash
 
-input_directory="./diagrams/plantUmlFiles"
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
-plantuml="./tools/plantuml.jar"
+cd "$parent_path"
+
+input_directory="./plantUmlFiles"
+
+plantuml="../tools/plantuml.jar"
 
 if [ $(which dot 2>/dev/null) ]; then
   echo "Found GraphViz"
@@ -15,8 +19,9 @@ for file in "$input_directory"/*.plantuml; do
     if [ -f "$file" ]; then
       java -jar "$plantuml" "$file" -o "../"
       if [ $? != 0 ]; then
-          raise error "Failed to generate the diagram"
+          exit 1
       fi
+      echo "Generated a diagram."
     fi
 done
 

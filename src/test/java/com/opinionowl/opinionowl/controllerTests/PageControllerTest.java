@@ -81,7 +81,7 @@ public class PageControllerTest {
         System.out.println();
         AppUser u = new AppUser("test1", "test1");
         userRepository.save(u);
-        Cookie cookie = new Cookie("userId", u.getId().toString());
+        Cookie cookie = new Cookie("username", u.getUsername().toString());
         System.out.println("Mocking get page '/createSurvey', expecting to retrieve an HTML page");
         String content = this.mockMvc.perform(get("/createSurvey")
                         .cookie(cookie))
@@ -135,7 +135,7 @@ public class PageControllerTest {
             }
         }
 
-        Cookie cookie = new Cookie("userId", u1.getId().toString());
+        Cookie cookie = new Cookie("username", u1.getUsername().toString());
 
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
         RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});

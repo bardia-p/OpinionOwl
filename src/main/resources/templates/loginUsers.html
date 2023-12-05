@@ -4,13 +4,14 @@
     <title>OpinionOwl | Login</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.1/toastr.min.js"></script>
     <link rel="stylesheet" href="/css/globals.css">
 </head>
 <body>
 <div th:replace="~{fragments/header :: header}"></div>
 <div class="container">
     <h1>Login</h1>
-    <form class="login-register-form" id="registerUser-form" th:action="@{/api/v1/loginUser}" method="post">
+    <form class="login-register-form md-box-shadow" id="registerUser-form" th:action="@{/api/v1/loginUser}" method="post">
         <p>Username:</p>
         <input type="text" id="username" />
         <p>Password:</p>
@@ -21,6 +22,7 @@
     </form>
 </div>
 <div th:replace="~{fragments/footer :: footer}"></div>
+<script src="/scripts/common.js"></script>
 <script src="/scripts/loginUser.js" type="application/javascript"></script>
 </body>
 </html>

@@ -15,17 +15,17 @@ public class CookieController {
      */
     public static void setUsernameCookie(Model model, HttpServletRequest request) {
         Cookie[] cookie = request.getCookies();
-        model.addAttribute("userId", retrieveCookie(cookie, "userId"));
+        model.addAttribute("username", retrieveCookie(cookie, "username"));
     }
 
     /**
-     * Helper function to get the logged in user id from the cookie
+     * Helper function to get the logged-in username from the cookie
      * @param request An HttpServletRequest request.
      * @return String
      */
-    public static String getUserIdFromCookie(HttpServletRequest request){
+    public static String getUsernameFromCookie(HttpServletRequest request){
         Cookie[] cookie = request.getCookies();
-        return retrieveCookie(cookie, "userId");
+        return retrieveCookie(cookie, "username");
     }
 
     /**

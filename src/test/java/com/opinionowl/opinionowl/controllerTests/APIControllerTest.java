@@ -10,6 +10,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static java.lang.Long.parseLong;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,16 +39,28 @@ public class APIControllerTest {
      */
     @Test
     public void testCreateSurvey() throws Exception {
-        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"This is a test\",\"textQuestions\":[\"Test1\"]}";
+        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"This is a small test\",\"textQuestions\":[\"Test1\"]}";
 
+        AppUser user = new AppUser("SimpleUser", "password");
+        userRepository.save(user);
+
+        Cookie userCookie = new Cookie("username", user.getUsername());
         this.testController.perform(post("/api/v1/createSurvey")
+                        .cookie(userCookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        for (Survey survey : surveyRepository.findAll()) {
-            assertNotNull(survey);
-            assertEquals("This is a test", survey.getTitle());
+        List<Survey> surveyList = surveyRepository.findAll();
+        assertTrue(surveyList.size() != 0);
+        Survey retrievedSurvey = null;
+        for (Survey survey : surveyList) {
+            if (survey.getTitle().equals("This is a small test")){
+                retrievedSurvey = survey;
+                break;
+            }
         }
+
+        assertNotNull(retrievedSurvey);
     }
 
     /**
@@ -61,13 +75,7 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser retrievedUser = null;
-        for (AppUser u : userRepository.findAll()) {
-            if (u.getUsername().equals("maxcurkovic")) {
-                retrievedUser = u;
-                break;
-            }
-        }
+        AppUser retrievedUser = userRepository.findByUsername("maxcurkovic").orElse(null);
         assertNotNull(retrievedUser);
         assertEquals("maxcurkovic", retrievedUser.getUsername());
     }
@@ -83,21 +91,16 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("userId", "1");
+        Cookie cookie = new Cookie("username", "maxcurkovic");
         // Create a survey using the POST request.
         this.testController.perform(post("/api/v1/loginUser")
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser loggedInUser = null;
-        for (AppUser user : userRepository.findAll()) {
-            if (user.getUsername().equals("maxcurkovic") && user.getPassword().equals("sysc4806")) {
-                loggedInUser = user;
-                break;
-            }
-        }
-        assertEquals(parseLong(cookie.getValue()), loggedInUser != null ? loggedInUser.getId() : null);
+        AppUser loggedInUser = userRepository.findByUsername("maxcurkovic").orElse(null);
+        assertNotNull(loggedInUser);
+        assertEquals(cookie.getValue(), loggedInUser.getUsername());
     }
 }
 

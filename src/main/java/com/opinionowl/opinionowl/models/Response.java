@@ -56,18 +56,6 @@ public class Response {
     }
 
     /**
-     * Boolean method to check if the compared responses' IDs match.
-     * @param comparedResponse A Response comparedResponse.
-     * @return True if the IDs match, false otherwise.
-     */
-    public boolean equals(Response comparedResponse){
-        if(!(this.id.equals(comparedResponse.getId()))){
-            return false;
-        }
-        return this.answers.equals(comparedResponse.getAnswers());
-    }
-
-    /**
      *
      * @param o object that is being compared with
      * @return boolean value saying whether objects are equal

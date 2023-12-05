@@ -1,7 +1,6 @@
 package com.opinionowl.opinionowl.integrationTests;
-import com.opinionowl.opinionowl.models.AppUser;
+import com.opinionowl.opinionowl.models.Survey;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
-import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Objects;
+import java.util.List;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,59 +25,53 @@ public class ManageSurveyIntegrationTest {
     @Autowired
     private SurveyRepository surveyRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     /**
      * Test method to close a survey.
      * @throws Exception, exception
      */
     @Test
     public void testCloseSurvey() throws Exception {
-        Long surveyId = 1L;
+        Cookie cookie = new Cookie("username", "closesurveyuser");
 
-        String postData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        // Creating a user
+        String postUserData = "{\"username\":\"closesurveyuser\",\"password\":\"testpassword\"}";
         this.mockMvc.perform(post("/api/v1/createUser")
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
-                .andExpect(status().isOk());
-
-        AppUser loggedInUser = null;
-        for (AppUser user : userRepository.findAll()) {
-            if (user.getUsername().equals("testuser") && user.getPassword().equals("testpassword")) {
-                loggedInUser = user;
-                break;
-            }
-        }
-        assert loggedInUser != null;
-        Cookie cookie = new Cookie("userId", loggedInUser.getId().toString());
-
-        this.mockMvc.perform(post("/api/v1/loginUser")
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postUserData))
                 .andExpect(status().isOk());
 
         // Create a survey using the POST request.
-        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
+        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Test Close Survey\",\"textQuestions\":[\"Test1\"]}";
         this.mockMvc.perform(post("/api/v1/createSurvey")
                             .cookie(cookie)
                             .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                             .andExpect(status().isOk());
 
+        List<Survey> surveyList = surveyRepository.findAll();
+        Survey newSurvey = null;
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("Test Close Survey")){
+                newSurvey = s;
+                break;
+            }
+        }
+        assertNotNull(newSurvey);
+
         // Navigate to "/manageSurvey" page and expect that it contains the newly created survey in the list
-        this.mockMvc.perform(get("/manageSurvey?userId=1")
+        this.mockMvc.perform(get("/manageSurvey?username=closesurveyuser")
                         .cookie(cookie))
                         .andExpect(status().isOk())
-                        .andExpect(content().string(containsString("Form Title")));
+                        .andExpect(content().string(containsString("Test Close Survey")));
 
         // Close the survey
-        this.mockMvc.perform(post("/api/v1/closeSurvey/{id}", surveyId)
+        this.mockMvc.perform(post("/api/v1/closeSurvey/{id}", newSurvey.getId())
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                         .andExpect(status().isOk());
 
         // Check that the survey is closed
-        assertTrue(Objects.requireNonNull(surveyRepository.findById(surveyId).orElse(null)).isClosed());
-    }
+        assertTrue(surveyRepository.findById(newSurvey.getId()).orElse(null).isClosed());
+        }
 
     /**
      * Test method to edit a survey with new data.

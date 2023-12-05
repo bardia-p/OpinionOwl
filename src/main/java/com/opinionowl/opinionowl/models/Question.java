@@ -49,16 +49,6 @@ public class Question {
         return "Question id:" + id + " prompt:" + prompt;
     }
 
-    public boolean equals(Question comparedQuestion){
-        if(!(this.id.equals(comparedQuestion.getId()))){
-            return false;
-        }
-        if(!(this.prompt.equals(comparedQuestion.getPrompt()))){
-            return false;
-        }
-        return this.type.equals(comparedQuestion.getType());
-    }
-
     /**
      * @param o object that is being compared with
      * @return boolean value saying whether objects are equal

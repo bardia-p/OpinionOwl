@@ -22,15 +22,16 @@ submitButton.click((e) => {
         contentType: 'application/json',
         success: function(res) {
             if (res === 200) {
-                console.log("successfully posted survey response");
+                setToast("success", "Response Submitted", "Posted Survey Response!", true);
                 window.location.href = "/";
             } else {
-                alert('Could not post the survey response!');
-                console.log("Something went wrong with posting the survey response")
+                setToast("error", "Something went wrong", "Could not post survey response at this time!");
+                console.error("Something went wrong with posting the survey response");
             }
         },
         error: function(err) {
-            console.error("error posing survey response");
+            console.error("error posting survey response");
+            setToast("error", "Something went wrong", "Something went wrong with responding to the survey");
         }
     });
 });
