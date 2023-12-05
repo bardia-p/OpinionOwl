@@ -26,7 +26,7 @@ const addMoreRadioOptions = (radioQuestionContainer, prompt= "Sample") => {
                 <div id=${divId} class="radio-container flex">
                     <input id=${uniqueId} type="radio">
                     <label for=${uniqueId} contenteditable="true">${prompt}</label>
-                    <button class="btn" onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">-</button>
+                    <button class="btn" onclick="removingRadioChoice('${radioQuestionContainer}', '#${divId}')">X</button>
                 </div>
         `);
     $(`${radioQuestionContainer} .radio-container`).find('button').prop("disabled", $(`${radioQuestionContainer}`).find('.radio-container').length === 1);
@@ -76,7 +76,7 @@ const addTextQuestionRow = (prompt = "Question Title") => {
     const question = `
           <tr id=${rowId} class="text-questions">
               <td>
-                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
+                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">X</button>
               </td>
               <td>
                   <label contenteditable="true">${prompt}</label>
@@ -100,7 +100,7 @@ const addRadioChoicesRow = (prompt= "Question title", choices= ["Sample"]) => {
     const question = `
           <tr id='${rowId}' class="radio-questions">
             <td>
-               <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
+               <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">X</button>
             </td>
             <td>
               <div id=${radioQuestionContainer}>
@@ -127,7 +127,7 @@ const addRangeQuestionRow = (prompt = "Question Title", ranges = [0, 10]) => {
     const question = `
           <tr id='${rowId}' class="numeric-questions">
                <td>
-                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">-</button>
+                 <button class="btn" type="button" onclick="removeTableRow('#${rowId}')">X</button>
               </td>
               <td>
                 <label contenteditable="true" class="title">${prompt}</label>
