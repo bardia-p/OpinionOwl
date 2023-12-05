@@ -80,24 +80,14 @@ public class ManageSurveyIntegrationTest {
     @Test
     public void testEditSurvey() throws Exception {
         Long surveyId = 1L;
-        String postData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+
+        Cookie cookie = new Cookie("username", "closesurveyuser");
+
+        // Creating a user
+        String postUserData = "{\"username\":\"editsurveyuser\",\"password\":\"testpassword\"}";
         this.mockMvc.perform(post("/api/v1/createUser")
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
-                .andExpect(status().isOk());
-
-        AppUser loggedInUser = null;
-        for (AppUser user : userRepository.findAll()) {
-            if (user.getUsername().equals("testuser") && user.getPassword().equals("testpassword")) {
-                loggedInUser = user;
-                break;
-            }
-        }
-        assert loggedInUser != null;
-        Cookie cookie = new Cookie("userId", loggedInUser.getId().toString());
-
-        this.mockMvc.perform(post("/api/v1/loginUser")
-                        .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON).content(postData))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(postUserData))
                 .andExpect(status().isOk());
 
         String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";

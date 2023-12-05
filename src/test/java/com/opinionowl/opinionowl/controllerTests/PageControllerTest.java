@@ -8,10 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.junit.jupiter.api.Assertions.*;
@@ -81,7 +79,7 @@ public class PageControllerTest {
         System.out.println();
         AppUser u = new AppUser("test1", "test1");
         userRepository.save(u);
-        Cookie cookie = new Cookie("username", u.getUsername().toString());
+        Cookie cookie = new Cookie("username", u.getUsername());
         System.out.println("Mocking get page '/createSurvey', expecting to retrieve an HTML page");
         String content = this.mockMvc.perform(get("/createSurvey")
                         .cookie(cookie))
@@ -135,7 +133,7 @@ public class PageControllerTest {
             }
         }
 
-        Cookie cookie = new Cookie("username", u1.getUsername().toString());
+        Cookie cookie = new Cookie("username", u1.getUsername());
 
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
         RadioChoiceQuestion q2 = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
@@ -291,11 +289,9 @@ public class PageControllerTest {
         System.out.println("Mocking get page '/editSurvey', expecting to retrieve an HTML page");
         long surveyId = 2000;
 
-        AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
-        u1.addSurvey(survey);
-        userRepository.save(u1);
-        Cookie cookie = new Cookie("userId", u1.getId().toString());
+        AppUser u = new AppUser("test1", "test1");
+        userRepository.save(u);
+        Cookie cookie = new Cookie("username", u.getUsername());
 
         String content = this.mockMvc.perform(get("/editSurvey")
                     .param("surveyId", String.valueOf(surveyId)).cookie(cookie))
@@ -336,10 +332,10 @@ public class PageControllerTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         u1.addSurvey(survey);
         userRepository.save(u1);
-        Cookie cookie = new Cookie("userId", u1.getId().toString());
+        Cookie cookie = new Cookie("username", u1.getUsername());
 
         String content = this.mockMvc.perform(get("/manageSurvey")
-                .param("userId", String.valueOf(u1.getId()))
+                .param("username", u1.getUsername())
                 .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
@@ -374,10 +370,11 @@ public class PageControllerTest {
         System.out.println();
         System.out.println("Mocking get page '/viewResponse', expecting to retrieve an HTML page");
 
-        AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
-        u1.addSurvey(survey);
-        userRepository.save(u1);
+        AppUser u = new AppUser("test1", "test1");
+        Cookie cookie = new Cookie("username", u.getUsername());
+        Survey survey = new Survey(u, "TEST_SURVEY");
+        u.addSurvey(survey);
+        userRepository.save(u);
         Long surveyId = null;
 
         List<Survey> surveyList = surveyRepository.findAll();
@@ -387,7 +384,7 @@ public class PageControllerTest {
                 break;
             }
         }
-        Cookie cookie = new Cookie("userId", u1.getId().toString());
+
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
         survey.addQuestion(q1);
         surveyRepository.save(survey);
@@ -428,12 +425,12 @@ public class PageControllerTest {
         System.out.println();
         System.out.println("Mocking get page '/savedResponses', expecting to retrieve an HTML page");
 
-        AppUser u1 = new AppUser("Test", "123");
-        Survey survey = new Survey(u1, "TEST_SURVEY");
-        u1.addSurvey(survey);
-        userRepository.save(u1);
+        AppUser u = new AppUser("test1", "test1");
+        Cookie cookie = new Cookie("username", u.getUsername());
+        Survey survey = new Survey(u, "TEST_SURVEY");
+        u.addSurvey(survey);
+        userRepository.save(u);
 
-        Cookie cookie = new Cookie("userId", u1.getId().toString());
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 2);
         survey.addQuestion(q1);
         Response r1 = new Response(survey);
@@ -445,7 +442,7 @@ public class PageControllerTest {
         surveyRepository.save(survey);
 
         String content = this.mockMvc.perform(get("/savedResponses")
-                        .param("userId", String.valueOf(u1.getId()))
+                        .param("username", u.getUsername())
                         .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("text/html;charset=UTF-8"))
