@@ -15,15 +15,49 @@
         </a>
     </nav>
     <nav th:if="${userId != null}" class="flex top-right-profile">
-      <p>User ID: <span th:text="${userId}"></span></p>
-      <div class="flex">
-        <button class="btn" id="logout-btn">Logout</button>
-        <a th:href="@{/manageSurvey(userId=${userId})}" class="btn">
+      <div class="flex" id="profile-name">
+        <img src="/images/profilePic.png" alt="profile picture" width="25px" height="25px" />
+        <p>User ID: <span th:text="${userId}"></span></p>
+        <svg fill="#fff" viewBox="0 0 32 32"
+             width="20px"
+             height="20px"
+             xmlns="http://www.w3.org/2000/svg"
+             stroke="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+          <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <path d="M0.256 8.606c0-0.269 0.106-0.544 0.313-0.75 0.412-0.412 1.087-0.412 1.5 0l14.119 14.119 13.913-13.912c0.413-0.412 1.087-0.412 1.5 0s0.413 1.088 0 1.5l-14.663 14.669c-0.413 0.413-1.088 0.413-1.5 0l-14.869-14.869c-0.213-0.213-0.313-0.481-0.313-0.756z"></path>
+          </g>
+        </svg>
+      </div>
+      <div class="drop-down" id="drop-down-selections">
+        <a th:href="@{/manageSurvey(userId=${userId})}" class="flex">
+          <svg fill="#fff" viewBox="0 0 48 48" width="20px" height="20px" data-name="Layer 1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" stroke="#fff"><g stroke-width="0"></g><g stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+            <path d="M40,47H8a2,2,0,0,1-2-2V3A2,2,0,0,1,8,1H40a2,2,0,0,1,2,2V45A2,2,0,0,1,40,47ZM10,43H38V5H10Z"></path><path d="M15,19a2,2,0,0,1-1.41-3.41l4-4a2,2,0,0,1,2.31-.37l2.83,1.42,5-4.16A2,2,0,0,1,30.2,8.4l4,3a2,2,0,1,1-2.4,3.2l-2.73-2.05-4.79,4a2,2,0,0,1-2.17.25L19.4,15.43l-3,3A2,2,0,0,1,15,19Z"></path><circle cx="15" cy="24" r="2"></circle><circle cx="15" cy="31" r="2"></circle><circle cx="15" cy="38" r="2"></circle><path d="M33,26H22a2,2,0,0,1,0-4H33a2,2,0,0,1,0,4Z"></path><path d="M33,33H22a2,2,0,0,1,0-4H33a2,2,0,0,1,0,4Z"></path>
+            <path d="M33,40H22a2,2,0,0,1,0-4H33a2,2,0,0,1,0,4Z"></path></g>
+          </svg>
           Manage Surveys
         </a>
-        <a th:href="@{/savedResponses(userId=${userId})}" class="btn">
-          View Saved Responses
+        <a th:href="@{/savedResponses(userId=${userId})}" class="flex">
+          <svg  id="_x32_" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 512 512" width="24px" height="24px"
+                xml:space="preserve" fill="#fff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g><g>
+            <path d="M449.891,87.953c-3.766-8.906-10.031-16.438-17.922-21.781c-7.891-5.328-17.5-8.469-27.719-8.469h-42.656 v-7.359h-61.828c0.281-2,0.438-4.063,0.438-6.141C300.203,19.828,280.375,0,256,0s-44.203,19.828-44.203,44.203 c0,2.078,0.156,4.141,0.438,6.141h-61.828v7.359H107.75c-6.797,0-13.359,1.391-19.281,3.906 c-8.922,3.766-16.453,10.031-21.797,17.922c-5.328,7.906-8.469,17.5-8.469,27.719v355.219c0,6.797,1.391,13.344,3.891,19.281 c3.781,8.906,10.047,16.438,17.938,21.781S97.531,512,107.75,512h296.5c6.797,0,13.359-1.375,19.297-3.906 c8.906-3.75,16.438-10.031,21.781-17.922c5.328-7.891,8.469-17.5,8.469-27.703V107.25 C453.797,100.438,452.406,93.891,449.891,87.953z M256,27.797c9.047,0,16.406,7.359,16.406,16.406c0,2.172-0.438,4.234-1.219,6.141 h-30.391c-0.766-1.906-1.203-3.969-1.203-6.141C239.594,35.156,246.969,27.797,256,27.797z M424.328,462.469 c0,2.813-0.563,5.406-1.578,7.797c-1.5,3.578-4.078,6.672-7.281,8.859c-3.219,2.156-7,3.406-11.219,3.406h-296.5 c-2.813,0-5.422-0.563-7.813-1.563c-3.578-1.516-6.672-4.094-8.844-7.297c-2.172-3.219-3.422-7-3.422-11.203V107.25 c0-2.813,0.563-5.422,1.578-7.813c1.516-3.594,4.063-6.672,7.281-8.844c3.219-2.156,7-3.406,11.219-3.422h42.656v6.141 c0,11.531,9.344,20.875,20.891,20.875h169.406c11.547,0,20.891-9.344,20.891-20.875v-6.141h42.656c2.813,0,5.422,0.563,7.813,1.578 c3.578,1.516,6.672,4.063,8.844,7.281c2.156,3.234,3.406,7,3.422,11.219V462.469z"></path>
+            <rect x="149.172" y="173.125" class="st0" width="213.641" height="24.547"></rect>
+            <rect x="149.172" y="240.656" class="st0" width="213.641" height="24.547"></rect>
+            <rect x="149.172" y="308.188" class="st0" width="213.641" height="24.547"></rect>
+            <rect x="256" y="394.125" class="st0" width="106.813" height="24.563"></rect> </g> </g>
+          </svg>
+          Saved Responses
         </a>
+        <button id="logout-btn" class="flex">
+          <svg viewBox="0 0 24 24" fill="none"
+               width="20px" height="20px"
+               xmlns="http://www.w3.org/2000/svg"
+               stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier">
+              <path d="M15 12L2 12M2 12L5.5 9M2 12L5.5 15" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M9.00195 7C9.01406 4.82497 9.11051 3.64706 9.87889 2.87868C10.7576 2 12.1718 2 15.0002 2L16.0002 2C18.8286 2 20.2429 2 21.1215 2.87868C22.0002 3.75736 22.0002 5.17157 22.0002 8L22.0002 16C22.0002 18.8284 22.0002 20.2426 21.1215 21.1213C20.3531 21.8897 19.1752 21.9862 17 21.9983M9.00195 17C9.01406 19.175 9.11051 20.3529 9.87889 21.1213C10.5202 21.7626 11.4467 21.9359 13 21.9827" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"></path> </g>
+          </svg>
+          Logout
+        </button>
       </div>
     </nav>
   </div>

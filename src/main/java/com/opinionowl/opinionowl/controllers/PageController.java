@@ -196,8 +196,6 @@ public class PageController {
             model.addAttribute("longAnswerResponses", longAnswerResponses);
         } else {
             // could not find survey, Error
-            // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
-            // for now redirect to home page
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "redirect:/";
         }
