@@ -332,9 +332,31 @@ public class APIController {
     }
 
     /**
-     * API call to get all the survey responses.
+     * API call to get all the saved responses for a user.
+     * <strong>Example of a JSON:</strong>
+     * <pre>
+     * json = {
+     *     "1": {
+     *         "answers": {
+     *             "1": {
+     *                 "answer": "efw",
+     *                 "prompt": "Question Title"
+     *             },
+     *             "2": {
+     *                 "answer": "Sample",
+     *                 "prompt": "Question Title"
+     *             },
+     *             "3": {
+     *                 "answer": "5",
+     *                 "prompt": "Question Title"
+     *             }
+     *         },
+     *         "surveyTitle": "Form Title"
+     *     }
+     * }
+     * </pre>
      * @param username, username of the logged-in user
-     * @return 200, if the API was a success.
+     * @return resObject, the results of the survey in JSON format.
      * @throws IOException
      */
     @GetMapping("/savedResponses/{username}")
@@ -362,14 +384,17 @@ public class APIController {
             Response r = responseRepo.findById(rid).orElse(null);
             if (r != null){
                 JSONObject responseObject = new JSONObject();
-                JSONObject answerObject = new JSONObject();
+                JSONObject answersObject = new JSONObject();
                 for (Answer a : r.getAnswers()){
                     Question q = questionRepo.findById(a.getQuestion()).orElse(null);
                     if (q != null){
-                        answerObject.put(q.getPrompt(), a.getContent());
+                        JSONObject indAnswerObject = new JSONObject();
+                        indAnswerObject.put("prompt", q.getPrompt());
+                        indAnswerObject.put("answer", a.getContent());
+                        answersObject.put(a.getId().toString(), indAnswerObject);
                     }
                 }
-                responseObject.put("answers", answerObject);
+                responseObject.put("answers", answersObject);
                 responseObject.put("surveyTitle", r.getSurvey().getTitle());
                 rObject.put(r.getId().toString(), responseObject);
             }

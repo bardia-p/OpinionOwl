@@ -734,6 +734,10 @@ header .header-contents nav .btn {
     font-weight: 600;
 }
 
+.saved-responses-page .user-response .results-table{
+    width: 100%;
+}
+
 @media only screen and (max-width: 600px) {
     .home-page .intro-content img {
         display: none;
