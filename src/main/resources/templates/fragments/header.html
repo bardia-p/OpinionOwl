@@ -6,7 +6,7 @@
         <p>Opinion Owl</p>
       </a>
     </div>
-    <nav th:if="${userId == null}" class="flex">
+    <nav th:if="${username == null}" class="flex">
         <a href="/loginUser" class="btn">
           Login
         </a>
@@ -14,14 +14,14 @@
           Register User
         </a>
     </nav>
-    <nav th:if="${userId != null}" class="flex top-right-profile">
-      <p>User ID: <span th:text="${userId}"></span></p>
+    <nav th:if="${username != null}" class="flex top-right-profile">
+      <p>Username: <span th:text="${username}"></span></p>
       <div class="flex">
         <button class="btn" id="logout-btn">Logout</button>
-        <a th:href="@{/manageSurvey(userId=${userId})}" class="btn">
+        <a th:href="@{/manageSurvey(username=${username})}" class="btn">
           Manage Surveys
         </a>
-        <a th:href="@{/savedResponses(userId=${userId})}" class="btn">
+        <a th:href="@{/savedResponses(username=${username})}" class="btn">
           View Saved Responses
         </a>
       </div>
