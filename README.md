@@ -62,15 +62,18 @@ Other changes that were also made was to add more thorough testing and resolve w
 1. Clone the project from the repo and open the project in IntelliJ.
 2. Ensure that the dependencies listed above are all installed and configured properly.
 3. Go to the class _OpinionOwlApplication_ in src > main > com.opinionowl.opinionowl and run it. (either with green arrow or by right clicking)
-4. Open your browser of choice and type in 'localhost:8080'
+4. Open your browser of choice and type in 'localhost:8080'.
 
 ## Usage
 
 1. Opinion Owl can be accessed through https://opinionowl.azurewebsites.net/
-2. From here you can act as a surveyor to add text questions, multiple choice questions, or numeric range questions by clicking the respective 'Add Question' buttons.
-3. Click on 'Form Title' to edit the survey name or click on the text associated with each question to edit the content.
-4. For multiple choice questions, click the '+' sign to add choices as needed. These can also be removed.
-5. To save the survey, click 'create form'.
+2. To register a user, click "Register User" on the top right and enter a unique username and password.
+3. Once registered, click "Login" on the top right and enter your username and password for your account.
+4. Once logged in, you can act as a surveyor to add text questions, multiple choice questions, or numeric range questions by clicking the respective 'Add Question' buttons.
+5. Click on 'Form Title' to edit the survey name or click on the text associated with each question to edit the content.
+6. For multiple choice questions, click the '+' sign to add choices as needed. These can also be removed.
+7. To save the survey, click 'Create Form'.
+8. To edit an existing survey or manage survey responses, ensure you are still logged in and click your account on the top right to access these pages.
 
 ## Diagrams
 
