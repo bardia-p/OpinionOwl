@@ -28,9 +28,8 @@
                     <div th:if="${rangeQuestionQuestions.get(i) != null}" class="range-question">
                         <label th:text="${rangeQuestionQuestions.get(i).getPrompt()}" class="question"></label>
                         <div class="flex range-option">
+                            <input type="range" oninput="this.nextElementSibling.textContent = this.value" th:id="${rangeQuestionQuestions.get(i).getId()}" th:value="${rangeQuestionQuestions.get(i).getLower()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
                             <span th:text="${rangeQuestionQuestions.get(i).getLower()}"></span>
-                            <input type="range" th:id="${rangeQuestionQuestions.get(i).getId()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
-                            <span th:text="${rangeQuestionQuestions.get(i).getUpper()}"></span>
                         </div>
                     </div>
                     <hr />
