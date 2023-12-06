@@ -1,5 +1,6 @@
 package com.opinionowl.opinionowl.controllers;
 
+import com.opinionowl.opinionowl.aspect.NeedsLogin;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
 import com.opinionowl.opinionowl.repos.UserRepository;
@@ -51,12 +52,8 @@ public class PageController {
      * @return String ,the html template
      */
     @GetMapping("/createSurvey")
+    @NeedsLogin(type="html")
     public String getCreateSurveyPage(Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
 
         CookieController.setUsernameCookie(model, request);
         return "createSurvey";
@@ -123,12 +120,9 @@ public class PageController {
     }
 
     @GetMapping("/editSurvey")
+    @NeedsLogin
     public String editSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
         String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
         CookieController.setUsernameCookie(model, request);
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
@@ -153,13 +147,9 @@ public class PageController {
      * @return String, the html template
      */
     @GetMapping("/viewResponse")
+    @NeedsLogin
     public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
         String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
-
         CookieController.setUsernameCookie(model, request);
 
         // find the survey by id
@@ -216,12 +206,9 @@ public class PageController {
      * @return, String HTML template for manageSurvey
      */
     @GetMapping("/manageSurvey")
+    @NeedsLogin(type="html")
     public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
         String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
 
         CookieController.setUsernameCookie(model, request);
 
@@ -247,12 +234,9 @@ public class PageController {
      * @return, String HTML template for manageSurvey
      */
     @GetMapping("/savedResponses")
+    @NeedsLogin(type="html")
     public String getSavedResponses(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
         String cookieUserId = CookieController.getUserIdFromCookie(request);
-        if (cookieUserId == null){
-            System.out.println("You must be logged in first");
-            return "redirect:/";
-        }
 
         CookieController.setUsernameCookie(model, request);
 
