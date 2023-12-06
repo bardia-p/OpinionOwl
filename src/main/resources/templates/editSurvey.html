@@ -20,7 +20,7 @@
 
       <div class="form-container">
         <form class="survey-form md-box-shadow" th:action="@{/api/v1/createSurvey}" method="post" id="survey-container">
-          <h2 contenteditable="true" class="form-title" th:text="${surveyTitle}"></h2>
+          <h2 contenteditable="true" class="form-title form-title-break" th:text="${surveyTitle}"></h2>
           <table id="survey">
           </table>
           <button type="submit" id="update-survey" class="btn create-edit-submit-btn flex">

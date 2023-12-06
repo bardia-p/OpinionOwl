@@ -15,7 +15,7 @@ const displayResponses = (res) => {
             let responseHTML = `
             <div class="user-response">
                 <p class="title">Response #: ${r}</p>
-                <p class="survey-title">Survey Title: ${response["surveyTitle"]}</p>
+                <p class="survey-title">Survey Title: <span class="form-title-break">${response["surveyTitle"]}</span></p>
                 <table class="results-table">
                   <tr>
                     <th>Question</th>
@@ -25,7 +25,7 @@ const displayResponses = (res) => {
 
             for(let q of Object.keys(response["answers"])) {
                 let answerHTML = `
-                <tr>
+                <tr class="responses">
                     <td>${response["answers"][q]["prompt"]}</td>
                     <td>${response["answers"][q]["answer"]}</td>
                 </tr>

@@ -35,7 +35,7 @@
           <h2>Surveys Available</h2>
           <ul th:if="${surveys.size() > 0}">
             <li th:each="survey : ${surveys}">
-              <h3>Name: <span th:text="${survey.getTitle()}"></span></h3>
+              <h3>Name: <span th:text="${survey.getTitle()}" class="form-title-break"></span></h3>
               <p>Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
               <a href="/answerSurvey" th:href="@{/answerSurvey(surveyId=${survey.getId()})}" class="btn flex">
                 Fill Survey
