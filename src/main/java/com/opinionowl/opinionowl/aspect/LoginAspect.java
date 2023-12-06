@@ -42,7 +42,7 @@ public class LoginAspect {
         if (request == null) {
             return "redirect:/";
         }
-        String res = CookieController.getUserIdFromCookie(request);
+        String res = CookieController.getUsernameFromCookie(request);
         if (res == null) {
             return getReturnType(needsLogin);
         }

@@ -55,6 +55,12 @@ public class PageController {
     @NeedsLogin(type="html")
     public String getCreateSurveyPage(Model model, HttpServletRequest request) {
 
+        String cookieUsername = CookieController.getUsernameFromCookie(request);
+        if (cookieUsername == null){
+            System.out.println("You must be logged in first");
+            return "redirect:/";
+        }
+
         CookieController.setUsernameCookie(model, request);
         return "createSurvey";
     }
@@ -122,13 +128,14 @@ public class PageController {
     @GetMapping("/editSurvey")
     @NeedsLogin
     public String editSurveyPage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
+
+        String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
         Optional<Survey> surveyO = surveyRepo.findById(surveyId);
         if (surveyO.isPresent()) {
             // was able to obtain a survey from the database by id, and grab it from the Optional Object
             Survey survey = surveyO.get();
-            if (!Long.valueOf(cookieUserId).equals(survey.getUser().getId())) {
+            if (!cookieUsername.equals(survey.getUser().getUsername())) {
                 System.out.println("You do not have access!");
                 return "redirect:/";
             }
@@ -149,7 +156,8 @@ public class PageController {
     @GetMapping("/viewResponse")
     @NeedsLogin
     public String getViewResponsePage(@RequestParam(value = "surveyId") Long surveyId, Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
+
+        String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
 
         // find the survey by id
@@ -160,7 +168,7 @@ public class PageController {
             System.out.println("Survey found:");
             System.out.println(survey);
 
-            if (!Long.valueOf(cookieUserId).equals(survey.getUser().getId())){
+            if (!cookieUsername.equals(survey.getUser().getUsername())){
                 System.out.println("You do not have access!");
                 return "redirect:/";
             }
@@ -207,12 +215,11 @@ public class PageController {
      */
     @GetMapping("/manageSurvey")
     @NeedsLogin(type="html")
-    public String getManageSurvey(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
-
+    public String getManageSurvey(@RequestParam(value = "username") String username, Model model, HttpServletRequest request) {
+        String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
 
-        if (!Long.valueOf(cookieUserId).equals(userId)){
+        if (!cookieUsername.equals(username)){
             System.out.println("You do not have access!");
             return "redirect:/";
         }
@@ -221,7 +228,7 @@ public class PageController {
         List<Survey> userSurveys = new ArrayList<>();
 
         for (Survey s : surveys){
-            if (s.getUser().getId().equals(userId)){
+            if (s.getUser().getUsername().equals(username)){
                 userSurveys.add(s);
             }
         }
@@ -235,17 +242,16 @@ public class PageController {
      */
     @GetMapping("/savedResponses")
     @NeedsLogin(type="html")
-    public String getSavedResponses(@RequestParam(value = "userId") Long userId, Model model, HttpServletRequest request) {
-        String cookieUserId = CookieController.getUserIdFromCookie(request);
-
+    public String getSavedResponses(@RequestParam(value = "username") String username, Model model, HttpServletRequest request) {
+        String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
 
-        if (!Long.valueOf(cookieUserId).equals(userId)){
+        if (!cookieUsername.equals(username)){
             System.out.println("You do not have access!");
             return "redirect:/";
         }
 
-        Optional<AppUser> user0 = userRepo.findById(userId);
+        Optional<AppUser> user0 = userRepo.findByUsername(username);
         if (user0.isPresent()){
             return "savedResponses";
         }

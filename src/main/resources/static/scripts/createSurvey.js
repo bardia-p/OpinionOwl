@@ -93,7 +93,7 @@ addTextQuestion.click((e) => {
     addTextQuestionRow();
 });
 
-const addRadioChoicesRow = (prompt= "Question title", choices= ["Sample"]) => {
+const addRadioChoicesRow = (prompt= "Question Title", choices= ["Sample"]) => {
     const rowId = generateUniqueID();
     const radioQuestionContainer = generateUniqueID();
 

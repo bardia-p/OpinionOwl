@@ -17,12 +17,7 @@ import java.util.Objects;
 @Setter
 @NoArgsConstructor
 public class AppUser {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    // Create an auto generated unique Id
-    private Long id;
-
     // Define a username for the user
     private String username;
 
@@ -87,7 +82,7 @@ public class AppUser {
      */
     @Override
     public String toString(){
-        String user = "User ID: " + id + "Username: " + username + "Password: " + password;
+        String user = "Username: " + username + " Password: " + password;
         user += "\n-----Surveys -----";
         for (Survey s: listSurveys) {
             user += "\n" + s.toString();
@@ -106,7 +101,7 @@ public class AppUser {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AppUser appUser = (AppUser) o;
-        return Objects.equals(id, appUser.id) && Objects.equals(username, appUser.username) && Objects.equals(password, appUser.password) && Objects.equals(listSurveys, appUser.listSurveys);
+        return Objects.equals(username, appUser.username) && Objects.equals(password, appUser.password) && Objects.equals(listSurveys, appUser.listSurveys);
     }
 
 }

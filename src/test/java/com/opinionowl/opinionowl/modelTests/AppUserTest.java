@@ -62,16 +62,8 @@ public class AppUserTest {
         List<AppUser> users = userRepository.findAll();
         assert(!users.isEmpty());
 
-        AppUser retrievedUser = null;
-
-        for(AppUser u: userRepository.findAll()){
-            if(u.getUsername().equals(u1.getUsername())){
-                retrievedUser = u;
-                break;
-            }
-        }
-
-        assert(retrievedUser != null);
+        AppUser retrievedUser = userRepository.findByUsername(u1.getUsername()).orElse(null);
+        assertNotNull(retrievedUser);
         assert(!retrievedUser.getListSurveys().isEmpty());
         assertEquals(u1.getListSurveys().get(0).getTitle(), retrievedUser.getListSurveys().get(0).getTitle());
         assertEquals(u1.getListSurveys().get(0).isClosed(), retrievedUser.getListSurveys().get(0).isClosed());

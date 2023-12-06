@@ -43,7 +43,7 @@ public class PostSurveyIntegrationTest {
                         .content(postUserData))
                         .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("userId", "1");
+        Cookie cookie = new Cookie("username", "testuser");
 
         String postDataResponse = "{\"1\": \"some text answer\", \"2\" : \"some radio choice\", \"3\" : \"25\"}";
         String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"This is a post test\",\"textQuestions\":[\"Test1\"]}";
