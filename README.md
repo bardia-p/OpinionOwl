@@ -16,6 +16,7 @@ Deployment Status: ![Deployment Status](https://github.com/bardia-p/OpinionOwl/a
 
 A mini version of SurveyMonkey in which surveyors can create a survey with a three categories of questions. These include open-ended questions with a text-based answer,
 questions where a user is asked to select a number within a range, and multiple choice questions. The surveyor can close the survey at any point which would prevent new users from responding.
+If a survey is active, the surveyor can edit it by adding new questions or editing existing ones. The surveyor can also view and manage responses that were made to the active survey.
 Closing the survey generates a response form that contains a compilation of all the answers given in the survey. Text answers are displayed as written, answers to ranged questions are
 displayed as a histogram, and answers to multiple choice questions are displayed as a pie chart.
 
@@ -37,18 +38,14 @@ in a pie chart).
 Other smaller updates include security measures that were implemented to protect the endpoints from unauthorized access, configuration changes to allow for deployment on GCP, and 
 the addition of CSS styling.
 
-## Plan for Next Milestone
+## Milestone 3
 
-All open issues and planned work can be found on our [kanban board](https://github.com/users/bardia-p/projects/2). The current issues in backlog are listed below.
+For Milestone 3 for the project, the main features introduced was to implement an edit surveys feature, a save survey responses feature, and replace the login check with an aspect using Spring AOP.
+The edit surveys feature allows users to edit their existing surveys, whether this would be to add questions, remove questions, or edit existing questions and possible responses.
+The save survey responses feature allows users to see the responses that were made to their surveys.
+Replacing the login check with an aspect was also a primary new feature that was implemented. The aspect implemented utilizes tags that are defined within an annotation, and will perform the particular login check based on the tag input. 
 
-* Issue 18 - [Edit Surveys](https://github.com/bardia-p/OpinionOwl/issues/18)
-* Issue 63 - [Save Survey Responses](https://github.com/bardia-p/OpinionOwl/issues/63)
-* Issue 64 - [Add More Thorough Testing and Resolve All Warnings](https://github.com/bardia-p/OpinionOwl/issues/64)
-* Issue 65 - [Replace the Login Check With an Aspect](https://github.com/bardia-p/OpinionOwl/issues/65)
-* Issue 70 - [Extra Validation Before Survey is Created](https://github.com/bardia-p/OpinionOwl/issues/70)
-* Issue 71 - [Change App User Unique Identifier](https://github.com/bardia-p/OpinionOwl/issues/71)
-* Issue 72 - [Register User Input Validation](https://github.com/bardia-p/OpinionOwl/issues/72)
-* Issue 73 - [Update the Front-End UI](https://github.com/bardia-p/OpinionOwl/issues/73)
+Other changes that were also made was to add more thorough testing and resolve warnings, updating the front-end UI with more intuitive CSS styling, and adding extra validation to ensure survey titles and questions are not blank.
   
 ## Dependencies:
 
@@ -58,6 +55,7 @@ All open issues and planned work can be found on our [kanban board](https://gith
 - Project Lombok
 - Maven
 - Ajax
+- AOP
 
 ## Installation
 
