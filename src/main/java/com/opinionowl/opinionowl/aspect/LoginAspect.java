@@ -17,7 +17,7 @@ public class LoginAspect {
 
     /**
      * Method for defining the annotation needsLogin.
-     * @param needsLogin
+     * @param needsLogin NeedsLogin object
      */
     @Pointcut("@annotation(needsLogin)")
     public void callAt(NeedsLogin needsLogin) {
@@ -28,15 +28,15 @@ public class LoginAspect {
      * @param pjp A ProceedingJoinPoint pjp.
      * @param needsLogin A NeedsLogin needsLogin.
      * @return The type of the aspect annotation
-     * @throws Throwable
+     * @throws Throwable An error
      */
     @Around("callAt(needsLogin)")
     public Object around(ProceedingJoinPoint pjp, NeedsLogin needsLogin) throws Throwable {
         Object[] args = pjp.getArgs();
         HttpServletRequest request = null;
-        for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            if (args[argIndex] instanceof HttpServletRequest) {
-                request = (HttpServletRequest) args[argIndex];
+        for (Object arg : args) {
+            if (arg instanceof HttpServletRequest) {
+                request = (HttpServletRequest) arg;
             }
         }
         if (request == null) {
@@ -51,8 +51,8 @@ public class LoginAspect {
 
     /**
      * Method for getting the return type for the around method.
-     * @param needsLogin
-     * @return An html, string or int type
+     * @param needsLogin A needsLogin object
+     * @return Html, string or int type
      */
     public Object getReturnType(NeedsLogin needsLogin) {
         if (needsLogin.type().equals("html")) {
