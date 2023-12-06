@@ -52,7 +52,7 @@ public class PageController {
      * @return String ,the html template
      */
     @GetMapping("/createSurvey")
-    @NeedsLogin(type="html")
+    @NeedsLogin
     public String getCreateSurveyPage(Model model, HttpServletRequest request) {
 
         String cookieUsername = CookieController.getUsernameFromCookie(request);
@@ -214,7 +214,7 @@ public class PageController {
      * @return, String HTML template for manageSurvey
      */
     @GetMapping("/manageSurvey")
-    @NeedsLogin(type="html")
+    @NeedsLogin
     public String getManageSurvey(@RequestParam(value = "username") String username, Model model, HttpServletRequest request) {
         String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
@@ -241,7 +241,7 @@ public class PageController {
      * @return, String HTML template for manageSurvey
      */
     @GetMapping("/savedResponses")
-    @NeedsLogin(type="html")
+    @NeedsLogin
     public String getSavedResponses(@RequestParam(value = "username") String username, Model model, HttpServletRequest request) {
         String cookieUsername = CookieController.getUsernameFromCookie(request);
         CookieController.setUsernameCookie(model, request);
