@@ -30,7 +30,7 @@ public class LoginAspect {
      * @return The type of the aspect annotation
      * @throws Throwable An error
      */
-    @Around("callAt(needsLogin)")
+    @Around(value = "callAt(needsLogin)", argNames = "pjp,needsLogin")
     public Object around(ProceedingJoinPoint pjp, NeedsLogin needsLogin) throws Throwable {
         Object[] args = pjp.getArgs();
         HttpServletRequest request = null;
@@ -40,7 +40,7 @@ public class LoginAspect {
             }
         }
         if (request == null) {
-            return "redirect:/";
+            return getReturnType(needsLogin);
         }
         String res = CookieController.getUsernameFromCookie(request);
         if (res == null) {
@@ -55,15 +55,12 @@ public class LoginAspect {
      * @return Html, string or int type
      */
     public Object getReturnType(NeedsLogin needsLogin) {
-        if (needsLogin.type().equals("html")) {
-            return "redirect:/";
-        } else if (needsLogin.type().equals("string")) {
-            return "";
-        } else if (needsLogin.type().equals("int")) {
-            return 400;
-        } else {
-            return null;
-        }
+        return switch (needsLogin.type()) {
+            case "html" -> "redirect:/";
+            case "string" -> "";
+            case "int" -> 400;
+            default -> null;
+        };
     }
 }
 
