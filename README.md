@@ -78,4 +78,4 @@ Other changes that were also made was to add more thorough testing and resolve w
 ## Diagrams
 
 - [UML diagram](diagrams/UML_Class_Diagram.png)
-- [Schema](diagrams/ER_Diagram.png)
+- [Schema Diagram](diagrams/ER_Diagram.png)
