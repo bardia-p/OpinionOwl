@@ -360,7 +360,7 @@ public class APIController {
      * </pre>
      * @param username, username of the logged-in user
      * @return resObject, the results of the survey in JSON format.
-     * @throws IOException
+     * @throws IOException, exception
      */
     @GetMapping("/savedResponses/{username}")
     public String getSavedResponses(@PathVariable("username") String username, HttpServletRequest request) throws IOException, JSONException {
