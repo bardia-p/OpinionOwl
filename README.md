@@ -16,6 +16,7 @@ Deployment Status: ![Deployment Status](https://github.com/bardia-p/OpinionOwl/a
 
 A mini version of SurveyMonkey in which surveyors can create a survey with a three categories of questions. These include open-ended questions with a text-based answer,
 questions where a user is asked to select a number within a range, and multiple choice questions. The surveyor can close the survey at any point which would prevent new users from responding.
+If a survey is active, the surveyor can edit it by adding new questions or editing existing ones. The surveyor can also view and manage responses that were made to the active survey.
 Closing the survey generates a response form that contains a compilation of all the answers given in the survey. Text answers are displayed as written, answers to ranged questions are
 displayed as a histogram, and answers to multiple choice questions are displayed as a pie chart.
 
@@ -37,18 +38,14 @@ in a pie chart).
 Other smaller updates include security measures that were implemented to protect the endpoints from unauthorized access, configuration changes to allow for deployment on GCP, and 
 the addition of CSS styling.
 
-## Plan for Next Milestone
+## Milestone 3
 
-All open issues and planned work can be found on our [kanban board](https://github.com/users/bardia-p/projects/2). The current issues in backlog are listed below.
+For Milestone 3 for the project, the main features introduced was to implement an edit surveys feature, a save survey responses feature, and replace the login check with an aspect using Spring AOP.
+The edit surveys feature allows users to edit their existing surveys, whether this would be to add questions, remove questions, or edit existing questions and possible responses.
+The save survey responses feature allows users to see the responses that were made to their surveys.
+Replacing the login check with an aspect was also a primary new feature that was implemented. The aspect implemented utilizes tags that are defined within an annotation, and will perform the particular login check based on the tag input. 
 
-* Issue 18 - [Edit Surveys](https://github.com/bardia-p/OpinionOwl/issues/18)
-* Issue 63 - [Save Survey Responses](https://github.com/bardia-p/OpinionOwl/issues/63)
-* Issue 64 - [Add More Thorough Testing and Resolve All Warnings](https://github.com/bardia-p/OpinionOwl/issues/64)
-* Issue 65 - [Replace the Login Check With an Aspect](https://github.com/bardia-p/OpinionOwl/issues/65)
-* Issue 70 - [Extra Validation Before Survey is Created](https://github.com/bardia-p/OpinionOwl/issues/70)
-* Issue 71 - [Change App User Unique Identifier](https://github.com/bardia-p/OpinionOwl/issues/71)
-* Issue 72 - [Register User Input Validation](https://github.com/bardia-p/OpinionOwl/issues/72)
-* Issue 73 - [Update the Front-End UI](https://github.com/bardia-p/OpinionOwl/issues/73)
+Other changes that were also made was to add more thorough testing and resolve warnings, updating the front-end UI with more intuitive CSS styling, and adding extra validation to ensure survey titles and questions are not blank.
   
 ## Dependencies:
 
@@ -58,23 +55,27 @@ All open issues and planned work can be found on our [kanban board](https://gith
 - Project Lombok
 - Maven
 - Ajax
+- AOP
 
 ## Installation
 
 1. Clone the project from the repo and open the project in IntelliJ.
 2. Ensure that the dependencies listed above are all installed and configured properly.
 3. Go to the class _OpinionOwlApplication_ in src > main > com.opinionowl.opinionowl and run it. (either with green arrow or by right clicking)
-4. Open your browser of choice and type in 'localhost:8080'
+4. Open your browser of choice and type in 'localhost:8080'.
 
 ## Usage
 
 1. Opinion Owl can be accessed through https://opinionowl.azurewebsites.net/
-2. From here you can act as a surveyor to add text questions, multiple choice questions, or numeric range questions by clicking the respective 'Add Question' buttons.
-3. Click on 'Form Title' to edit the survey name or click on the text associated with each question to edit the content.
-4. For multiple choice questions, click the '+' sign to add choices as needed. These can also be removed.
-5. To save the survey, click 'create form'.
+2. To register a user, click "Register User" on the top right and enter a unique username and password.
+3. Once registered, click "Login" on the top right and enter your username and password for your account.
+4. Once logged in, you can act as a surveyor to add text questions, multiple choice questions, or numeric range questions by clicking the respective 'Add Question' buttons.
+5. Click on 'Form Title' to edit the survey name or click on the text associated with each question to edit the content.
+6. For multiple choice questions, click the '+' sign to add choices as needed. These can also be removed.
+7. To save the survey, click 'Create Form'.
+8. To edit an existing survey or manage survey responses, ensure you are still logged in and click your account on the top right to access these pages.
 
 ## Diagrams
 
 - [UML diagram](diagrams/UML_Class_Diagram.png)
-- [Schema](diagrams/ER_Diagram.png)
+- [Schema Diagram](diagrams/ER_Diagram.png)
