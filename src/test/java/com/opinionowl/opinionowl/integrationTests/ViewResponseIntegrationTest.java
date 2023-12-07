@@ -13,13 +13,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class PostSurveyIntegrationTest {
+public class ViewResponseIntegrationTest {
 
     @Autowired
     private MockMvc testController;
@@ -34,31 +37,30 @@ public class PostSurveyIntegrationTest {
     private UserRepository userRepo;
 
     /**
-     * Method to test the post survey response mapping. It simply verifies that a new survey response was posted to the repository.
-     * It will first create a survey with questions then post a response to that very survey.
+     * test the creation and posting of survey, then verifying we got some data for that user
      * @throws Exception - throws Exception
      */
     @Test
-    public void testCreateAndPostSurveyResponse() throws Exception {
-        String postUserData = "{\"username\":\"TestCreateAndPostSurveyResponseUser\",\"password\":\"testpassword\"}";
+    public void testCreateAndPostSurveyResponseAndViewResponses() throws Exception {
+        String postUserData = "{\"username\":\"TestCreateAndPostSurveyResponseAndViewResponsesUser\",\"password\":\"testpassword\"}";
         this.testController.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(postUserData))
                 .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("username", "TestCreateAndPostSurveyResponseUser");
+        Cookie cookie = new Cookie("username", "TestCreateAndPostSurveyResponseAndViewResponsesUser");
 
-        AppUser user = this.userRepo.findByUsername("TestCreateAndPostSurveyResponseUser").orElse(null);
+        AppUser user = this.userRepo.findByUsername("TestCreateAndPostSurveyResponseAndViewResponsesUser").orElse(null);
         assertNotNull(user);
 
-        String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"TestCreateAndPostSurveyResponseSurvey\",\"textQuestions\":[\"Test1\"]}";
+        String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"TestCreateAndPostSurveyResponseAndViewResponsesSurvey\",\"textQuestions\":[\"Test1\"]}";
         // create a survey
         this.testController.perform(post("/api/v1/createSurvey")
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postDataSurvey))
                 .andExpect(status().isOk());
 
-        Survey createdSurvey = this.surveyRepository.findAll().stream().filter(s -> s.getTitle().equals("TestCreateAndPostSurveyResponseSurvey")).findFirst().orElse(null);
+        Survey createdSurvey = this.surveyRepository.findAll().stream().filter(s -> s.getTitle().equals("TestCreateAndPostSurveyResponseAndViewResponsesSurvey")).findFirst().orElse(null);
         assertNotNull(createdSurvey);
 
         JSONObject surveyResponse = new JSONObject();
@@ -75,7 +77,13 @@ public class PostSurveyIntegrationTest {
             }
         }
 
-        // post a response to the survey created. We can guarantee there is only one survey, so we grab the id=1
+        // post a response to the survey created.
+        this.testController.perform(post("/api/v1/postSurveyResponses/" + createdSurvey.getId())
+                        .cookie(cookie)
+                        .contentType(MediaType.APPLICATION_JSON).content(surveyResponse.toString()))
+                .andExpect(status().isOk());
+
+        // post a response to the survey created.
         this.testController.perform(post("/api/v1/postSurveyResponses/" + createdSurvey.getId())
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(surveyResponse.toString()))
@@ -84,5 +92,8 @@ public class PostSurveyIntegrationTest {
         for (Response res : this.responseRepository.findAll()) {
             assertNotNull(res);
         }
+
+        this.testController.perform(get("/api/v1/savedResponses/{username}", user.getUsername())
+                .cookie(cookie)).andExpect(status().isOk()).andExpect(content().string(containsString("answers")));
     }
 }

@@ -38,15 +38,15 @@ public class RadioChoiceQuestion extends Question {
      */
     @Override
     public String toString(){
-        String res = super.toString() + " choices:[";
+        StringBuilder res = new StringBuilder(super.toString() + " choices:[");
         if (choices.length > 0) {
             for (int i = 0; i < choices.length - 1; i++){
-                res += choices[i] + ", ";
+                res.append(choices[i]).append(", ");
             }
-            res += choices[choices.length - 1];
+            res.append(choices[choices.length - 1]);
         }
-        res += "]";
-        return res;
+        res.append("]");
+        return res.toString();
     }
 
     /**

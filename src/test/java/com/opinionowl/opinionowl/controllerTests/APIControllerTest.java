@@ -10,9 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.List;
-
-import static java.lang.Long.parseLong;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -35,14 +32,15 @@ public class APIControllerTest {
     /**
      * Method to test the Create Survey post mapping. It simply verifies that a new survey was posted to the repository.
      *
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testCreateSurvey() throws Exception {
-        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"This is a small test\",\"textQuestions\":[\"Test1\"]}";
+        String postData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"TestCreateSurveyTestSurvey\",\"textQuestions\":[\"Test1\"]}";
 
-        AppUser user = new AppUser("SimpleUser", "password");
-        userRepository.save(user);
+        AppUser user = new AppUser("APITestCreateSurveyTestUser", "password");
+        this.userRepository.save(user);
+        assertNotNull(this.userRepository.findByUsername("APITestCreateSurveyTestUser").orElse(null));
 
         Cookie userCookie = new Cookie("username", user.getUsername());
         this.testController.perform(post("/api/v1/createSurvey")
@@ -50,60 +48,48 @@ public class APIControllerTest {
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        List<Survey> surveyList = surveyRepository.findAll();
-        assertTrue(surveyList.size() != 0);
-        Survey retrievedSurvey = null;
-        for (Survey survey : surveyList) {
-            if (survey.getTitle().equals("This is a small test")){
-                retrievedSurvey = survey;
-                break;
-            }
-        }
-
-        assertNotNull(retrievedSurvey);
+        Survey createdSurvey = this.surveyRepository.findAll().stream().filter(s -> s.getTitle().equals("TestCreateSurveyTestSurvey")).findFirst().orElse(null);
+        assertNotNull(createdSurvey);
+        assertEquals(3, createdSurvey.getQuestions().size());
     }
 
     /**
      * Method to test the Register User post mapping. It simply verifies that a new survey was posted to the repository.
      *
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testRegisterUser() throws Exception {
-        String postData = "{\"username\":\"maxcurkovic\",\"password\":\"sysc4806\"}";
+        String postData = "{\"username\":\"TestRegisterUserTestUser\",\"password\":\"sysc4806\"}";
         this.testController.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser retrievedUser = userRepository.findByUsername("maxcurkovic").orElse(null);
+        AppUser retrievedUser = userRepository.findByUsername("TestRegisterUserTestUser").orElse(null);
         assertNotNull(retrievedUser);
+        assertEquals("TestRegisterUserTestUser", retrievedUser.getUsername());
     }
 
     /**
      * Method that tests the loginUser POST mapping. It tests that a user can successfully be logged in.
-     * @throws Exception
+     * @throws Exception, exception
      */
     @Test
     public void testLoginUser() throws Exception {
-        String postData = "{\"username\":\"maxcurkovic\",\"password\":\"sysc4806\"}";
+        String postData = "{\"username\":\"TestLoginUserTestUser\",\"password\":\"sysc4806\"}";
         this.testController.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("username", "maxcurkovic");
+        Cookie cookie = new Cookie("username", "TestLoginUserTestUser");
         // Create a survey using the POST request.
         this.testController.perform(post("/api/v1/loginUser")
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser loggedInUser = userRepository.findByUsername("maxcurkovic").orElse(null);
+        AppUser loggedInUser = userRepository.findByUsername("TestLoginUserTestUser").orElse(null);
         assertNotNull(loggedInUser);
         assertEquals(cookie.getValue(), loggedInUser.getUsername());
     }
 }
-
-
-
-
-

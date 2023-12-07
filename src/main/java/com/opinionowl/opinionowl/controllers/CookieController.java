@@ -32,7 +32,7 @@ public class CookieController {
      * Returns the cookie from the list of the cookies.
      * @param cookies the list of the cookies
      * @param name the name of the cookie.
-     * @return the value of the coookie.
+     * @return the value of the cookie.
      */
     private static String retrieveCookie(Cookie[] cookies, String name){
         String res = null;

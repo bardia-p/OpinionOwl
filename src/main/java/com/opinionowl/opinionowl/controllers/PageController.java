@@ -116,9 +116,6 @@ public class PageController {
             model.addAttribute("radioChoiceQuestions", radioChoiceQuestions);
             model.addAttribute("rangeQuestionQuestions", rangeQuestionQuestions);
         } else {
-            // could not find survey, Error
-            // TODO: Redirect the user to a Error boundary page, or maybe the home page instead with a Toast message
-            // for now redirect to home page
             System.out.println("ERROR: Survey could not be found. Redirecting to Index");
             return "redirect:/";
         }
@@ -141,6 +138,8 @@ public class PageController {
             }
             model.addAttribute("surveyTitle", survey.getTitle());
             model.addAttribute("surveyId", survey.getId());
+        } else {
+            return "redirect:/";
         }
         return "editSurvey";
     }
@@ -211,7 +210,7 @@ public class PageController {
 
     /**
      * Route to direct the client to view the list of existing surveys to manage them.
-     * @return, String HTML template for manageSurvey
+     * @return , String HTML template for manageSurvey
      */
     @GetMapping("/manageSurvey")
     @NeedsLogin

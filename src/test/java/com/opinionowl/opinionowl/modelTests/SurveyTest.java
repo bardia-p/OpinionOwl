@@ -27,7 +27,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 10);
         survey.addQuestion(q1);
-        q1.setId(Long.valueOf(2001));
+        q1.setId(2001L);
 
 
         Response r1 = new Response(survey);
@@ -51,7 +51,7 @@ public class SurveyTest {
         survey.addResponse(r2);
 
         List<String> res2 = Arrays.asList("hello", "okay");
-        assertFalse(actualR.equals(res2));
+        assertNotEquals(actualR, res2);
     }
 
     /**
@@ -99,7 +99,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion q1 = new LongAnswerQuestion(survey, "test1", 3);
         survey.addQuestion(q1);
-        q1.setId(Long.valueOf(2002));
+        q1.setId(2002L);
 
         Response r1 = new Response(survey);
         r1.addAnswer(q1.getId(), "hai");
@@ -109,7 +109,7 @@ public class SurveyTest {
         assertEquals(1, survey.getResponses().size());
 
         Map<String, Integer> expectedR = Map.of("hai", 1, "a", 1);
-        assertTrue(survey.getResponsesForQuestion(q1.getId()).equals(expectedR));
+        assertEquals(survey.getResponsesForQuestion(q1.getId()), expectedR);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 2);
         survey.addQuestion(laq);
-        laq.setId(Long.valueOf(2003));
+        laq.setId(2003L);
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test1");
@@ -141,7 +141,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         LongAnswerQuestion laq = new LongAnswerQuestion(survey, "test1", 20);
         survey.addQuestion(laq);
-        laq.setId(Long.valueOf(2004));
+        laq.setId(2004L);
 
         Response r1 = new Response(survey);
         r1.addAnswer(laq.getId(), "test response");
@@ -163,7 +163,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RadioChoiceQuestion rcq = new RadioChoiceQuestion(survey, "test2", new String[]{"a", "c", "d"});
         survey.addQuestion(rcq);
-        rcq.setId(Long.valueOf(2005));
+        rcq.setId(2005L);
 
         Response r1 = new Response(survey);
         r1.addAnswer(rcq.getId(), "a");
@@ -171,7 +171,7 @@ public class SurveyTest {
         survey.addResponse(r1);
 
         Map<String, Integer> expectedR = Map.of("a", 1, "d", 1, "c", 0);
-        assertTrue(survey.getResponsesForQuestion(rcq.getId()).equals(expectedR));
+        assertEquals(survey.getResponsesForQuestion(rcq.getId()), expectedR);
     }
 
     /**
@@ -183,7 +183,7 @@ public class SurveyTest {
         Survey survey = new Survey(u1, "TEST_SURVEY");
         RangeQuestion rq = new RangeQuestion(survey, "test3", 1, 10, 1);
         survey.addQuestion(rq);
-        rq.setId(Long.valueOf(2006));
+        rq.setId(2006L);
 
         Response r1 = new Response(survey);
         r1.addAnswer(rq.getId(), "2");
