@@ -12,7 +12,7 @@
         <div class="container">
             <h1>Answering Survey#<span th:text="${surveyId}"></span></h1>
             <form class="survey-form answer-survey-form md-box-shadow" th:action="@{/api/v1/createSurvey}" method="POST" id="answer-survey-form">
-                <h2 class="form-title"><span th:text="${surveyTitle}"></span></h2>
+                <h2 class="form-title form-title-break"><span th:text="${surveyTitle}"></span></h2>
                 <div th:each="i : ${#numbers.sequence(1, numberOfQuestions)}">
                     <div th:if="${longAnswerQuestions.get(i) != null}" class="text-questions">
                         <label class="question" th:text="${longAnswerQuestions.get(i).getPrompt()}"></label>
@@ -28,9 +28,8 @@
                     <div th:if="${rangeQuestionQuestions.get(i) != null}" class="range-question">
                         <label th:text="${rangeQuestionQuestions.get(i).getPrompt()}" class="question"></label>
                         <div class="flex range-option">
+                            <input type="range" oninput="this.nextElementSibling.textContent = this.value" th:id="${rangeQuestionQuestions.get(i).getId()}" th:value="${rangeQuestionQuestions.get(i).getLower()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
                             <span th:text="${rangeQuestionQuestions.get(i).getLower()}"></span>
-                            <input type="range" th:id="${rangeQuestionQuestions.get(i).getId()}" th:min="${rangeQuestionQuestions.get(i).getLower()}" th:max="${rangeQuestionQuestions.get(i).getUpper()}" required />
-                            <span th:text="${rangeQuestionQuestions.get(i).getUpper()}"></span>
                         </div>
                     </div>
                     <hr />

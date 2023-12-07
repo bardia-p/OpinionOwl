@@ -1,6 +1,7 @@
 package com.opinionowl.opinionowl.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import com.opinionowl.opinionowl.aspect.NeedsLogin;
 import com.opinionowl.opinionowl.models.*;
 import com.opinionowl.opinionowl.repos.QuestionRepository;
 import com.opinionowl.opinionowl.repos.ResponseRepository;
@@ -141,15 +142,10 @@ public class APIController {
      * @throws IOException, IO exception
      */
     @PostMapping("/createSurvey")
+    @NeedsLogin(type="int")
     public int createSurvey(HttpServletRequest request) throws IOException {
         System.out.println("createSurvey() API");
-
         String username = CookieController.getUsernameFromCookie(request);
-        if (username == null){
-            System.out.println("You must be logged in first");
-            return 400;
-        }
-
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});
@@ -232,15 +228,10 @@ public class APIController {
      * @throws JSONException, JSON Exception
      */
     @GetMapping("/getSurveyResults/{id}")
+    @NeedsLogin(type="string")
     public String getSurveyResults(@PathVariable("id") String id, HttpServletRequest request) throws JSONException {
         System.out.println("getSurveyResults() API");
-
         String username = CookieController.getUsernameFromCookie(request);
-        if (username == null){
-            System.out.println("You must be logged in first");
-            return "";
-        }
-
         Long surveyId = Long.valueOf(id);
         Optional<Survey> s = surveyRepo.findById(surveyId);
         JSONObject resObject = new JSONObject();
@@ -311,15 +302,11 @@ public class APIController {
      * @throws IOException, IO exception
      */
     @PostMapping("/closeSurvey/{id}")
+    @NeedsLogin(type="int")
     public int closeSurvey(@PathVariable("id") Long id, HttpServletRequest request) throws IOException {
         System.out.println("closeSurvey() API");
 
         String username = CookieController.getUsernameFromCookie(request);
-        if (username == null){
-            System.out.println("You must be logged in first");
-            return 400;
-        }
-
         Survey survey = surveyRepo.findById(id).orElse(null);
         if (survey == null) {
             return 400;
@@ -362,7 +349,11 @@ public class APIController {
      * @return resObject, the results of the survey in JSON format.
      * @throws IOException, exception
      */
+
+
+
     @GetMapping("/savedResponses/{username}")
+    @NeedsLogin(type="string")
     public String getSavedResponses(@PathVariable("username") String username, HttpServletRequest request) throws IOException, JSONException {
         System.out.println("getSavedResponses() API");
 
@@ -526,15 +517,10 @@ public class APIController {
      * @throws IOException, IO exception
      */
     @PostMapping("/updateSurvey/{id}")
+    @NeedsLogin(type="int")
     public int updateSurvey(@PathVariable("id") String id, HttpServletRequest request) throws IOException {
         System.out.println("Updating survey API()");
-
         String username = CookieController.getUsernameFromCookie(request);
-        if (username == null){
-            System.out.println("You must be logged in first");
-            return 400;
-        }
-
         String jsonData = this.JSONBuilder(request);
         ObjectMapper objectMapper = new ObjectMapper();
         HashMap<String, Object> surveyData = objectMapper.readValue(jsonData, new TypeReference<HashMap<String, Object>>() {});

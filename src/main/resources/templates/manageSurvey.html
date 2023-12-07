@@ -13,7 +13,7 @@
             <h1>Manage Surveys</h1>
             <div class="grid-auto-fit user-survey-lst">
                 <div class="user-survey" th:each="survey : ${surveys}">
-                    <p class="title">Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}"></span></p>
+                    <p class="title">Survey #<span th:text="${survey.getId()}"></span>: <span th:text="${survey.getTitle()}" class="form-title-break"></span></p>
                     <p class="num-questions">Number of Questions: <span th:text="${survey.getQuestions().size()}"></span></p>
                     <p class="num-responses">Number of Responses: <span th:text="${survey.getResponses().size()}"></span></p>
                     <div class="button-container">
