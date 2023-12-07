@@ -10,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static java.lang.Long.parseLong;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -37,12 +36,12 @@ public class RegisterLoginUserIntegrationTest {
      */
     @Test
     public void testRegisterAndLoginUserResponse() throws Exception {
-        String postData = "{\"username\":\"maxcurkovic\",\"password\":\"sysc4806\"}";
+        String postData = "{\"username\":\"testRegisterAndLoginUserResponseUser\",\"password\":\"sysc4806\"}";
         this.testController.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON).content(postData))
                 .andExpect(status().isOk());
 
-        AppUser loggedInUser = userRepository.findByUsername("maxcurkovic").orElse(null);
+        AppUser loggedInUser = userRepository.findByUsername("testRegisterAndLoginUserResponseUser").orElse(null);
         assertNotNull(loggedInUser);
 
         Cookie cookie = new Cookie("username", loggedInUser.getUsername().toString());

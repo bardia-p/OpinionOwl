@@ -1,7 +1,9 @@
 package com.opinionowl.opinionowl.integrationTests;
 
-import com.opinionowl.opinionowl.models.Survey;
+import com.opinionowl.opinionowl.models.*;
+import com.opinionowl.opinionowl.repos.ResponseRepository;
 import com.opinionowl.opinionowl.repos.SurveyRepository;
+import com.opinionowl.opinionowl.repos.UserRepository;
 import jakarta.servlet.http.Cookie;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.json.*;
 
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,6 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @SpringBootTest
 @AutoConfigureMockMvc
 public class FillAndGetResultsIntegrationTest {
@@ -25,7 +29,13 @@ public class FillAndGetResultsIntegrationTest {
     private MockMvc testController;
 
     @Autowired
-    private SurveyRepository surveyRepository;
+    private UserRepository appUserRepo;
+
+    @Autowired
+    private SurveyRepository surveyRepo;
+
+    @Autowired
+    private ResponseRepository responseRepo;
 
     /**
      * Method to test the get survey results. mapping. It will create a survey, fill it, and confirm the result exists.
@@ -33,42 +43,55 @@ public class FillAndGetResultsIntegrationTest {
      */
     @Test
     public void testCreateAndPostSurveyResponse() throws Exception {
-        String postUserData = "{\"username\":\"testuser\",\"password\":\"testpassword\"}";
+        String postUserData = "{\"username\":\"TestGetOfCreateAndPostSurveyResponseUser\",\"password\":\"testpassword\"}";
         this.testController.perform(post("/api/v1/createUser")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(postUserData))
                 .andExpect(status().isOk());
 
-        Cookie cookie = new Cookie("username", "testuser");
+        AppUser testUser = this.appUserRepo.findByUsername("TestGetOfCreateAndPostSurveyResponseUser").orElse(null);
+        assertNotNull(testUser);
+        Cookie cookie = new Cookie("username", "TestGetOfCreateAndPostSurveyResponseUser");
 
-        String postDataResponse = "{\"1\": \"some text answer\", \"2\" : \"some radio choice\", \"3\" : \"24\"}";
-        String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"This is a result test\",\"textQuestions\":[\"Test1\"]}";
+        String postDataSurvey = "{\"radioQuestions\":{\"Test2\":[\"some radio choice\",\"radio choice 2\"]},\"numericRanges\":{\"Test3\":[0,25]},\"title\":\"TestGetOfCreateAndPostSurveyResponseTitle\",\"textQuestions\":[\"Test1\"]}";
         // create a survey
         this.testController.perform(post("/api/v1/createSurvey")
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postDataSurvey))
                 .andExpect(status().isOk());
 
-        Survey createdSurvey = null;
-        for (Survey survey : this.surveyRepository.findAll()) {
-            if (survey.getTitle().equals("This is a result test")){
-                createdSurvey = survey;
-                break;
+        Survey createdSurvey = this.surveyRepo.findAll().stream().filter(s -> s.getTitle().equals("TestGetOfCreateAndPostSurveyResponseTitle")).findFirst().orElse(null);
+        assertNotNull(createdSurvey);
+        assertEquals(3, createdSurvey.getQuestions().size());
+
+        JSONObject surveyResponse = new JSONObject();
+        for (Question q : createdSurvey.getQuestions()) {
+            if (q.getType() == QuestionType.RADIO_CHOICE) {
+                RadioChoiceQuestion rC = (RadioChoiceQuestion) q;
+                surveyResponse.put(Long.toString(rC.getId()), rC.getChoices()[0]);
+            } else if (q.getType() == QuestionType.RANGE) {
+                RangeQuestion rQ = (RangeQuestion) q;
+                surveyResponse.put(Long.toString(rQ.getId()), 10);
+            } else if (q.getType() == QuestionType.LONG_ANSWER) {
+                LongAnswerQuestion lQ = (LongAnswerQuestion) q;
+                surveyResponse.put(Long.toString(lQ.getId()), "Some Text Answer");
             }
         }
-        assertNotNull(createdSurvey);
-        assertEquals(createdSurvey.getTitle(), "This is a result test");
 
         // post a response to the survey created. We can guarantee there is only one survey, so we grab the id=1
         this.testController.perform(post("/api/v1/postSurveyResponses/" + createdSurvey.getId())
                         .cookie(cookie)
-                        .contentType(MediaType.APPLICATION_JSON).content(postDataResponse))
+                        .contentType(MediaType.APPLICATION_JSON).content(surveyResponse.toString()))
                 .andExpect(status().isOk());
 
-        // Query the results of the survey.
+        for (Response res : this.responseRepo.findAll()) {
+            assertNotNull(res);
+        }
+
         this.testController.perform(get("/api/v1/getSurveyResults/" + createdSurvey.getId())
-                                    .cookie(cookie))
+                        .cookie(cookie))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("24")));
+
     }
 }
