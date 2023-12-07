@@ -79,9 +79,7 @@ public class ManageSurveyIntegrationTest {
      */
     @Test
     public void testEditSurvey() throws Exception {
-        Long surveyId = 1L;
-
-        Cookie cookie = new Cookie("username", "closesurveyuser");
+        Cookie cookie = new Cookie("username", "editsurveyuser");
 
         // Creating a user
         String postUserData = "{\"username\":\"editsurveyuser\",\"password\":\"testpassword\"}";
@@ -90,19 +88,31 @@ public class ManageSurveyIntegrationTest {
                         .content(postUserData))
                 .andExpect(status().isOk());
 
-        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Form Title\",\"textQuestions\":[\"Test1\"]}";
+        // Create a survey using the POST request.
+        String postSurveyData = "{\"radioQuestions\":{\"Test2\":[\"a\",\"b\"]},\"numericRanges\":{\"Test3\":[0,11]},\"title\":\"Test Edit Survey\",\"textQuestions\":[\"Test1\"]}";
         this.mockMvc.perform(post("/api/v1/createSurvey")
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
-                        .andExpect(status().isOk());
+                .andExpect(status().isOk());
 
-        this.mockMvc.perform(get("/manageSurvey?userId=1")
+        List<Survey> surveyList = surveyRepository.findAll();
+        Survey newSurvey = null;
+        for (Survey s : surveyList){
+            if (s.getTitle().equals("Test Edit Survey")){
+                newSurvey = s;
+                break;
+            }
+        }
+        assertNotNull(newSurvey);
+
+        // Navigate to "/manageSurvey" page and expect that it contains the newly created survey in the list
+        this.mockMvc.perform(get("/manageSurvey?username=editsurveyuser")
                         .cookie(cookie))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("Form Title")));
+                .andExpect(content().string(containsString("Test Edit Survey")));
 
         // Get the current survey results
-        this.mockMvc.perform(get("/api/v1/getSurveyResults/{id}", surveyId)
+        this.mockMvc.perform(get("/api/v1/getSurveyResults/{id}", newSurvey.getId())
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(postSurveyData))
                         .andExpect(status().isOk());
@@ -114,7 +124,7 @@ public class ManageSurveyIntegrationTest {
 
         // Update the survey with new data
         String updatedSurveyData = "{\"radioQuestions\":{\"Test2\":[\"b\",\"a\"]},\"numericRanges\":{\"Test3\":[0,9]},\"title\":\"Survey\",\"textQuestions\":[\"Test1\"]}";
-        this.mockMvc.perform(post("/api/v1/updateSurvey/{id}", surveyId)
+        this.mockMvc.perform(post("/api/v1/updateSurvey/{id}", newSurvey.getId())
                         .cookie(cookie)
                         .contentType(MediaType.APPLICATION_JSON).content(updatedSurveyData))
                         .andExpect(status().isOk());
