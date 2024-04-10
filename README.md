@@ -1,8 +1,10 @@
 # SYSC 4806 Project - Opinion Owl <img src="/images/owl.png" height="40px" width="auto">
 
-Build Status: ![Build Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml/badge.svg)
+Deployment Status:[![Build and deploy JAR app to Azure Web App - opinionowl](https://github.com/bardia-p/OpinionOwl/actions/workflows/main_opinionowl.yml/badge.svg)](https://github.com/bardia-p/OpinionOwl/actions/workflows/main_opinionowl.yml)
 
-Deployment Status: ![Deployment Status](https://github.com/bardia-p/OpinionOwl/actions/workflows/main_opinionowl.yml/badge.svg)
+Build Status: [![Java CI with Maven](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml/badge.svg)](https://github.com/bardia-p/OpinionOwl/actions/workflows/maven.yml)
+
+Diagrams Status: [![Generate Diagrams](https://github.com/bardia-p/OpinionOwl/actions/workflows/diagrams.yml/badge.svg)](https://github.com/bardia-p/OpinionOwl/actions/workflows/diagrams.yml)
 
 ### Group Members:
 
